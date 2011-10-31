@@ -5,10 +5,10 @@ import sys
 
 parms = {
   'organism': 'gram+',
-  'signalp4_bin': 'signalp',
+  'signalp4_bin': '/home/boscoh/packages/signalp-4.0/signalp',
   'lipop1_bin': 'LipoP',
   'tmhmm_bin': 'tmhmm',
-  'hmmsearch3_bin': 'hmmsearch',
+  'hmmsearch3_bin': '/bio/sw/hmmer-3.0-linux-intel-x86_64/bin/hmmsearch',
   'hmm_profiles_dir': 'hmm_profiles',
   'hmm_evalue_cutoff': 0.01,
   'terminal_exposed_loop_min': 50,
@@ -56,9 +56,7 @@ def hmmsearch3(parms, proteins):
       if 'conditional E-value' in l:
         evalue = float(words[-1])
         if evalue < parms['hmm_evalue_cutoff']:
-          profile_name = os.path.basename(parms['hmm_profile'])
-          profile_name = profile_name.replace('.hmmsearch', '')
-          proteins[name]['hmmsearch'].append(profile_name)
+          proteins[name]['hmmsearch'].append(hmm_name)
 
 
 def signalp4(parms, proteins):
@@ -198,25 +196,32 @@ def print_protein(protein):
 
 def predict_surface_exposure(parms, protein):
   if len(protein['hmmsearch']) > 0:
-    return "PSE, %s profile match" % protein['hmmsearch']
+    return "hmmsearch;", "PSE"
 
+  s = ""
+  
   if protein['is_lipop']: 
+    s += "lipop;"
     chop_nterminal_peptide(protein, protein['lipop_cleave_position'])
     if protein['n_tmhmm_helix'] == 0:
       if protein['sequence_length'] < parms['terminal_exposed_loop_min']:
-        return "MEMBRANE"
+        return s, "MEMBRANE"
       else:
-        return "PSE"
+        return s, "PSE"
   elif protein['is_signalp']:
+    s += "signalp;"
     chop_nterminal_peptide(protein, protein['signalp_cleave_position'])
     if protein['n_tmhmm_helix'] == 0:
-      return "SECRETED"
+      return s, "SECRETED"
+
   if protein['n_tmhmm_helix'] > 0:
+    s += "tmhmm;"
     if has_surface_exposed_loop(parms, protein):
-      return "PSE"
+      return s, "PSE"
     else:
-      return "MEMBRANE"
-  return "CYTOPLASMIC"
+      return s, "MEMBRANE"
+
+  return s, "CYTOPLASM"
 
 
 def identify_pse_proteins(parms, fasta):
@@ -239,8 +244,15 @@ def identify_pse_proteins(parms, fasta):
       [signalp4, lipop1, tmhmm, hmmsearch3]:
     extract_protein_feature(parms, proteins)
   for prot_id in prot_ids:
-    proteins[prot_id]['category'] = \
+    details, category = \
         predict_surface_exposure(parms, proteins[prot_id])
+    if details.endswith(';'):
+      details = details[:-1]
+    if details is '':
+      details = "."
+    proteins[prot_id]['details'] = details
+    proteins[prot_id]['category'] = category
+        
   return prot_ids, proteins
 
 
@@ -251,9 +263,10 @@ if __name__ == "__main__":
       parms, fasta)
   for prot_id in prot_ids:
     protein = proteins[prot_id]
-    print "%-7s %-13s %s" % \
+    print "%-15s %-13s %-20s %s" % \
         (prot_id.split("|")[1], 
-         protein['category'].split()[0], 
+         protein['category'], 
+         protein['details'],
          protein['name'][:60])
 
 
