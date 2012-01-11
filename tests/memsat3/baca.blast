@@ -1,0 +1,1019 @@
+BLASTP 2.2.24 [Aug-08-2010]
+
+
+Reference: Altschul, Stephen F., Thomas L. Madden, Alejandro A. Schaffer, 
+Jinghui Zhang, Zheng Zhang, Webb Miller, and David J. Lipman (1997), 
+"Gapped BLAST and PSI-BLAST: a new generation of protein database search
+programs",  Nucleic Acids Res. 25:3389-3402.
+
+
+Reference for compositional score matrix adjustment: Altschul, Stephen F., 
+John C. Wootton, E. Michael Gertz, Richa Agarwala, Aleksandr Morgulis,
+Alejandro A. Schaffer, and Yi-Kuo Yu (2005) "Protein database searches
+using compositionally adjusted substitution matrices", FEBS J. 272:5101-5109.
+
+
+Reference for composition-based statistics starting in round 2:
+Schaffer, Alejandro A., L. Aravind, Thomas L. Madden,
+Sergei Shavirin, John L. Spouge, Yuri I. Wolf,  
+Eugene V. Koonin, and Stephen F. Altschul (2001), 
+"Improving the accuracy of PSI-BLAST protein database searches with 
+composition-based statistics and other refinements",  Nucleic Acids Res. 29:2994-3005.
+
+Query= sp|P19585|BAC1_HALS1 ARCHAERHODOPSIN 1 PRECURSOR (AR 1).
+         (260 letters)
+
+Database: All non-redundant GenBank CDS
+translations+PDB+SwissProt+PIR+PRF excluding environmental samples
+from WGS projects 
+           13,841,106 sequences; 4,750,259,772 total letters
+
+Searching..................................................done
+
+
+Results from round 1
+
+
+                                                                 Score    E
+Sequences producing significant alignments:                      (bits) Value
+
+sp|P69051.1|BACR1_HALS1 RecName: Full=Archaerhodopsin-1; Short=A...   504   e-141
+pdb|1UAZ|A Chain A, Crystal Structure Of Archaerhodopsin-1 >gi|3...   492   e-137
+gb|AAS15567.1| archaerhodopsin BD1 [Halorubrum xinjiangense]          468   e-130
+gb|ABT17417.1| bacteriorhodopsin [Halorubrum sp. TP009]               462   e-128
+gb|ADB03111.1| Arch-GFP [synthetic construct]                         456   e-126
+gb|ADB03116.1| ss-Prl-Arch-GFP [synthetic construct]                  456   e-126
+gb|ADB03114.1| ss-Arch-GFP-ER2 [synthetic construct]                  455   e-126
+gb|ADB03115.1| ss-Prl-Arch [synthetic construct]                      452   e-125
+sp|P96787.1|BACR3_HALSD RecName: Full=Archaerhodopsin-3; Short=A...   451   e-125
+gb|AEB26833.1| ArchT-GFP [synthetic construct]                        450   e-124
+gb|AEB26832.1| ArchT [synthetic construct]                            444   e-123
+gb|AAG42454.1| rhodopsin [Halobacterium salinarum]                    402   e-110
+sp|P29563.1|BACR2_HALS2 RecName: Full=Archaerhodopsin-2; Short=A...   396   e-108
+pdb|1VGO|A Chain A, Crystal Structure Of Archaerhodopsin-2 >gi|7...   387   e-106
+sp|P33969.1|BACR_HALHM RecName: Full=Bacteriorhodopsin; Short=BR...   302   3e-80
+pdb|2I1X|A Chain A, BacteriorhodopsinLIPID COMPLEX, D96A MUTANT ...   263   1e-68
+pdb|1C8R|A Chain A, Bacteriorhodopsin D96n Br State At 2.0 A Res...   263   1e-68
+pdb|1PXS|A Chain A, Structure Of Met56ala Mutant Of Bacteriorhod...   261   4e-68
+pdb|3HAR|A Chain A, Crystal Structure Of Bacteriorhodopsin Mutan...   261   9e-68
+gb|AAA72184.1| bacteriorhodopsin [synthetic construct] >gi|20805...   260   1e-67
+ref|NP_280292.1| bacterio-opsin [Halobacterium sp. NRC-1] >gi|16...   260   1e-67
+pdb|1QHJ|A Chain A, X-Ray Structure Of Bacteriorhodopsin Grown I...   260   2e-67
+pdb|3HAO|A Chain A, Crystal Structure Of Bacteriorhodopsin Mutan...   260   2e-67
+pdb|1O0A|A Chain A, Bacteriorhodopsin L Intermediate At 1.62 A R...   260   2e-67
+pdb|1XJI|A Chain A, Bacteriorhodopsin Crystallized In Bicelles A...   260   2e-67
+pdb|1AT9|A Chain A, Structure Of Bacteriorhodopsin At 3.0 Angstr...   260   2e-67
+emb|CAA49762.1| bacterioopsin [synthetic construct]                   259   2e-67
+pdb|1TN5|A Chain A, Structure Of Bacterorhodopsin Mutant K41p >g...   259   3e-67
+pdb|1TN0|A Chain A, Structure Of Bacterorhodopsin Mutant A51p >g...   259   3e-67
+pdb|3HAQ|A Chain A, Crystal Structure Of Bacteriorhodopsin Mutan...   259   4e-67
+pdb|2WJL|A Chain A, Bacteriorhodopsin Mutant E194d                    258   5e-67
+pdb|2WJK|A Chain A, Bacteriorhodopsin Mutant E204d                    258   5e-67
+pdb|1P8U|A Chain A, Bacteriorhodopsin N' Intermediate At 1.62 A ...   258   5e-67
+pdb|2I21|A Chain A, BacteriorhodopsinLIPID COMPLEX, T46V MUTANT       258   6e-67
+pdb|1FBK|A Chain A, Crystal Structure Of Cytoplasmically Open Co...   258   7e-67
+pdb|1JV7|A Chain A, Bacteriorhodopsin O-Like Intermediate State ...   258   7e-67
+pdb|3HAS|A Chain A, Crystal Structure Of Bacteriorhodopsin Mutan...   258   8e-67
+pdb|3HAP|A Chain A, Crystal Structure Of Bacteriorhodopsin Mutan...   258   8e-67
+pdb|1P8I|A Chain A, F219l Bacteriorhodopsin Mutant                    258   8e-67
+pdb|1CWQ|A Chain A, M Intermediate Structure Of The Wild Type Ba...   257   1e-66
+pdb|1BRR|A Chain A, X-Ray Structure Of The Bacteriorhodopsin Tri...   257   1e-66
+pdb|3COC|A Chain A, Crystal Structure Of D115a Mutant Of Bacteri...   257   1e-66
+gb|ABT17372.1| bacteriorhodopsin [uncultured haloarchaeon FLAS10H9]   257   1e-66
+pdb|1PXR|A Chain A, Structure Of Pro50ala Mutant Of Bacteriorhod...   256   1e-66
+pdb|1Q5I|A Chain A, Crystal Structure Of Bacteriorhodopsin Mutan...   256   1e-66
+prf||0712242A bacteriorhodopsin precursor                             256   1e-66
+pdb|1Q5J|A Chain A, Crystal Structure Of Bacteriorhodopsin Mutan...   256   2e-66
+pdb|1JV6|A Chain A, Bacteriorhodopsin D85sF219L DOUBLE MUTANT AT...   255   5e-66
+pdb|3COD|A Chain A, Crystal Structure Of T90aD115A MUTANT OF BAC...   251   8e-65
+prf||0501217A bacteriorhodopsin                                       248   8e-64
+ref|YP_656801.1| bacteriorhodopsin precursor (Squarebop I) [Halo...   242   5e-62
+ref|YP_136594.1| bacteriorhodopsin precursor [Haloarcula marismo...   242   5e-62
+pdb|1R84|A Chain A, Nmr Structure Of The 13-Cis-15-Syn Retinal I...   240   1e-61
+pdb|1E0P|A Chain A, L Intermediate Of Bacteriorhodopsin               240   1e-61
+pdb|1KGB|A Chain A, Structure Of Ground-State Bacteriorhodopsin ...   239   3e-61
+pdb|1F4Z|A Chain A, Bacteriorhodopsin-M Photointermediate State ...   238   6e-61
+pdb|1S53|A Chain A, Thr46ser Bacteriorhodopsin >gi|46015687|pdb|...   238   7e-61
+pdb|1S51|A Chain A, Thr24ser Bacteriorhodopsin >gi|46015683|pdb|...   238   7e-61
+pdb|1S54|A Chain A, Thr24ala Bacteriorhodopsin >gi|46015689|pdb|...   237   1e-60
+pdb|1S52|A Chain A, Thr24val Bacteriorhodopsin >gi|46015685|pdb|...   237   1e-60
+emb|CAO82320.1| bacteriorhodopsin [Halorubrum sp. TP003] >gi|154...   234   7e-60
+emb|CAO82323.1| bacteriorhodopsin [Halorubrum sp. TP009] >gi|154...   233   2e-59
+pdb|1C3W|A Chain A, BacteriorhodopsinLIPID COMPLEX AT 1.55 A RES...   233   2e-59
+pdb|1L0M|A Chain A, Solution Structure Of Bacteriorhodopsin           216   3e-54
+gb|AAZ76911.1| bacteriorhodopsin [Halorubrum sp. YW059]               216   3e-54
+emb|CAO82402.1| bacteriorhodopsin [Halorubrum sp. TP230] >gi|154...   213   2e-53
+gb|ABT17458.1| bacteriorhodopsin [Halorubrum sp. TP222]               211   6e-53
+emb|CAO82414.1| bacteriorhodopsin [Halorubrum sp. TP261] >gi|154...   211   7e-53
+pdb|1C8S|A Chain A, Bacteriorhodopsin D96n Late M State Intermed...   201   1e-49
+sp|O93740.1|BACR_HALS4 RecName: Full=Bacteriorhodopsin; Short=BR...   200   2e-49
+gb|AAU04564.1| bacteriorhodopsin [Halobiforma lacisalsi]              200   2e-49
+emb|CAO82321.1| bacteriorhodopsin [Halorubrum sp. TP004] >gi|154...   192   5e-47
+emb|CAO82319.1| bacteriorhodopsin [Halorubrum sp. TP001]              191   7e-47
+emb|CAO82328.1| bacteriorhodopsin [Halorubrum sp. TP024] >gi|154...   191   8e-47
+sp|Q57101.1|BACR_HALAR RecName: Full=Cruxrhodopsin-1; Short=COP-...   188   5e-46
+sp|P94854.1|BACR_HALVA RecName: Full=Cruxrhodopsin-3; Short=COP-...   187   1e-45
+dbj|BAA81816.1| cruxrhodopsin [Haloarcula japonica]                   186   2e-45
+ref|YP_137573.1| bacteriorhodopsin [Haloarcula marismortui ATCC ...   184   1e-44
+emb|CAO82327.1| bacteriorhodopsin [Halorubrum sp. TP023] >gi|154...   181   9e-44
+emb|CAO82379.1| bacteriorhodopsin [Halorubrum sp. TP177] >gi|154...   181   9e-44
+ref|YP_656804.1| bacteriorhodopsin precursor (Squarebop II) [Hal...   179   4e-43
+ref|YP_003177111.1| rhodopsin [Halomicrobium mukohataei DSM 1228...   178   6e-43
+ref|YP_003129235.1| rhodopsin [Halorhabdus utahensis DSM 12940] ...   176   4e-42
+emb|CAO82322.1| bacteriorhodopsin [Halorubrum sp. TP008] >gi|154...   173   2e-41
+sp|P33971.1|BACR_HALHP RecName: Full=Bacteriorhodopsin; Short=BR...   163   2e-38
+sp|P33972.1|BACR_HALHS RecName: Full=Bacteriorhodopsin; Short=BR...   155   5e-36
+ref|YP_644794.1| rhodopsin [Rubrobacter xylanophilus DSM 9941] >...   149   5e-34
+gb|AAZ76802.1| bacteriorhodopsin [uncultured Halobacteriales arc...   137   1e-30
+gb|AAZ76797.1| bacteriorhodopsin [uncultured Halobacteriales arc...   137   2e-30
+gb|AAZ76799.1| bacteriorhodopsin [uncultured Halobacteriales arc...   136   3e-30
+gb|AAZ76798.1| bacteriorhodopsin [uncultured Halobacteriales arc...   135   5e-30
+ref|ZP_06974567.1| rhodopsin, a chromoprotein [Ktedonobacter rac...   134   2e-29
+prf||0502635B bacteriorhodopsin N term fragment                       129   3e-28
+gb|ADJ38533.1| bacteriorhodopsin [uncultured bacterium]               126   4e-27
+gb|ABA08439.1| opsin [Cryptomonas sp. S2]                             125   6e-27
+gb|ADJ38526.1| bacteriorhodopsin [uncultured bacterium]               121   7e-26
+gb|ADJ38529.1| bacteriorhodopsin [uncultured bacterium]               119   5e-25
+gb|ACO36734.1| bacteriorhodopsin [Natrinema sp. enrichment cultu...   117   1e-24
+gb|ACV05065.1| opsin [Cyanophora paradoxa]                            117   1e-24
+gb|AAS87571.1| bacteriorhodopsin [Natrinema altunense] >gi|46310...   117   2e-24
+ref|ZP_07380783.1| rhodopsin [Pantoea sp. aB] >gi|304353617|gb|E...   116   3e-24
+gb|ABA08437.1| opsin 1 [Guillardia theta]                             116   3e-24
+gb|AAP36745.1| bacteriorhodopsin [Natrinema altunense]                116   3e-24
+ref|YP_003931488.1| Archaerhodopsin-1 precursor (AR 1) [Pantoea ...   116   3e-24
+ref|YP_002379171.1| rhodopsin [Cyanothece sp. PCC 7424] >gi|2181...   116   3e-24
+ref|YP_003178493.1| rhodopsin [Halomicrobium mukohataei DSM 1228...   115   4e-24
+gb|AAR12471.1| bacteriorhodopsin [uncultured Halobacteriales arc...   115   8e-24
+gb|ACO36736.1| bacteriorhodopsin [Natrinema sp. enrichment cultu...   114   2e-23
+gb|ABY53427.1| bacteriorhodopsin [halophilic archaeon F7]             113   3e-23
+dbj|BAK11309.1| archaerhodopsin-2 precursor [Pantoea ananatis AJ...   113   3e-23
+ref|YP_003520194.1| hypothetical protein PANA_1899 [Pantoea anan...   112   4e-23
+ref|YP_134805.1| sensory rhodopsin 1 [Haloarcula marismortui ATC...   112   4e-23
+prf||0502635A bacteriorhodopsin C term fragment                       111   8e-23
+pdb|2F93|A Chain A, K Intermediate Structure Of Sensory Rhodopsi...   107   1e-21
+gb|AAP36746.1| bacteriorhodopsin [Natrinema altunense]                107   2e-21
+gb|AAP36744.1| bacteriorhodopsin [Natronococcus aibiensis]            107   2e-21
+gb|ABY53428.1| bacteriorhodopsin [Natrinema sp. J7]                   107   2e-21
+sp|P42196.1|BACS2_NATPH RecName: Full=Sensory rhodopsin-2; AltNa...   107   2e-21
+gb|ACO36732.1| bacteriorhodopsin [Natrinema sp. enrichment cultu...   107   2e-21
+gb|ACO36733.1| bacteriorhodopsin [Natrinema sp. enrichment cultu...   107   2e-21
+ref|YP_331142.1| sensory rhodopsin II [Natronomonas pharaonis DS...   106   3e-21
+gb|AAZ76800.1| bacteriorhodopsin [uncultured Halobacteriales arc...   105   5e-21
+gb|ADJ38540.1| bacteriorhodopsin [uncultured bacterium]               105   5e-21
+gb|ACM45578.1| bacteriorhodopsin [Natrinema sp. ABDH11]               105   5e-21
+gb|ADJ38523.1| bacteriorhodopsin [uncultured bacterium]               105   6e-21
+ref|NP_487205.1| bacteriorhodopsin [Nostoc sp. PCC 7120] >gi|556...   105   8e-21
+gb|ADJ38538.1| bacteriorhodopsin [uncultured bacterium]               105   8e-21
+pdb|2KSY|A Chain A, Solution Nmr Structure Of Sensory Rhodopsin Ii    104   1e-20
+ref|NP_279315.1| Hop [Halobacterium sp. NRC-1] >gi|169235207|ref...   103   2e-20
+ref|YP_002484126.1| rhodopsin [Cyanothece sp. PCC 7425] >gi|2198...   103   2e-20
+pdb|1H2S|A Chain A, Molecular Basis Of Transmenbrane Signalling ...   103   2e-20
+gb|ACZ04975.1| opsin 2 [Cyanophora paradoxa] >gi|268376503|gb|AC...   103   2e-20
+pdb|1JGJ|A Chain A, Crystal Structure Of Sensory Rhodopsin Ii At...   103   2e-20
+gb|ACO36735.1| bacteriorhodopsin [Natronococcus sp. enrichment c...   103   2e-20
+gb|ADJ38536.1| bacteriorhodopsin [uncultured bacterium]               103   3e-20
+gb|ADJ38532.1| bacteriorhodopsin [uncultured bacterium]               103   3e-20
+gb|ABA08438.1| opsin 2 [Guillardia theta]                             103   3e-20
+gb|ABT17463.1| bacteriorhodopsin [Natrinema sp. XA3-1]                102   4e-20
+gb|ADJ38535.1| bacteriorhodopsin [uncultured bacterium]               102   4e-20
+pdb|1BCT|A Chain A, Three-Dimensional Structure Of Proteolytic F...   102   5e-20
+gb|AAP36748.1| bacteriorhodopsin [Halobiforma lacisalsi]              102   5e-20
+gb|ADJ38543.1| bacteriorhodopsin [uncultured bacterium]               102   6e-20
+pdb|1E12|A Chain A, Halorhodopsin, A Light-Driven Chloride Pump       102   7e-20
+gb|ADJ38537.1| bacteriorhodopsin [uncultured bacterium]               102   7e-20
+sp|P94853.1|BACH_HALVA RecName: Full=Cruxhalorhodopsin-3; Short=...   101   9e-20
+gb|EFQ36594.1| bacteriorhodopsin [Glomerella graminicola M1.001]      101   1e-19
+gb|ADJ38534.1| bacteriorhodopsin [uncultured bacterium]               101   1e-19
+sp|O93742.1|BACH_HALSD RecName: Full=Halorhodopsin; Short=HR >gi...   100   1e-19
+gb|AAR12479.1| bacteriorhodopsin [uncultured Halobacteriales arc...   100   1e-19
+gb|ADJ38544.1| bacteriorhodopsin [uncultured bacterium]               100   1e-19
+sp|P33742.1|BACH_HALSS RecName: Full=Halorhodopsin; Short=HR >gi...   100   1e-19
+gb|ADJ38531.1| bacteriorhodopsin [uncultured bacterium]               100   2e-19
+ref|YP_658762.1| halorhodopsin [Haloquadratum walsbyi DSM 16790]...   100   2e-19
+sp|Q48315.1|BACH_HALHP RecName: Full=Halorhodopsin; Short=HR; Fl...   100   3e-19
+gb|AAZ76801.1| bacteriorhodopsin [uncultured Halobacteriales arc...    99   4e-19
+sp|Q48314.1|BACH_HALHS RecName: Full=Halorhodopsin; Short=HR; Fl...    99   4e-19
+gb|ADJ38525.1| bacteriorhodopsin [uncultured bacterium]                99   5e-19
+ref|YP_003129368.1| rhodopsin [Halorhabdus utahensis DSM 12940] ...    99   5e-19
+ref|YP_136278.1| halorhodopsin precursor [Haloarcula marismortui...    99   5e-19
+ref|YP_001767533.1| rhodopsin [Methylobacterium sp. 4-46] >gi|16...    99   6e-19
+gb|AAR12465.1| bacteriorhodopsin [uncultured Halobacteriales arc...    99   6e-19
+gb|ADJ38541.1| bacteriorhodopsin [uncultured bacterium]                99   7e-19
+gb|ADJ38528.1| bacteriorhodopsin [uncultured bacterium]                99   7e-19
+ref|XP_003043878.1| hypothetical protein NECHADRAFT_101480 [Nect...    99   7e-19
+gb|ADJ38530.1| bacteriorhodopsin [uncultured bacterium]                98   9e-19
+gb|AAG01180.1|AF290180_1 opsin [Leptosphaeria maculans] >gi|2828...    98   1e-18
+ref|XP_001791031.1| hypothetical protein SNOG_00341 [Phaeosphaer...    97   2e-18
+sp|P15647.1|BACH_NATPH RecName: Full=Halorhodopsin; Short=HR; Al...    97   3e-18
+gb|ADB03113.1| Mac-GFP [synthetic construct]                           96   3e-18
+ref|XP_001937307.1| opsin-1 [Pyrenophora tritici-repentis Pt-1C-...    96   5e-18
+gb|EGG00698.1| hypothetical protein MELLADRAFT_50312 [Melampsora...    96   5e-18
+ref|YP_325981.1| halorhodopsin [Natronomonas pharaonis DSM 2160]...    96   6e-18
+gb|EFQ91496.1| hypothetical protein PTT_11647 [Pyrenophora teres...    96   7e-18
+gb|AAR12480.1| bacteriorhodopsin [uncultured Halobacteriales arc...    95   8e-18
+gb|AAR12458.1| bacteriorhodopsin [uncultured Halobacteriales arc...    95   1e-17
+ref|YP_003176891.1| rhodopsin [Halomicrobium mukohataei DSM 1228...    95   1e-17
+gb|ABT17461.1| bacteriorhodopsin [Haloterrigena sp. GSL-11]            95   1e-17
+gb|AAP36747.1| bacteriorhodopsin [Haloarcula sp. AJ4] >gi|856794...    94   2e-17
+gb|AAR12463.1| bacteriorhodopsin [uncultured Halobacteriales arc...    94   2e-17
+gb|ADJ38527.1| bacteriorhodopsin [uncultured bacterium]                94   2e-17
+ref|XP_001791479.1| hypothetical protein SNOG_00807 [Phaeosphaer...    94   2e-17
+dbj|BAH28808.1| putative opsin-like protein [Bipolaris oryzae]         93   3e-17
+gb|ABT17462.1| bacteriorhodopsin [Natronorubrum sp. Tenzan-10]         93   3e-17
+gb|AAR12474.1| bacteriorhodopsin [uncultured Halobacteriales arc...    93   3e-17
+ref|YP_002565246.1| rhodopsin [Halorubrum lacusprofundi ATCC 492...    93   4e-17
+gb|ABT17459.1| bacteriorhodopsin [haloarchaeon TP262]                  93   4e-17
+ref|NP_280508.1| Sop2 [Halobacterium sp. NRC-1] >gi|169236425|re...    93   5e-17
+ref|XP_001904282.1| hypothetical protein [Podospora anserina S m...    92   5e-17
+gb|AAR12470.1| bacteriorhodopsin [uncultured Halobacteriales arc...    92   5e-17
+gb|ADJ38524.1| bacteriorhodopsin [uncultured bacterium]                92   6e-17
+dbj|BAH28809.1| putative opsin-like protein [Bipolaris oryzae]         92   6e-17
+pir||A56808 halorhodopsin - Halobacteriaceae gen. sp. (fragment)       92   7e-17
+ref|XP_383240.1| hypothetical protein FG03064.1 [Gibberella zeae...    92   7e-17
+gb|AAR12469.1| bacteriorhodopsin [uncultured Halobacteriales arc...    92   8e-17
+gb|ADJ38539.1| bacteriorhodopsin [uncultured bacterium]                92   8e-17
+gb|AAQ75384.1| putative opsin [Oryza sativa Indica Group]              92   9e-17
+ref|YP_002564761.1| rhodopsin [Halorubrum lacusprofundi ATCC 492...    92   1e-16
+pdb|2JAF|A Chain A, Ground State Of Halorhodopsin T203v >gi|1229...    91   1e-16
+emb|CBQ67804.1| related to Opsin-1 [Sporisorium reilianum]             91   1e-16
+gb|ADJ38542.1| bacteriorhodopsin [uncultured bacterium]                91   1e-16
+gb|AAR12473.1| bacteriorhodopsin [uncultured Halobacteriales arc...    91   1e-16
+ref|YP_446872.1| halorhodopsin (HR) [Salinibacter ruber DSM 1385...    91   2e-16
+ref|XP_003042779.1| predicted protein [Nectria haematococca mpVI...    90   3e-16
+dbj|BAA75201.2| halorhodopsin [Haloterrigena sp. arg-4]                90   3e-16
+sp|O93741.1|BACH_HALS4 RecName: Full=Halorhodopsin; Short=HR >gi...    90   4e-16
+gb|ABT17456.1| bacteriorhodopsin [haloarchaeon TP100]                  89   5e-16
+ref|XP_756518.1| hypothetical protein UM00371.1 [Ustilago maydis...    89   5e-16
+ref|YP_003572606.1| Sensory rhodopsin I (SR-I) [Salinibacter rub...    89   6e-16
+gb|ABT17455.1| bacteriorhodopsin [haloarchaeon TP072]                  88   9e-16
+emb|CBX95095.1| similar to opsin-1 [Leptosphaeria maculans]            88   1e-15
+gb|ADJ38522.1| bacteriorhodopsin [uncultured bacterium]                88   1e-15
+gb|EFQ92862.1| hypothetical protein PTT_09940 [Pyrenophora teres...    88   1e-15
+emb|CAD97459.1| opsin-like protein [Gibberella fujikuroi]              88   1e-15
+gb|ABT17453.1| bacteriorhodopsin [Halobiforma haloterrestris]          87   2e-15
+emb|CBX94996.1| hypothetical protein [Leptosphaeria maculans]          87   2e-15
+ref|XP_001937696.1| archaerhodopsin-2 precursor [Pyrenophora tri...    87   2e-15
+sp|P33970.1|BACH_HALHM RecName: Full=Halorhodopsin; Short=HR >gi...    86   3e-15
+gb|AAZ76910.1| bacteriorhodopsin [Haloarcula sp. YW016]                84   3e-14
+ref|YP_446609.1| sensory rhodopsin (SRI) [Salinibacter ruber DSM...    83   3e-14
+ref|YP_003706549.1| rhodopsin [Truepera radiovictrix DSM 17093] ...    83   3e-14
+ref|YP_003572671.1| Sensory rhodopsin I [Salinibacter ruber M8] ...    83   4e-14
+ref|XP_001547284.1| hypothetical protein BC1G_13906 [Botryotinia...    82   8e-14
+emb|CAR82401.1| opsin-like protein [Gibberella fujikuroi]              82   9e-14
+gb|ABE73210.1| halorhodopsin [Haloarcula sp. AB19]                     82   9e-14
+gb|ABI48301.1| halorhodopsin [Halobiforma lacisalsi]                   81   1e-13
+ref|XP_001558822.1| hypothetical protein BC1G_02456 [Botryotinia...    81   2e-13
+ref|XP_387730.1| hypothetical protein FG07554.1 [Gibberella zeae...    81   2e-13
+ref|YP_446677.1| sensory rhodopsin (SRI) [Salinibacter ruber DSM...    80   3e-13
+ref|XP_364170.1| hypothetical protein MGG_09015 [Magnaporthe ory...    79   6e-13
+emb|CBI54495.1| putative opsin protein [Sordaria macrospora]           79   7e-13
+ref|XP_959421.1| opsin-1 [Neurospora crassa OR74A] >gi|32699624|...    79   8e-13
+pdb|1BHA|A Chain A, Three-Dimensional Structure Of (1-71) Bacter...    78   1e-12
+ref|YP_003703856.1| rhodopsin [Truepera radiovictrix DSM 17093] ...    78   1e-12
+sp|O93743.1|BACS_HALSD RecName: Full=Sensory rhodopsin; Short=SR...    78   1e-12
+ref|XP_001597420.1| opsin-1 [Sclerotinia sclerotiorum 1980] >gi|...    77   2e-12
+gb|AAZ76793.1| bacteriorhodopsin [uncultured Halobacteriales arc...    77   2e-12
+ref|XP_001594532.1| hypothetical protein SS1G_04339 [Sclerotinia...    77   2e-12
+sp|Q48334.1|BAC3_HALVA RecName: Full=Bacterial rhodopsin CSR3 >g...    77   2e-12
+gb|AAY82897.1| rhodopsin [Acetabularia acetabulum]                     77   3e-12
+ref|NP_280434.1| Sop1 [Halobacterium sp. NRC-1] >gi|169236348|re...    77   3e-12
+ref|YP_003480703.1| rhodopsin [Natrialba magadii ATCC 43099] >gi...    76   5e-12
+dbj|BAB86796.1| phoborhodopsin [Halobacterium sp. AUS-1]               75   7e-12
+gb|ADY17809.1| rhodopsin type II [Oxyrrhis marina]                     75   1e-11
+sp|P33743.1|BACS1_HALSS RecName: Full=Sensory rhodopsin-1; AltNa...    75   1e-11
+gb|AAZ76794.1| bacteriorhodopsin [uncultured Halobacteriales arc...    75   1e-11
+ref|XP_002542856.1| opsin 1 protein [Uncinocarpus reesii 1704] >...    74   2e-11
+sp|Q53461.1|BACH_HALAR RecName: Full=Cruxhalorhodopsin-1; Short=...    74   3e-11
+gb|AAO14677.1|AF508258_1 rhodopsin [Pyrocystis lunula]                 73   3e-11
+gb|ABV22426.1| rhodopsin [Oxyrrhis marina] >gi|157093547|gb|ABV2...    73   4e-11
+gb|ABV22432.1| rhodopsin [Oxyrrhis marina]                             73   5e-11
+ref|YP_135281.1| opsin of unknown function [Haloarcula marismort...    72   5e-11
+gb|ABV22430.1| rhodopsin [Oxyrrhis marina]                             72   6e-11
+ref|XP_003065238.1| opsin 1 [Coccidioides posadasii C735 delta S...    72   6e-11
+gb|EFW15781.1| opsin [Coccidioides posadasii str. Silveira]            72   7e-11
+ref|XP_001240940.1| hypothetical protein CIMG_08103 [Coccidioide...    72   8e-11
+gb|EGE00757.1| hypothetical protein TESG_08050 [Trichophyton ton...    72   9e-11
+gb|ACN42848.1| putative actinorhodopsin [actinobacterium MWH-Uga1]     72   1e-10
+gb|AAL27088.1| opsin 1 [Coccidioides posadasii]                        72   1e-10
+ref|XP_003008270.1| FDD123 [Verticillium albo-atrum VaMs.102] >g...    71   1e-10
+ref|XP_003233999.1| hypothetical protein TERG_05868 [Trichophyto...    71   2e-10
+gb|AAK49108.1| opsin 1 [Coccidioides posadasii]                        70   2e-10
+gb|AAR12475.1| bacteriorhodopsin [uncultured Halobacteriales arc...    70   3e-10
+ref|YP_137680.1| sensory rhodopsin I [Haloarcula marismortui ATC...    70   3e-10
+gb|ABT17454.1| bacteriorhodopsin [Halosimplex carlsbadense]            70   4e-10
+gb|EGG00632.1| hypothetical protein MELLADRAFT_39586 [Melampsora...    69   8e-10
+ref|YP_002481621.1| rhodopsin [Cyanothece sp. PCC 7425] >gi|2198...    69   9e-10
+gb|ADY17806.1| rhodopsin type II [Oxyrrhis marina]                     68   1e-09
+gb|AAR12467.1| bacteriorhodopsin [uncultured Halobacteriales arc...    67   2e-09
+ref|XP_003170270.1| opsin 1 [Arthroderma gypseum CBS 118893] >gi...    67   3e-09
+gb|ADY17808.1| rhodopsin type II [Oxyrrhis marina]                     67   3e-09
+gb|AAR12459.1| bacteriorhodopsin [uncultured Halobacteriales arc...    66   4e-09
+gb|AAR12464.1| bacteriorhodopsin [uncultured Halobacteriales arc...    66   4e-09
+ref|XP_003015929.1| opsin, putative [Arthroderma benhamiae CBS 1...    66   5e-09
+ref|XP_758776.1| hypothetical protein UM02629.1 [Ustilago maydis...    65   6e-09
+gb|ABV22427.1| rhodopsin [Oxyrrhis marina]                             65   7e-09
+gb|AAR12476.1| bacteriorhodopsin [uncultured Halobacteriales arc...    65   8e-09
+ref|NP_923144.1| bacterioopsin [Gloeobacter violaceus PCC 7421] ...    65   9e-09
+ref|XP_002849585.1| opsin 1 [Arthroderma otae CBS 113480] >gi|23...    64   1e-08
+ref|ZP_08273891.1| Proteorhodopsin [Oxalobacteraceae bacterium I...    64   2e-08
+ref|XP_002479534.1| opsin, putative [Talaromyces stipitatus ATCC...    64   3e-08
+gb|ACN42849.1| putative actinorhodopsin [Candidatus Rhodoluna pl...    63   3e-08
+ref|XP_760272.1| hypothetical protein UM04125.1 [Ustilago maydis...    63   4e-08
+ref|XP_002620840.1| opsin 1 [Ajellomyces dermatitidis SLH14081] ...    63   5e-08
+ref|ZP_01737880.1| hypothetical protein MELB17_06684 [Marinobact...    62   5e-08
+pir||S51207 cruxhalorhodopsin-1 - Haloarcula sp. (fragment)            62   5e-08
+gb|ACN42852.1| putative actinorhodopsin [actinobacterium MWH-Ege...    62   5e-08
+ref|ZP_05050139.1| Bacteriorhodopsin subfamily [Octadecabacter a...    62   9e-08
+gb|ADY17811.1| rhodopsin type II [Oxyrrhis marina]                     62   1e-07
+ref|XP_002479531.1| opsin, putative [Talaromyces stipitatus ATCC...    61   1e-07
+ref|XP_002479532.1| opsin, putative [Talaromyces stipitatus ATCC...    61   2e-07
+ref|XP_001217277.1| conserved hypothetical protein [Aspergillus ...    61   2e-07
+ref|ZP_01049273.1| rhodopsin [Dokdonia donghaensis MED134] >gi|8...    61   2e-07
+ref|XP_002143235.1| opsin, putative [Penicillium marneffei ATCC ...    61   2e-07
+gb|ACN42850.1| putative actinorhodopsin [Candidatus Aquiluna rubra]    60   2e-07
+ref|ZP_01117885.1| bacteriorhodopsin [Polaribacter irgensii 23-P...    60   2e-07
+ref|XP_002479533.1| opsin, putative [Talaromyces stipitatus ATCC...    60   2e-07
+ref|YP_003386489.1| rhodopsin [Spirosoma linguale DSM 74] >gi|28...    60   3e-07
+ref|ZP_01734914.1| bacteriorhodopsin [Flavobacteria bacterium BA...    60   3e-07
+ref|XP_001227935.1| hypothetical protein CHGG_10008 [Chaetomium ...    60   3e-07
+ref|XP_001536854.1| hypothetical protein HCAG_07963 [Ajellomyces...    60   3e-07
+ref|YP_002885111.1| rhodopsin [Exiguobacterium sp. AT1b] >gi|229...    60   3e-07
+gb|AAT39128.1| proteorhodopsin [uncultured bacterium]                  60   3e-07
+ref|XP_003025010.1| opsin, putative [Trichophyton verrucosum HKI...    60   3e-07
+gb|AAT38634.1| proteorhodopsin [uncultured bacterium] >gi|477794...    60   4e-07
+gb|EER40098.1| opsin [Ajellomyces capsulatus H143]                     60   4e-07
+gb|EGC48677.1| opsin [Ajellomyces capsulatus H88]                      59   5e-07
+gb|AAT38636.1| proteorhodopsin [uncultured bacterium]                  59   5e-07
+gb|ABI48300.1| halorhodopsin [Haloterrigena sp. AB30]                  59   6e-07
+gb|AAT38633.1| proteorhodopsin [uncultured bacterium]                  59   7e-07
+gb|AAT38637.1| proteorhodopsin [uncultured bacterium]                  59   7e-07
+gb|EEH04666.1| opsin [Ajellomyces capsulatus G186AR]                   59   7e-07
+ref|XP_001827251.1| opsin-1 [Aspergillus oryzae RIB40] >gi|23850...    59   7e-07
+ref|YP_001361545.1| rhodopsin [Kineococcus radiotolerans SRS3021...    59   9e-07
+ref|ZP_02189379.1| xanthorhodopsin [alpha proteobacterium BAL199...    58   1e-06
+ref|XP_003195448.1| opsin 1 [Cryptococcus gattii WM276] >gi|3174...    58   2e-06
+ref|ZP_01253360.1| bacteriorhodopsin [Psychroflexus torquis ATCC...    57   2e-06
+gb|AAT39129.1| proteorhodopsin [uncultured bacterium]                  57   2e-06
+ref|ZP_03701022.1| rhodopsin [Flavobacteria bacterium MS024-3C] ...    57   2e-06
+gb|ABT17460.1| bacteriorhodopsin [Halorhabdus utahensis]               57   3e-06
+gb|ABA61407.1| proteorhodopsin [uncultured marine group II eurya...    57   3e-06
+tpe|CBF82866.1| TPA: putative bacteriorhodopsin /opsin, nopA (Eu...    57   3e-06
+ref|XP_660965.1| hypothetical protein AN3361.2 [Aspergillus nidu...    57   3e-06
+gb|ABA61391.1| proteorhodopsin [uncultured marine group II eurya...    57   3e-06
+ref|YP_004180611.1| rhodopsin [Isosphaera pallida ATCC 43644] >g...    56   4e-06
+gb|EEH44959.1| opsin-1 [Paracoccidioides brasiliensis Pb18]            56   4e-06
+gb|AAT38635.1| proteorhodopsin [uncultured bacterium]                  56   5e-06
+ref|XP_746789.1| opsin [Aspergillus fumigatus Af293] >gi|6684441...    56   5e-06
+gb|AAT38631.1| proteorhodopsin [uncultured bacterium]                  56   5e-06
+gb|AAT39130.1| proteorhodopsin [uncultured bacterium]                  56   5e-06
+ref|ZP_05063020.1| xanthorhodopsin [Octadecabacter antarcticus 2...    56   6e-06
+ref|ZP_03702117.1| rhodopsin [Flavobacteria bacterium MS024-2A] ...    55   7e-06
+ref|YP_445623.1| xanthorhodopsin [Salinibacter ruber DSM 13855] ...    55   7e-06
+gb|EEH18597.1| opsin-1 [Paracoccidioides brasiliensis Pb03]            55   7e-06
+gb|ACB55066.1| putative proteorhodopsin [uncultured microorganism]     55   9e-06
+ref|XP_001262778.1| opsin, putative [Neosartorya fischeri NRRL 1...    55   9e-06
+ref|XP_002953949.1| hypothetical protein VOLCADRAFT_106206 [Volv...    55   1e-05
+ref|XP_002568387.1| Pc21g13700 [Penicillium chrysogenum Wisconsi...    55   1e-05
+gb|AAT38632.1| proteorhodopsin [uncultured bacterium]                  55   1e-05
+gb|ABD84524.1| putative proteorhodopsin [uncultured bacterium]         55   1e-05
+ref|XP_001272404.1| opsin, putative [Aspergillus clavatus NRRL 1...    55   1e-05
+ref|YP_001813902.1| rhodopsin [Exiguobacterium sibiricum 255-15]...    55   1e-05
+ref|ZP_05108337.1| proteorhodopsin [Polaribacter sp. MED152] >gi...    54   2e-05
+gb|AAZ76795.1| bacteriorhodopsin [uncultured Halobacteriales arc...    54   2e-05
+gb|ACB55041.1| putative proteorhodopsin [uncultured microorganism]     54   2e-05
+gb|AAT38630.1| proteorhodopsin [uncultured bacterium]                  54   2e-05
+gb|ABA55614.1| proteorhodopsin [uncultured organism]                   54   2e-05
+gb|ABA90492.1| predicted proteorhodopsin [uncultured bacterium] ...    54   3e-05
+ref|XP_001698789.1| chlamyopsin-6 [Chlamydomonas reinhardtii] >g...    54   3e-05
+ref|XP_957158.1| hypothetical protein NCU01735 [Neurospora crass...    54   3e-05
+gb|ACB55101.1| putative proteorhodopsin [uncultured microorganism]     53   4e-05
+ref|XP_002957065.1| hypothetical protein VOLCADRAFT_98081 [Volvo...    53   5e-05
+gb|ACB55046.1| putative proteorhodopsin [uncultured microorganis...    52   7e-05
+emb|CBK39129.1| Yro2p [Saccharomyces cerevisiae EC1118]                52   1e-04
+gb|ABL97548.1| pop proteorhodopsin [uncultured marine bacterium ...    52   1e-04
+gb|ABB82977.1| proteorhodopsin [uncultured organism HF70_19B12]        51   1e-04
+gb|AAZ30049.1| heat shock protein 30 [Taiwanofungus camphoratus]       51   1e-04
+gb|EDN64666.1| conserved protein [Saccharomyces cerevisiae YJM78...    51   1e-04
+gb|EGA75912.1| Yro2p [Saccharomyces cerevisiae AWRI796] >gi|3233...    51   1e-04
+gb|EGA59832.1| Yro2p [Saccharomyces cerevisiae FostersB]               51   1e-04
+ref|NP_009610.1| Yro2p [Saccharomyces cerevisiae S288c] >gi|5869...    51   1e-04
+gb|ABA55616.1| proteorhodopsin [uncultured organism]                   51   1e-04
+gb|ABO27649.1| putative proteorhodopsin [uncultured bacterium] >...    51   1e-04
+gb|ABO27643.1| putative proteorhodopsin [uncultured bacterium] >...    51   2e-04
+gb|ABA90502.1| predicted proteorhodopsin [uncultured bacterium] ...    51   2e-04
+gb|ABL97294.1| pop proteorhodopsin [uncultured marine bacterium ...    51   2e-04
+ref|XP_571773.1| opsin 1 [Cryptococcus neoformans var. neoforman...    51   2e-04
+gb|EGA83906.1| Yro2p [Saccharomyces cerevisiae Lalvin QA23]            51   2e-04
+gb|ACM89772.1| proteorhodopsin [Dokdonia donghaensis]                  51   2e-04
+ref|YP_004054869.1| rhodopsin [Marivirga tractuosa DSM 4126] >gi...    51   2e-04
+ref|XP_002341374.1| protein FDD123, putative [Talaromyces stipit...    51   2e-04
+gb|ABU49529.1| putative proteorhodopsin [uncultured organism]          50   2e-04
+emb|CBI53178.1| putative opsin related protein [Sordaria macrosp...    50   2e-04
+ref|ZP_07741624.1| bacteriorhodopsin [Vibrio caribbenthicus ATCC...    50   2e-04
+ref|ZP_03226326.1| bacteriorhodopsin [Bacillus coahuilensis m4-4]      50   2e-04
+ref|YP_003552453.1| hypothetical protein SAR116_2126 [Candidatus...    50   3e-04
+gb|ABA55613.1| proteorhodopsin [uncultured organism]                   50   3e-04
+gb|ACB55083.1| putative proteorhodopsin [uncultured microorganis...    50   3e-04
+gb|ACB55081.1| putative proteorhodopsin [uncultured microorganis...    50   3e-04
+gb|ABA55610.1| proteorhodopsin [uncultured organism] >gi|7679993...    50   3e-04
+gb|ACB55053.1| putative proteorhodopsin [uncultured microorganism]     50   3e-04
+gb|ACB55048.1| putative proteorhodopsin [uncultured microorganism]     50   3e-04
+gb|ACB55045.1| putative proteorhodopsin [uncultured microorganism]     50   4e-04
+gb|ABA55615.1| proteorhodopsin [uncultured organism]                   50   4e-04
+ref|XP_002494508.1| ZYRO0A03168p [Zygosaccharomyces rouxii] >gi|...    50   4e-04
+gb|ADC84422.1| proteorhodopsin [Vibrio campbellii]                     50   4e-04
+gb|ACB55049.1| putative proteorhodopsin [uncultured microorganism]     50   4e-04
+gb|AAY68058.1| proteorhodopsin [uncultured bacterium] >gi|679065...    50   4e-04
+gb|ADY17810.1| rhodopsin type II [Oxyrrhis marina]                     50   4e-04
+ref|YP_004358107.1| proteorhodopsin [Candidatus Pelagibacter sp....    49   5e-04
+ref|YP_001445352.1| hypothetical protein VIBHAR_02160 [Vibrio ha...    49   5e-04
+gb|ACB55086.1| putative proteorhodopsin [uncultured microorganism]     49   5e-04
+ref|ZP_02194911.1| bacteriorhodopsin [Vibrio sp. AND4] >gi|15917...    49   5e-04
+gb|AAZ76796.1| bacteriorhodopsin [uncultured Halobacteriales arc...    49   5e-04
+ref|ZP_01447408.1| bacteriorhodopsin [alpha proteobacterium HTCC...    49   6e-04
+gb|ADB27803.1| putative proteorhodopsin [uncultured Antarctic se...    49   8e-04
+dbj|BAA76589.1| fdd123b [Trametes versicolor] >gi|4587027|dbj|BA...    49   8e-04
+ref|XP_001526831.1| conserved hypothetical protein [Lodderomyces...    49   8e-04
+sp|O74631.1|FD123_TRAVE RecName: Full=Protein FDD123; AltName: F...    49   8e-04
+gb|AAY68055.1| proteorhodopsin [uncultured bacterium] >gi|679067...    49   9e-04
+gb|ABD84514.1| putative proteorhodopsin [uncultured bacterium] >...    49   9e-04
+gb|AAO73934.1| proteorhodopsin [uncultured bacterium] >gi|294702...    49   0.001
+
+Searching..................................................done
+
+
+Results from round 2
+
+
+                                                                 Score    E
+Sequences producing significant alignments:                      (bits) Value
+Sequences used in model and found again:
+
+gb|ADB03116.1| ss-Prl-Arch-GFP [synthetic construct]                  317   1e-84
+gb|ADB03114.1| ss-Arch-GFP-ER2 [synthetic construct]                  315   4e-84
+gb|ADB03111.1| Arch-GFP [synthetic construct]                         314   9e-84
+gb|AEB26833.1| ArchT-GFP [synthetic construct]                        305   4e-81
+sp|P69051.1|BACR1_HALS1 RecName: Full=Archaerhodopsin-1; Short=A...   287   1e-75
+pdb|1UAZ|A Chain A, Crystal Structure Of Archaerhodopsin-1 >gi|3...   279   2e-73
+gb|ADB03115.1| ss-Prl-Arch [synthetic construct]                      277   9e-73
+gb|AAS15567.1| archaerhodopsin BD1 [Halorubrum xinjiangense]          270   1e-70
+gb|ABT17417.1| bacteriorhodopsin [Halorubrum sp. TP009]               269   3e-70
+sp|P96787.1|BACR3_HALSD RecName: Full=Archaerhodopsin-3; Short=A...   264   7e-69
+gb|AEB26832.1| ArchT [synthetic construct]                            257   1e-66
+gb|AAG42454.1| rhodopsin [Halobacterium salinarum]                    245   6e-63
+sp|P29563.1|BACR2_HALS2 RecName: Full=Archaerhodopsin-2; Short=A...   244   9e-63
+pdb|1VGO|A Chain A, Crystal Structure Of Archaerhodopsin-2 >gi|7...   240   1e-61
+gb|ADB03113.1| Mac-GFP [synthetic construct]                          235   4e-60
+emb|CAA49762.1| bacterioopsin [synthetic construct]                   234   7e-60
+pdb|2I1X|A Chain A, BacteriorhodopsinLIPID COMPLEX, D96A MUTANT ...   230   1e-58
+pdb|1C8R|A Chain A, Bacteriorhodopsin D96n Br State At 2.0 A Res...   230   1e-58
+ref|NP_280292.1| bacterio-opsin [Halobacterium sp. NRC-1] >gi|16...   228   7e-58
+pdb|1PXS|A Chain A, Structure Of Met56ala Mutant Of Bacteriorhod...   227   1e-57
+pdb|3HAO|A Chain A, Crystal Structure Of Bacteriorhodopsin Mutan...   227   1e-57
+pdb|1O0A|A Chain A, Bacteriorhodopsin L Intermediate At 1.62 A R...   227   1e-57
+pdb|1TN0|A Chain A, Structure Of Bacterorhodopsin Mutant A51p >g...   227   2e-57
+pdb|3HAR|A Chain A, Crystal Structure Of Bacteriorhodopsin Mutan...   227   2e-57
+pdb|2WJL|A Chain A, Bacteriorhodopsin Mutant E194d                    226   2e-57
+pdb|3HAP|A Chain A, Crystal Structure Of Bacteriorhodopsin Mutan...   226   3e-57
+pdb|1TN5|A Chain A, Structure Of Bacterorhodopsin Mutant K41p >g...   226   3e-57
+pdb|1QHJ|A Chain A, X-Ray Structure Of Bacteriorhodopsin Grown I...   226   3e-57
+gb|AAA72184.1| bacteriorhodopsin [synthetic construct] >gi|20805...   225   3e-57
+pdb|2I21|A Chain A, BacteriorhodopsinLIPID COMPLEX, T46V MUTANT       225   4e-57
+pdb|2WJK|A Chain A, Bacteriorhodopsin Mutant E204d                    225   5e-57
+prf||0712242A bacteriorhodopsin precursor                             225   5e-57
+pdb|1P8U|A Chain A, Bacteriorhodopsin N' Intermediate At 1.62 A ...   225   5e-57
+pdb|3HAQ|A Chain A, Crystal Structure Of Bacteriorhodopsin Mutan...   225   5e-57
+pdb|1FBK|A Chain A, Crystal Structure Of Cytoplasmically Open Co...   225   6e-57
+pdb|3HAS|A Chain A, Crystal Structure Of Bacteriorhodopsin Mutan...   225   6e-57
+pdb|1XJI|A Chain A, Bacteriorhodopsin Crystallized In Bicelles A...   225   6e-57
+pdb|1AT9|A Chain A, Structure Of Bacteriorhodopsin At 3.0 Angstr...   225   6e-57
+pdb|1PXR|A Chain A, Structure Of Pro50ala Mutant Of Bacteriorhod...   224   9e-57
+pdb|1P8I|A Chain A, F219l Bacteriorhodopsin Mutant                    224   9e-57
+pdb|3COC|A Chain A, Crystal Structure Of D115a Mutant Of Bacteri...   224   1e-56
+pdb|1JV7|A Chain A, Bacteriorhodopsin O-Like Intermediate State ...   223   2e-56
+pdb|1CWQ|A Chain A, M Intermediate Structure Of The Wild Type Ba...   222   3e-56
+pdb|1Q5I|A Chain A, Crystal Structure Of Bacteriorhodopsin Mutan...   222   3e-56
+pdb|1Q5J|A Chain A, Crystal Structure Of Bacteriorhodopsin Mutan...   222   4e-56
+pdb|1BRR|A Chain A, X-Ray Structure Of The Bacteriorhodopsin Tri...   222   5e-56
+pdb|1JV6|A Chain A, Bacteriorhodopsin D85sF219L DOUBLE MUTANT AT...   220   1e-55
+pdb|3COD|A Chain A, Crystal Structure Of T90aD115A MUTANT OF BAC...   217   1e-54
+prf||0501217A bacteriorhodopsin                                       215   3e-54
+pdb|1R84|A Chain A, Nmr Structure Of The 13-Cis-15-Syn Retinal I...   210   1e-52
+pdb|1E0P|A Chain A, L Intermediate Of Bacteriorhodopsin               209   4e-52
+pdb|1KGB|A Chain A, Structure Of Ground-State Bacteriorhodopsin ...   208   5e-52
+ref|YP_656801.1| bacteriorhodopsin precursor (Squarebop I) [Halo...   207   2e-51
+pdb|1S51|A Chain A, Thr24ser Bacteriorhodopsin >gi|46015683|pdb|...   207   2e-51
+pdb|1S53|A Chain A, Thr46ser Bacteriorhodopsin >gi|46015687|pdb|...   207   2e-51
+gb|AAG01180.1|AF290180_1 opsin [Leptosphaeria maculans] >gi|2828...   207   2e-51
+gb|ABT17372.1| bacteriorhodopsin [uncultured haloarchaeon FLAS10H9]   205   3e-51
+pdb|1S52|A Chain A, Thr24val Bacteriorhodopsin >gi|46015685|pdb|...   205   4e-51
+pdb|1S54|A Chain A, Thr24ala Bacteriorhodopsin >gi|46015689|pdb|...   205   4e-51
+ref|XP_001791479.1| hypothetical protein SNOG_00807 [Phaeosphaer...   205   6e-51
+pdb|1F4Z|A Chain A, Bacteriorhodopsin-M Photointermediate State ...   205   6e-51
+ref|XP_383240.1| hypothetical protein FG03064.1 [Gibberella zeae...   204   8e-51
+ref|YP_136594.1| bacteriorhodopsin precursor [Haloarcula marismo...   200   1e-49
+ref|XP_001904282.1| hypothetical protein [Podospora anserina S m...   198   6e-49
+gb|AAU04564.1| bacteriorhodopsin [Halobiforma lacisalsi]              197   1e-48
+pdb|1C3W|A Chain A, BacteriorhodopsinLIPID COMPLEX AT 1.55 A RES...   197   2e-48
+dbj|BAH28809.1| putative opsin-like protein [Bipolaris oryzae]        196   2e-48
+emb|CBI54495.1| putative opsin protein [Sordaria macrospora]          196   3e-48
+ref|XP_001937307.1| opsin-1 [Pyrenophora tritici-repentis Pt-1C-...   195   3e-48
+gb|EFQ36594.1| bacteriorhodopsin [Glomerella graminicola M1.001]      195   4e-48
+sp|Q57101.1|BACR_HALAR RecName: Full=Cruxrhodopsin-1; Short=COP-...   194   9e-48
+ref|XP_001558822.1| hypothetical protein BC1G_02456 [Botryotinia...   194   1e-47
+gb|EFQ91496.1| hypothetical protein PTT_11647 [Pyrenophora teres...   194   1e-47
+ref|XP_003042779.1| predicted protein [Nectria haematococca mpVI...   194   1e-47
+gb|AAQ75384.1| putative opsin [Oryza sativa Indica Group]             193   2e-47
+gb|EEH04666.1| opsin [Ajellomyces capsulatus G186AR]                  193   3e-47
+pdb|1L0M|A Chain A, Solution Structure Of Bacteriorhodopsin           193   3e-47
+ref|YP_137573.1| bacteriorhodopsin [Haloarcula marismortui ATCC ...   192   3e-47
+ref|XP_002542856.1| opsin 1 protein [Uncinocarpus reesii 1704] >...   192   3e-47
+gb|EER40098.1| opsin [Ajellomyces capsulatus H143]                    192   3e-47
+sp|O93740.1|BACR_HALS4 RecName: Full=Bacteriorhodopsin; Short=BR...   192   5e-47
+ref|XP_003043878.1| hypothetical protein NECHADRAFT_101480 [Nect...   192   5e-47
+ref|XP_001536854.1| hypothetical protein HCAG_07963 [Ajellomyces...   192   5e-47
+gb|EGE00757.1| hypothetical protein TESG_08050 [Trichophyton ton...   192   6e-47
+ref|XP_002620840.1| opsin 1 [Ajellomyces dermatitidis SLH14081] ...   192   6e-47
+emb|CBX95095.1| similar to opsin-1 [Leptosphaeria maculans]           191   8e-47
+ref|XP_001597420.1| opsin-1 [Sclerotinia sclerotiorum 1980] >gi|...   191   1e-46
+gb|EGC48677.1| opsin [Ajellomyces capsulatus H88]                     190   1e-46
+ref|XP_001791031.1| hypothetical protein SNOG_00341 [Phaeosphaer...   190   1e-46
+ref|YP_003129235.1| rhodopsin [Halorhabdus utahensis DSM 12940] ...   190   2e-46
+ref|XP_959421.1| opsin-1 [Neurospora crassa OR74A] >gi|32699624|...   190   2e-46
+ref|XP_001240940.1| hypothetical protein CIMG_08103 [Coccidioide...   190   2e-46
+ref|XP_003170270.1| opsin 1 [Arthroderma gypseum CBS 118893] >gi...   190   2e-46
+ref|XP_001547284.1| hypothetical protein BC1G_13906 [Botryotinia...   190   2e-46
+sp|P94854.1|BACR_HALVA RecName: Full=Cruxrhodopsin-3; Short=COP-...   190   2e-46
+dbj|BAA81816.1| cruxrhodopsin [Haloarcula japonica]                   189   3e-46
+gb|EFW15781.1| opsin [Coccidioides posadasii str. Silveira]           189   3e-46
+ref|XP_003065238.1| opsin 1 [Coccidioides posadasii C735 delta S...   188   8e-46
+gb|AAL27088.1| opsin 1 [Coccidioides posadasii]                       188   9e-46
+ref|YP_656804.1| bacteriorhodopsin precursor (Squarebop II) [Hal...   187   9e-46
+gb|AAK49108.1| opsin 1 [Coccidioides posadasii]                       187   1e-45
+ref|XP_003233999.1| hypothetical protein TERG_05868 [Trichophyto...   187   1e-45
+emb|CAD97459.1| opsin-like protein [Gibberella fujikuroi]             187   2e-45
+dbj|BAH28808.1| putative opsin-like protein [Bipolaris oryzae]        187   2e-45
+emb|CAR82401.1| opsin-like protein [Gibberella fujikuroi]             184   1e-44
+ref|YP_003177111.1| rhodopsin [Halomicrobium mukohataei DSM 1228...   183   2e-44
+emb|CBX94996.1| hypothetical protein [Leptosphaeria maculans]         183   3e-44
+ref|XP_001227935.1| hypothetical protein CHGG_10008 [Chaetomium ...   183   3e-44
+ref|XP_002849585.1| opsin 1 [Arthroderma otae CBS 113480] >gi|23...   182   4e-44
+ref|XP_387730.1| hypothetical protein FG07554.1 [Gibberella zeae...   182   7e-44
+gb|EEH44959.1| opsin-1 [Paracoccidioides brasiliensis Pb18]           179   3e-43
+sp|P33969.1|BACR_HALHM RecName: Full=Bacteriorhodopsin; Short=BR...   179   3e-43
+gb|EEH18597.1| opsin-1 [Paracoccidioides brasiliensis Pb03]           178   7e-43
+ref|XP_001272404.1| opsin, putative [Aspergillus clavatus NRRL 1...   178   8e-43
+ref|XP_002479531.1| opsin, putative [Talaromyces stipitatus ATCC...   177   2e-42
+gb|ACV05065.1| opsin [Cyanophora paradoxa]                            176   2e-42
+gb|EFQ92862.1| hypothetical protein PTT_09940 [Pyrenophora teres...   176   3e-42
+ref|XP_746789.1| opsin [Aspergillus fumigatus Af293] >gi|6684441...   175   5e-42
+tpe|CBF82866.1| TPA: putative bacteriorhodopsin /opsin, nopA (Eu...   173   2e-41
+gb|ABA08439.1| opsin [Cryptomonas sp. S2]                             173   3e-41
+ref|ZP_06974567.1| rhodopsin, a chromoprotein [Ktedonobacter rac...   173   3e-41
+ref|XP_001594532.1| hypothetical protein SS1G_04339 [Sclerotinia...   172   3e-41
+pdb|1C8S|A Chain A, Bacteriorhodopsin D96n Late M State Intermed...   172   3e-41
+ref|XP_001937696.1| archaerhodopsin-2 precursor [Pyrenophora tri...   172   5e-41
+ref|XP_002143235.1| opsin, putative [Penicillium marneffei ATCC ...   170   1e-40
+ref|XP_002568387.1| Pc21g13700 [Penicillium chrysogenum Wisconsi...   170   2e-40
+ref|XP_660965.1| hypothetical protein AN3361.2 [Aspergillus nidu...   169   3e-40
+gb|ABA08437.1| opsin 1 [Guillardia theta]                             168   5e-40
+emb|CBQ67804.1| related to Opsin-1 [Sporisorium reilianum]            167   1e-39
+ref|YP_002484126.1| rhodopsin [Cyanothece sp. PCC 7425] >gi|2198...   167   1e-39
+ref|XP_756518.1| hypothetical protein UM00371.1 [Ustilago maydis...   166   2e-39
+sp|P33971.1|BACR_HALHP RecName: Full=Bacteriorhodopsin; Short=BR...   165   6e-39
+ref|XP_003015929.1| opsin, putative [Arthroderma benhamiae CBS 1...   165   6e-39
+ref|YP_644794.1| rhodopsin [Rubrobacter xylanophilus DSM 9941] >...   164   9e-39
+ref|YP_658762.1| halorhodopsin [Haloquadratum walsbyi DSM 16790]...   164   1e-38
+ref|XP_758776.1| hypothetical protein UM02629.1 [Ustilago maydis...   163   2e-38
+gb|EGG00698.1| hypothetical protein MELLADRAFT_50312 [Melampsora...   163   3e-38
+ref|XP_002479532.1| opsin, putative [Talaromyces stipitatus ATCC...   162   3e-38
+ref|XP_001827251.1| opsin-1 [Aspergillus oryzae RIB40] >gi|23850...   162   3e-38
+sp|P33972.1|BACR_HALHS RecName: Full=Bacteriorhodopsin; Short=BR...   162   4e-38
+ref|XP_001262778.1| opsin, putative [Neosartorya fischeri NRRL 1...   162   5e-38
+ref|XP_001217277.1| conserved hypothetical protein [Aspergillus ...   161   1e-37
+ref|XP_002479534.1| opsin, putative [Talaromyces stipitatus ATCC...   160   1e-37
+ref|YP_002379171.1| rhodopsin [Cyanothece sp. PCC 7424] >gi|2181...   160   2e-37
+ref|XP_364170.1| hypothetical protein MGG_09015 [Magnaporthe ory...   159   3e-37
+ref|XP_002479533.1| opsin, putative [Talaromyces stipitatus ATCC...   158   7e-37
+sp|P94853.1|BACH_HALVA RecName: Full=Cruxhalorhodopsin-3; Short=...   158   8e-37
+sp|O93742.1|BACH_HALSD RecName: Full=Halorhodopsin; Short=HR >gi...   156   4e-36
+sp|Q48314.1|BACH_HALHS RecName: Full=Halorhodopsin; Short=HR; Fl...   155   7e-36
+sp|O93741.1|BACH_HALS4 RecName: Full=Halorhodopsin; Short=HR >gi...   155   7e-36
+ref|YP_136278.1| halorhodopsin precursor [Haloarcula marismortui...   155   7e-36
+sp|P33742.1|BACH_HALSS RecName: Full=Halorhodopsin; Short=HR >gi...   154   1e-35
+sp|Q48315.1|BACH_HALHP RecName: Full=Halorhodopsin; Short=HR; Fl...   154   1e-35
+ref|XP_003008270.1| FDD123 [Verticillium albo-atrum VaMs.102] >g...   153   1e-35
+gb|ABA08438.1| opsin 2 [Guillardia theta]                             153   2e-35
+pdb|2F93|A Chain A, K Intermediate Structure Of Sensory Rhodopsi...   153   3e-35
+ref|ZP_01734914.1| bacteriorhodopsin [Flavobacteria bacterium BA...   153   3e-35
+ref|YP_001767533.1| rhodopsin [Methylobacterium sp. 4-46] >gi|16...   152   4e-35
+ref|YP_003178493.1| rhodopsin [Halomicrobium mukohataei DSM 1228...   152   5e-35
+ref|YP_002565246.1| rhodopsin [Halorubrum lacusprofundi ATCC 492...   151   7e-35
+ref|YP_331142.1| sensory rhodopsin II [Natronomonas pharaonis DS...   151   9e-35
+sp|P42196.1|BACS2_NATPH RecName: Full=Sensory rhodopsin-2; AltNa...   151   1e-34
+ref|NP_487205.1| bacteriorhodopsin [Nostoc sp. PCC 7120] >gi|556...   150   2e-34
+gb|AAT38634.1| proteorhodopsin [uncultured bacterium] >gi|477794...   150   2e-34
+ref|YP_003176891.1| rhodopsin [Halomicrobium mukohataei DSM 1228...   150   2e-34
+gb|AAT38633.1| proteorhodopsin [uncultured bacterium]                 148   5e-34
+gb|AAO14677.1|AF508258_1 rhodopsin [Pyrocystis lunula]                148   5e-34
+gb|AAT38637.1| proteorhodopsin [uncultured bacterium]                 148   9e-34
+pdb|2KSY|A Chain A, Solution Nmr Structure Of Sensory Rhodopsin Ii    148   9e-34
+ref|ZP_03701022.1| rhodopsin [Flavobacteria bacterium MS024-3C] ...   148   9e-34
+gb|ACN42848.1| putative actinorhodopsin [actinobacterium MWH-Uga1]    148   1e-33
+gb|ACN42852.1| putative actinorhodopsin [actinobacterium MWH-Ege...   148   1e-33
+ref|ZP_01117885.1| bacteriorhodopsin [Polaribacter irgensii 23-P...   148   1e-33
+pdb|1H2S|A Chain A, Molecular Basis Of Transmenbrane Signalling ...   147   1e-33
+ref|ZP_05108337.1| proteorhodopsin [Polaribacter sp. MED152] >gi...   147   1e-33
+gb|AAT38632.1| proteorhodopsin [uncultured bacterium]                 147   1e-33
+ref|NP_923144.1| bacterioopsin [Gloeobacter violaceus PCC 7421] ...   146   2e-33
+gb|AAT38635.1| proteorhodopsin [uncultured bacterium]                 146   2e-33
+gb|ADY17809.1| rhodopsin type II [Oxyrrhis marina]                    146   2e-33
+gb|AAT38631.1| proteorhodopsin [uncultured bacterium]                 146   2e-33
+gb|ABA61407.1| proteorhodopsin [uncultured marine group II eurya...   146   3e-33
+gb|ACZ04975.1| opsin 2 [Cyanophora paradoxa] >gi|268376503|gb|AC...   146   4e-33
+gb|AAT39129.1| proteorhodopsin [uncultured bacterium]                 145   4e-33
+dbj|BAA75201.2| halorhodopsin [Haloterrigena sp. arg-4]               145   4e-33
+ref|YP_003129368.1| rhodopsin [Halorhabdus utahensis DSM 12940] ...   145   6e-33
+gb|ABA61391.1| proteorhodopsin [uncultured marine group II eurya...   145   7e-33
+gb|AAT38630.1| proteorhodopsin [uncultured bacterium]                 145   8e-33
+pdb|1JGJ|A Chain A, Crystal Structure Of Sensory Rhodopsin Ii At...   144   1e-32
+ref|YP_002564761.1| rhodopsin [Halorubrum lacusprofundi ATCC 492...   143   2e-32
+gb|AAT38636.1| proteorhodopsin [uncultured bacterium]                 143   2e-32
+sp|P15647.1|BACH_NATPH RecName: Full=Halorhodopsin; Short=HR; Al...   143   2e-32
+gb|ABB82977.1| proteorhodopsin [uncultured organism HF70_19B12]       143   2e-32
+ref|ZP_05050139.1| Bacteriorhodopsin subfamily [Octadecabacter a...   143   2e-32
+ref|NP_279315.1| Hop [Halobacterium sp. NRC-1] >gi|169235207|ref...   143   2e-32
+gb|ACN42849.1| putative actinorhodopsin [Candidatus Rhodoluna pl...   143   2e-32
+pdb|1E12|A Chain A, Halorhodopsin, A Light-Driven Chloride Pump       143   3e-32
+gb|EGG00632.1| hypothetical protein MELLADRAFT_39586 [Melampsora...   142   4e-32
+gb|AAT39128.1| proteorhodopsin [uncultured bacterium]                 142   4e-32
+ref|XP_760272.1| hypothetical protein UM04125.1 [Ustilago maydis...   142   4e-32
+ref|YP_446872.1| halorhodopsin (HR) [Salinibacter ruber DSM 1385...   142   4e-32
+ref|ZP_05063020.1| xanthorhodopsin [Octadecabacter antarcticus 2...   142   4e-32
+pir||A56808 halorhodopsin - Halobacteriaceae gen. sp. (fragment)      142   5e-32
+ref|ZP_03702117.1| rhodopsin [Flavobacteria bacterium MS024-2A] ...   142   5e-32
+ref|YP_003386489.1| rhodopsin [Spirosoma linguale DSM 74] >gi|28...   141   7e-32
+ref|ZP_01049273.1| rhodopsin [Dokdonia donghaensis MED134] >gi|8...   141   8e-32
+gb|ABV22426.1| rhodopsin [Oxyrrhis marina] >gi|157093547|gb|ABV2...   141   9e-32
+gb|ABV22432.1| rhodopsin [Oxyrrhis marina]                            141   1e-31
+ref|XP_003195448.1| opsin 1 [Cryptococcus gattii WM276] >gi|3174...   141   1e-31
+ref|YP_003572606.1| Sensory rhodopsin I (SR-I) [Salinibacter rub...   141   1e-31
+ref|YP_325981.1| halorhodopsin [Natronomonas pharaonis DSM 2160]...   140   2e-31
+ref|YP_446609.1| sensory rhodopsin (SRI) [Salinibacter ruber DSM...   140   2e-31
+ref|ZP_08273891.1| Proteorhodopsin [Oxalobacteraceae bacterium I...   140   2e-31
+ref|ZP_01253360.1| bacteriorhodopsin [Psychroflexus torquis ATCC...   140   2e-31
+ref|YP_003480703.1| rhodopsin [Natrialba magadii ATCC 43099] >gi...   140   3e-31
+gb|ACM89772.1| proteorhodopsin [Dokdonia donghaensis]                 139   4e-31
+ref|YP_002885111.1| rhodopsin [Exiguobacterium sp. AT1b] >gi|229...   139   5e-31
+gb|AAT39130.1| proteorhodopsin [uncultured bacterium]                 138   7e-31
+ref|YP_003931488.1| Archaerhodopsin-1 precursor (AR 1) [Pantoea ...   138   8e-31
+ref|XP_003025010.1| opsin, putative [Trichophyton verrucosum HKI...   138   8e-31
+gb|AAZ30049.1| heat shock protein 30 [Taiwanofungus camphoratus]      138   9e-31
+ref|ZP_07380783.1| rhodopsin [Pantoea sp. aB] >gi|304353617|gb|E...   137   1e-30
+gb|ABV22430.1| rhodopsin [Oxyrrhis marina]                            137   2e-30
+ref|YP_003572671.1| Sensory rhodopsin I [Salinibacter ruber M8] ...   136   2e-30
+ref|NP_280508.1| Sop2 [Halobacterium sp. NRC-1] >gi|169236425|re...   136   2e-30
+ref|YP_004054869.1| rhodopsin [Marivirga tractuosa DSM 4126] >gi...   136   2e-30
+ref|YP_001445352.1| hypothetical protein VIBHAR_02160 [Vibrio ha...   136   2e-30
+ref|ZP_01737880.1| hypothetical protein MELB17_06684 [Marinobact...   136   3e-30
+ref|YP_003520194.1| hypothetical protein PANA_1899 [Pantoea anan...   136   3e-30
+ref|XP_571773.1| opsin 1 [Cryptococcus neoformans var. neoforman...   136   3e-30
+gb|ADY17806.1| rhodopsin type II [Oxyrrhis marina]                    135   5e-30
+gb|ACN42850.1| putative actinorhodopsin [Candidatus Aquiluna rubra]   135   6e-30
+dbj|BAA76589.1| fdd123b [Trametes versicolor] >gi|4587027|dbj|BA...   135   8e-30
+dbj|BAK11309.1| archaerhodopsin-2 precursor [Pantoea ananatis AJ...   134   1e-29
+sp|O74631.1|FD123_TRAVE RecName: Full=Protein FDD123; AltName: F...   134   1e-29
+ref|XP_002341374.1| protein FDD123, putative [Talaromyces stipit...   134   1e-29
+ref|YP_446677.1| sensory rhodopsin (SRI) [Salinibacter ruber DSM...   134   1e-29
+ref|ZP_07741624.1| bacteriorhodopsin [Vibrio caribbenthicus ATCC...   133   2e-29
+ref|ZP_02189379.1| xanthorhodopsin [alpha proteobacterium BAL199...   133   2e-29
+ref|YP_004358107.1| proteorhodopsin [Candidatus Pelagibacter sp....   133   2e-29
+ref|YP_004180611.1| rhodopsin [Isosphaera pallida ATCC 43644] >g...   133   2e-29
+gb|AAY82897.1| rhodopsin [Acetabularia acetabulum]                    133   3e-29
+ref|YP_134805.1| sensory rhodopsin 1 [Haloarcula marismortui ATC...   133   3e-29
+pdb|2JAF|A Chain A, Ground State Of Halorhodopsin T203v >gi|1229...   132   4e-29
+gb|AAO73934.1| proteorhodopsin [uncultured bacterium] >gi|294702...   132   4e-29
+gb|ABV22427.1| rhodopsin [Oxyrrhis marina]                            131   6e-29
+gb|ADC84422.1| proteorhodopsin [Vibrio campbellii]                    131   9e-29
+ref|XP_002494508.1| ZYRO0A03168p [Zygosaccharomyces rouxii] >gi|...   131   1e-28
+gb|AAY68055.1| proteorhodopsin [uncultured bacterium] >gi|679067...   130   1e-28
+gb|AAY68058.1| proteorhodopsin [uncultured bacterium] >gi|679065...   130   1e-28
+gb|ABL97548.1| pop proteorhodopsin [uncultured marine bacterium ...   130   2e-28
+sp|Q48334.1|BAC3_HALVA RecName: Full=Bacterial rhodopsin CSR3 >g...   130   2e-28
+ref|YP_445623.1| xanthorhodopsin [Salinibacter ruber DSM 13855] ...   130   2e-28
+ref|NP_280434.1| Sop1 [Halobacterium sp. NRC-1] >gi|169236348|re...   129   3e-28
+ref|YP_001813902.1| rhodopsin [Exiguobacterium sibiricum 255-15]...   129   4e-28
+ref|YP_003706549.1| rhodopsin [Truepera radiovictrix DSM 17093] ...   129   4e-28
+emb|CBI53178.1| putative opsin related protein [Sordaria macrosp...   128   7e-28
+gb|ABA55614.1| proteorhodopsin [uncultured organism]                  128   9e-28
+ref|XP_957158.1| hypothetical protein NCU01735 [Neurospora crass...   128   1e-27
+ref|YP_003552453.1| hypothetical protein SAR116_2126 [Candidatus...   128   1e-27
+sp|O93743.1|BACS_HALSD RecName: Full=Sensory rhodopsin; Short=SR...   127   1e-27
+ref|ZP_02194911.1| bacteriorhodopsin [Vibrio sp. AND4] >gi|15917...   127   1e-27
+gb|ADY17808.1| rhodopsin type II [Oxyrrhis marina]                    127   2e-27
+sp|P33743.1|BACS1_HALSS RecName: Full=Sensory rhodopsin-1; AltNa...   126   2e-27
+emb|CAO82323.1| bacteriorhodopsin [Halorubrum sp. TP009] >gi|154...   126   3e-27
+emb|CAO82320.1| bacteriorhodopsin [Halorubrum sp. TP003] >gi|154...   126   4e-27
+gb|ABA55610.1| proteorhodopsin [uncultured organism] >gi|7679993...   126   4e-27
+gb|ABA55613.1| proteorhodopsin [uncultured organism]                  125   5e-27
+ref|YP_135281.1| opsin of unknown function [Haloarcula marismort...   125   5e-27
+sp|P33970.1|BACH_HALHM RecName: Full=Halorhodopsin; Short=HR >gi...   125   7e-27
+gb|ABA55615.1| proteorhodopsin [uncultured organism]                  125   8e-27
+gb|ABA55616.1| proteorhodopsin [uncultured organism]                  124   1e-26
+gb|ABL97294.1| pop proteorhodopsin [uncultured marine bacterium ...   124   1e-26
+emb|CBK39129.1| Yro2p [Saccharomyces cerevisiae EC1118]               123   3e-26
+ref|ZP_01447408.1| bacteriorhodopsin [alpha proteobacterium HTCC...   123   3e-26
+gb|EDN64666.1| conserved protein [Saccharomyces cerevisiae YJM78...   121   8e-26
+gb|EGA59832.1| Yro2p [Saccharomyces cerevisiae FostersB]              121   8e-26
+ref|NP_009610.1| Yro2p [Saccharomyces cerevisiae S288c] >gi|5869...   121   9e-26
+gb|ADY17811.1| rhodopsin type II [Oxyrrhis marina]                    121   1e-25
+dbj|BAB86796.1| phoborhodopsin [Halobacterium sp. AUS-1]              120   2e-25
+ref|YP_137680.1| sensory rhodopsin I [Haloarcula marismortui ATC...   118   6e-25
+gb|ABT17458.1| bacteriorhodopsin [Halorubrum sp. TP222]               117   2e-24
+gb|EGA75912.1| Yro2p [Saccharomyces cerevisiae AWRI796] >gi|3233...   116   4e-24
+gb|ABO27649.1| putative proteorhodopsin [uncultured bacterium] >...   116   4e-24
+gb|AAZ76911.1| bacteriorhodopsin [Halorubrum sp. YW059]               115   5e-24
+gb|ABO27643.1| putative proteorhodopsin [uncultured bacterium] >...   115   6e-24
+prf||0502635B bacteriorhodopsin N term fragment                       115   6e-24
+emb|CAO82328.1| bacteriorhodopsin [Halorubrum sp. TP024] >gi|154...   115   6e-24
+gb|ABI48301.1| halorhodopsin [Halobiforma lacisalsi]                  114   8e-24
+gb|ACO36736.1| bacteriorhodopsin [Natrinema sp. enrichment cultu...   114   9e-24
+gb|AAS87571.1| bacteriorhodopsin [Natrinema altunense] >gi|46310...   114   1e-23
+ref|XP_002953949.1| hypothetical protein VOLCADRAFT_106206 [Volv...   114   1e-23
+ref|YP_001361545.1| rhodopsin [Kineococcus radiotolerans SRS3021...   114   2e-23
+emb|CAO82402.1| bacteriorhodopsin [Halorubrum sp. TP230] >gi|154...   113   2e-23
+emb|CAO82414.1| bacteriorhodopsin [Halorubrum sp. TP261] >gi|154...   113   2e-23
+emb|CAO82321.1| bacteriorhodopsin [Halorubrum sp. TP004] >gi|154...   113   2e-23
+emb|CAO82319.1| bacteriorhodopsin [Halorubrum sp. TP001]              113   3e-23
+gb|ABE73210.1| halorhodopsin [Haloarcula sp. AB19]                    111   7e-23
+emb|CAO82327.1| bacteriorhodopsin [Halorubrum sp. TP023] >gi|154...   111   9e-23
+gb|ACO36734.1| bacteriorhodopsin [Natrinema sp. enrichment cultu...   111   1e-22
+gb|AAP36745.1| bacteriorhodopsin [Natrinema altunense]                111   1e-22
+gb|ABY53427.1| bacteriorhodopsin [halophilic archaeon F7]             111   1e-22
+gb|ADJ38529.1| bacteriorhodopsin [uncultured bacterium]               111   1e-22
+gb|ADJ38533.1| bacteriorhodopsin [uncultured bacterium]               110   1e-22
+gb|EGA83906.1| Yro2p [Saccharomyces cerevisiae Lalvin QA23]           110   2e-22
+emb|CAO82379.1| bacteriorhodopsin [Halorubrum sp. TP177] >gi|154...   108   6e-22
+gb|ADJ38540.1| bacteriorhodopsin [uncultured bacterium]               108   1e-21
+gb|ADJ38538.1| bacteriorhodopsin [uncultured bacterium]               107   2e-21
+gb|ADJ38536.1| bacteriorhodopsin [uncultured bacterium]               107   2e-21
+gb|ADJ38523.1| bacteriorhodopsin [uncultured bacterium]               107   2e-21
+gb|ACO36732.1| bacteriorhodopsin [Natrinema sp. enrichment cultu...   106   3e-21
+ref|XP_001526831.1| conserved hypothetical protein [Lodderomyces...   106   3e-21
+gb|ACM45578.1| bacteriorhodopsin [Natrinema sp. ABDH11]               106   5e-21
+gb|ADJ38535.1| bacteriorhodopsin [uncultured bacterium]               105   5e-21
+gb|ACO36733.1| bacteriorhodopsin [Natrinema sp. enrichment cultu...   105   7e-21
+emb|CAO82322.1| bacteriorhodopsin [Halorubrum sp. TP008] >gi|154...   104   1e-20
+gb|AAP36744.1| bacteriorhodopsin [Natronococcus aibiensis]            104   1e-20
+gb|ADJ38534.1| bacteriorhodopsin [uncultured bacterium]               104   2e-20
+gb|AAP36746.1| bacteriorhodopsin [Natrinema altunense]                103   2e-20
+gb|ADY17810.1| rhodopsin type II [Oxyrrhis marina]                    103   2e-20
+gb|ADJ38543.1| bacteriorhodopsin [uncultured bacterium]               103   3e-20
+gb|AAP36748.1| bacteriorhodopsin [Halobiforma lacisalsi]              103   3e-20
+gb|ACO36735.1| bacteriorhodopsin [Natronococcus sp. enrichment c...   103   4e-20
+gb|ADJ38532.1| bacteriorhodopsin [uncultured bacterium]               102   4e-20
+gb|ABY53428.1| bacteriorhodopsin [Natrinema sp. J7]                   102   4e-20
+gb|ABT17463.1| bacteriorhodopsin [Natrinema sp. XA3-1]                102   6e-20
+gb|ADJ38526.1| bacteriorhodopsin [uncultured bacterium]               102   6e-20
+gb|ADJ38544.1| bacteriorhodopsin [uncultured bacterium]               101   1e-19
+
+Sequences not found previously or not previously below threshold:
+
+ref|XP_001395233.1| opsin-1 [Aspergillus niger CBS 513.88] >gi|1...   150   2e-34
+gb|ABL97827.1| pop proteorhodopsin [uncultured marine bacterium ...   141   1e-31
+gb|ABB82983.1| proteorhodopsin [uncultured organism HF10_3D09]        133   2e-29
+ref|ZP_01236264.1| bacteriorhodopsin [Vibrio angustum S14] >gi|9...   132   4e-29
+ref|ZP_01161099.1| bacteriorhodopsin [Photobacterium sp. SKA34] ...   131   8e-29
+ref|XP_002835397.1| hypothetical protein [Tuber melanosporum Mel...   129   5e-28
+gb|AAS73014.1| proteorhodopsin [uncultured marine gamma proteoba...   128   5e-28
+ref|XP_381616.1| hypothetical protein FG01440.1 [Gibberella zeae...   127   1e-27
+ref|XP_002144174.1| protein FDD123, putative [Penicillium marnef...   126   2e-27
+gb|AAO73919.1| proteorhodopsin [uncultured bacterium]                 126   3e-27
+ref|ZP_03560325.1| hypothetical protein GHTCC_03749 [Glaciecola ...   126   4e-27
+gb|AAK30175.1|AF349977_1 proteorhodopsin [uncultured bacterium]       126   4e-27
+gb|ABL97172.1| pop proteorhodopsin [uncultured marine bacterium ...   126   4e-27
+gb|AAO73920.1| proteorhodopsin [uncultured bacterium]                 126   4e-27
+gb|AAO21452.1| proteorhodopsin [uncultured bacterium]                 126   4e-27
+gb|AAK30188.1|AF349990_1 proteorhodopsin [uncultured bacterium]       125   4e-27
+gb|AAK30190.1|AF349992_1 proteorhodopsin [uncultured bacterium]       125   5e-27
+gb|AAO21435.1| proteorhodopsin [uncultured bacterium]                 125   5e-27
+gb|AAO73915.1| proteorhodopsin [uncultured bacterium]                 125   7e-27
+gb|AAO21434.1| proteorhodopsin [uncultured bacterium]                 125   7e-27
+gb|AAO21437.1| proteorhodopsin [uncultured bacterium] >gi|278042...   125   8e-27
+gb|ABL97415.1| pop proteorhodopsin [uncultured marine bacterium ...   125   8e-27
+gb|AAO73917.1| proteorhodopsin [uncultured bacterium]                 125   8e-27
+gb|AAK30189.1|AF349991_1 proteorhodopsin [uncultured bacterium]       125   8e-27
+gb|ADI16288.1| hypothetical protein [uncultured bacterium HF0010...   125   9e-27
+gb|AAK30185.1|AF349987_1 proteorhodopsin [uncultured bacterium]       124   1e-26
+gb|AAK30186.1|AF349988_1 proteorhodopsin [uncultured bacterium]       124   1e-26
+gb|AAO73912.1| proteorhodopsin [uncultured bacterium]                 124   1e-26
+gb|AAO21453.1| proteorhodopsin [uncultured bacterium]                 124   1e-26
+gb|AAT12291.1| proteorhodopsin [uncultured bacterium]                 124   1e-26
+gb|AAK30192.1|AF349994_1 proteorhodopsin [uncultured bacterium]       124   1e-26
+sp|Q9F7P4.1|PRRG_PRB01 RecName: Full=Green-light absorbing prote...   124   1e-26
+gb|AAK30191.1|AF349993_1 proteorhodopsin [uncultured bacterium]       124   1e-26
+gb|AAO73918.2| proteorhodopsin [uncultured bacterium]                 124   1e-26
+gb|AAO21440.1| proteorhodopsin [uncultured bacterium]                 124   1e-26
+gb|AAY78592.1| proteorhodopsin [uncultured bacterium MedeBAC82F10]    124   1e-26
+gb|AAO73916.1| proteorhodopsin [uncultured bacterium]                 124   1e-26
+gb|AAK30181.1|AF349983_1 proteorhodopsin [uncultured bacterium]       124   2e-26
+gb|AAY68065.1| proteorhodopsin [uncultured bacterium] >gi|675270...   123   2e-26
+gb|AAO21446.1| proteorhodopsin [uncultured bacterium]                 123   2e-26
+gb|ABL97630.1| pop proteorhodopsin [uncultured marine bacterium ...   123   2e-26
+gb|AAO21455.1| proteorhodopsin [uncultured bacterium]                 123   3e-26
+gb|AAK30176.1|AF349978_1 proteorhodopsin [uncultured bacterium] ...   123   3e-26
+gb|AAO21436.1| proteorhodopsin [uncultured bacterium] >gi|278042...   123   3e-26
+ref|XP_002789509.1| opsin 1 [Paracoccidioides brasiliensis Pb01]...   123   3e-26
+gb|AAT38609.1| predicted proteorhodopsin [uncultured gamma prote...   122   4e-26
+gb|AAO73908.2| proteorhodopsin [uncultured bacterium]                 122   4e-26
+gb|AAO73909.1| proteorhodopsin [uncultured bacterium] >gi|470787...   122   4e-26
+gb|AAK30182.1|AF349984_1 proteorhodopsin [uncultured bacterium]       122   4e-26
+ref|ZP_06055256.1| bacteriorhodopsin [alpha proteobacterium HIMB...   122   5e-26
+ref|XP_003049904.1| hypothetical protein NECHADRAFT_89813 [Nectr...   122   5e-26
+gb|AAK30174.1|AF349976_1 proteorhodopsin [uncultured bacterium]       122   5e-26
+gb|AAO73931.1| proteorhodopsin [uncultured bacterium]                 122   6e-26
+gb|AAK30184.1|AF349986_1 proteorhodopsin [uncultured bacterium]       122   6e-26
+gb|AAO73924.1| proteorhodopsin [uncultured bacterium]                 122   6e-26
+gb|AAK30187.1|AF349989_1 proteorhodopsin [uncultured bacterium]       121   6e-26
+gb|AAZ40531.1| proteorhodopsin [uncultured bacterium]                 121   7e-26
+gb|AAO73911.1| proteorhodopsin [uncultured bacterium]                 121   9e-26
+gb|AAO73910.2| proteorhodopsin [uncultured bacterium]                 121   9e-26
+gb|ABL97764.1| pop proteorhodopsin [uncultured marine bacterium ...   121   9e-26
+gb|AAO73926.1| proteorhodopsin [uncultured bacterium]                 121   9e-26
+gb|AAO21445.1| proteorhodopsin [uncultured bacterium]                 121   1e-25
+gb|AAT09900.1| proteorhodopsin [uncultured bacterium]                 121   1e-25
+gb|AAO73925.1| proteorhodopsin [uncultured bacterium]                 121   1e-25
+gb|AAO73913.1| proteorhodopsin [uncultured bacterium]                 121   1e-25
+gb|ABL97257.1| pop proteorhodopsin [uncultured marine bacterium ...   121   1e-25
+gb|AAO73922.1| proteorhodopsin [uncultured bacterium]                 121   1e-25
+gb|AAO73921.1| proteorhodopsin [uncultured bacterium]                 121   1e-25
+gb|AAT09903.1| proteorhodopsin [uncultured bacterium]                 120   2e-25
+gb|AAO73929.1| proteorhodopsin [uncultured bacterium]                 120   2e-25
+ref|ZP_01616930.1| bacteriorhodopsin [marine gamma proteobacteri...   120   2e-25
+gb|AAO73927.1| proteorhodopsin [uncultured bacterium]                 120   2e-25
+gb|AAO21454.1| proteorhodopsin [uncultured bacterium]                 120   2e-25
+gb|AAO21444.1| proteorhodopsin [uncultured bacterium]                 120   2e-25
+gb|AAO73928.1| proteorhodopsin [uncultured bacterium] >gi|294702...   120   2e-25
+gb|AAO73923.1| proteorhodopsin [uncultured bacterium]                 120   2e-25
+gb|AAO21441.1| proteorhodopsin [uncultured bacterium] >gi|278042...   120   2e-25
+gb|ABL60988.1| proteorhodopsin [uncultured marine bacterium HF10...   120   3e-25
+gb|AAK30180.1|AF349982_1 proteorhodopsin [uncultured bacterium]       120   3e-25
+gb|AAO21449.1| proteorhodopsin [uncultured bacterium]                 119   3e-25
+gb|AAK30196.1|AF349998_1 proteorhodopsin [uncultured bacterium]       119   3e-25
+gb|AAT09899.1| proteorhodopsin [uncultured bacterium]                 119   3e-25
+gb|AAO21451.1| proteorhodopsin [uncultured bacterium]                 119   4e-25
+ref|ZP_05069347.1| bacteriorhodopsin [Candidatus Pelagibacter sp...   119   4e-25
+gb|AAO73933.1| proteorhodopsin [uncultured bacterium]                 119   4e-25
+gb|AAK30195.1|AF349997_1 proteorhodopsin [uncultured bacterium]       119   4e-25
+gb|AAO73932.1| proteorhodopsin [uncultured bacterium]                 119   5e-25
+gb|AAT09902.1| proteorhodopsin [uncultured bacterium]                 119   5e-25
+ref|XP_001909487.1| hypothetical protein [Podospora anserina S m...   118   5e-25
+gb|AAY68047.1| proteorhodopsin [uncultured bacterium] >gi|679066...   118   6e-25
+gb|AAO73914.1| proteorhodopsin [uncultured bacterium]                 118   6e-25
+gb|AAZ40532.1| proteorhodopsin [uncultured bacterium]                 118   6e-25
+gb|ABL97421.1| pop proteorhodopsin [uncultured marine bacterium ...   118   8e-25
+ref|XP_001395306.1| opsin related protein [Aspergillus niger CBS...   118   8e-25
+gb|ABL97357.1| pop proteorhodopsin [uncultured marine bacterium ...   118   1e-24
+gb|AAK30198.1|AF350000_1 proteorhodopsin [uncultured bacterium]       117   1e-24
+gb|ABR27794.1| proteorhodopsin [Candidatus Pelagibacter ubique H...   117   1e-24
+ref|ZP_01264205.1| bacteriorhodopsin [Candidatus Pelagibacter ub...   117   1e-24
+gb|AAR05251.1| proteorhodopsin [uncultured marine proteobacteriu...   117   1e-24
+gb|AAU20796.1| proteorhodopsin [uncultured bacterium]                 117   1e-24
+gb|AAK30201.1|AF350003_1 proteorhodopsin [uncultured bacterium]       117   1e-24
+gb|AAR05342.1| proteorhodopsin [uncultured marine alpha proteoba...   117   1e-24
+gb|ABL97481.1| pop proteorhodopsin [uncultured marine bacterium ...   117   1e-24
+gb|AAY82701.1| predicted proteorhodopsin [uncultured bacterium]       117   2e-24
+gb|AAK30194.1|AF349996_1 proteorhodopsin [uncultured bacterium]       117   2e-24
+sp|Q9AFF7.2|PRRB_PRB02 RecName: Full=Blue-light absorbing proteo...   117   2e-24
+gb|ABR27800.1| proteorhodopsin [Candidatus Pelagibacter ubique]       117   2e-24
+gb|AAK30179.1|AF349981_1 proteorhodopsin [uncultured bacterium]       117   2e-24
+gb|AAK30178.1|AF349980_1 proteorhodopsin [uncultured bacterium] ...   117   2e-24
+gb|AAY82724.1| predicted proteorhodopsin [uncultured bacterium e...   117   2e-24
+gb|AAK30177.1|AF349979_1 proteorhodopsin [uncultured bacterium]       117   2e-24
+gb|ABR27795.1| proteorhodopsin [Candidatus Pelagibacter ubique] ...   116   3e-24
+ref|YP_266049.1| bacteriorhodopsin [Candidatus Pelagibacter ubiq...   116   3e-24
+gb|AAO21438.1| proteorhodopsin [uncultured bacterium]                 116   3e-24
+gb|AAK30199.1|AF350001_1 proteorhodopsin [uncultured bacterium]       116   3e-24
+gb|AAK30193.1|AF349995_1 proteorhodopsin [uncultured bacterium]       116   4e-24
+gb|AAK30197.1|AF349999_1 proteorhodopsin [uncultured bacterium]       115   5e-24
+gb|AAY82613.1| proteorhodopsin [uncultured bacterium MedeBAC35C06]    115   6e-24
+gb|EFQ32231.1| hypothetical protein GLRG_07375 [Glomerella grami...   115   7e-24
+ref|XP_001645446.1| hypothetical protein Kpol_1061p10 [Vanderwal...   115   7e-24
+gb|ABY66923.1| putative proteorhodopsin [uncultured bacterium] >...   114   1e-23
+ref|XP_003172169.1| hypothetical protein MGYG_04761 [Arthroderma...   114   1e-23
+gb|ACN42851.1| putative actinorhodopsin [Candidatus Rhodoluna la...   114   1e-23
+ref|XP_001642933.1| hypothetical protein Kpol_431p2 [Vanderwalto...   114   2e-23
+ref|ZP_08271926.1| Proteorhodopsin [gamma proteobacterium IMCC30...   112   4e-23
+ref|XP_448732.1| hypothetical protein [Candida glabrata CBS 138]...   112   5e-23
+gb|AAZ40533.1| proteorhodopsin [uncultured bacterium]                 111   8e-23
+ref|XP_001217659.1| conserved hypothetical protein [Aspergillus ...   111   8e-23
+gb|ABL61007.1| proteorhodopsin [uncultured marine bacterium HF10...   111   1e-22
+gb|AAY82778.1| predicted proteorhodopsin [uncultured bacterium e...   111   1e-22
+gb|ABO88140.1| proteorhodopsin [gamma proteobacterium HTCC2207]       111   1e-22
+gb|EFW98887.1| heat shock protein 30 [Grosmannia clavigera kw1407]    111   1e-22
+ref|NP_010316.1| Mrh1p [Saccharomyces cerevisiae S288c] >gi|6686...   111   1e-22
+ref|ZP_01551538.1| hypothetical protein MB2181_00945 [Methylophi...   110   2e-22
+gb|AAY68042.1| proteorhodopsin [uncultured bacterium] >gi|683050...   110   2e-22
+gb|ABJ98286.1| putative proteorhodopsin [uncultured bacterium]        109   2e-22
+gb|EDZ73208.1| YDR033Wp-like protein [Saccharomyces cerevisiae A...   109   3e-22
+ref|XP_003236933.1| hypothetical protein TERG_01657 [Trichophyto...   109   3e-22
+ref|XP_003022135.1| hypothetical protein TRV_03738 [Trichophyton...   109   4e-22
+ref|YP_001277280.1| rhodopsin [Roseiflexus sp. RS-1] >gi|1485691...   109   4e-22
+gb|ACQ57578.1| putative proteorhodopsin [uncultured bacterium]        109   5e-22
+gb|EGD96776.1| hypothetical protein TESG_04207 [Trichophyton ton...   108   6e-22
+gb|ABY66921.1| putative proteorhodopsin [uncultured bacterium] >...   108   8e-22
+gb|ABO10153.1| putative proteorhodopsin [uncultured bacterium]        107   1e-21
+gb|ACQ57563.1| putative proteorhodopsin [uncultured bacterium]        107   1e-21
+gb|AAY87315.1| proteorhodopsin [uncultured bacterium BAC17H8]         107   2e-21
+ref|ZP_05081813.1| xanthorhodopsin [beta proteobacterium KB13] >...   106   3e-21
+ref|ZP_01223638.1| bacteriorhodopsin [marine gamma proteobacteri...   106   4e-21
+ref|NP_587895.1| membrane transporter (predicted) [Schizosacchar...   106   4e-21
+gb|ACQ57545.1| putative proteorhodopsin [uncultured bacterium] >...   105   6e-21
+gb|ABO88139.1| proteorhodopsin [gamma proteobacterium HTCC6216]       105   6e-21
+gb|ACQ57451.1| putative proteorhodopsin [uncultured microorganism]    105   6e-21
+ref|XP_003012740.1| hypothetical protein ARB_00991 [Arthroderma ...   104   1e-20
+gb|ABJ98232.1| putative proteorhodopsin [uncultured bacterium]        104   1e-20
+gb|ABJ98195.1| putative proteorhodopsin [uncultured bacterium]        103   3e-20
+gb|ABJ98278.1| putative proteorhodopsin [uncultured bacterium]        103   3e-20
+gb|ABJ98284.1| putative proteorhodopsin [uncultured bacterium]        103   3e-20
+gb|ABO88137.1| proteorhodopsin [gamma proteobacterium HTCC6245]       103   3e-20
+gb|ABO88138.1| proteorhodopsin [gamma proteobacterium HTCC6124]       103   3e-20
+gb|ACQ57558.1| putative proteorhodopsin [uncultured bacterium] >...   102   4e-20
+ref|ZP_03495873.1| rhodopsin [Thermus aquaticus Y51MC23] >gi|218...   102   5e-20
+gb|ABJ98242.1| putative proteorhodopsin [uncultured bacterium] >...   102   5e-20
+gb|ACQ57557.1| putative proteorhodopsin [uncultured bacterium]        102   6e-20
+gb|ACQ57524.1| putative proteorhodopsin [uncultured microorganism]    101   7e-20
+gb|ACQ57393.1| putative proteorhodopsin [uncultured microorganism]    101   7e-20
+gb|ACQ57551.1| putative proteorhodopsin [uncultured bacterium]        101   8e-20
+gb|ACQ57559.1| putative proteorhodopsin [uncultured bacterium] >...   101   1e-19
+gb|ABJ98216.1| putative proteorhodopsin [uncultured bacterium]        101   1e-19
+gb|ABO27662.1| putative proteorhodopsin [uncultured bacterium] >...   101   1e-19
+gb|ACQ57541.1| putative proteorhodopsin [uncultured organism]         101   1e-19
+gb|EFX01616.1| heat shock protein 30 [Grosmannia clavigera kw1407]    101   1e-19
+gb|ACQ57381.1| putative proteorhodopsin [uncultured microorganism]    101   1e-19
+gb|EFP85792.1| hypothetical protein PGTG_11121 [Puccinia gramini...   101   1e-19
+
+  Database: All non-redundant GenBank CDS
+  translations+PDB+SwissProt+PIR+PRF excluding environmental samples
+  from WGS projects
+    Posted date:  Apr 27, 2011  5:34 PM
+  Number of letters in database: 861,200,854
+  Number of sequences in database:  2,556,169
+  
+  Database: /data/databases/blast/nr.01
+    Posted date:  Apr 27, 2011  5:34 PM
+  Number of letters in database: 907,798,381
+  Number of sequences in database:  2,610,686
+  
+  Database: /data/databases/blast/nr.02
+    Posted date:  Apr 27, 2011  5:35 PM
+  Number of letters in database: 961,969,897
+  Number of sequences in database:  2,803,283
+  
+  Database: /data/databases/blast/nr.03
+    Posted date:  Apr 27, 2011  5:35 PM
+  Number of letters in database: 979,007,008
+  Number of sequences in database:  2,938,647
+  
+  Database: /data/databases/blast/nr.04
+    Posted date:  Apr 27, 2011  5:35 PM
+  Number of letters in database: 997,113,209
+  Number of sequences in database:  2,804,708
+  
+  Database: /data/databases/blast/nr.05
+    Posted date:  Apr 27, 2011  5:35 PM
+  Number of letters in database: 43,170,423
+  Number of sequences in database:  127,613
+  
+Lambda     K      H
+   0.318    0.150    0.459 
+
+Lambda     K      H
+   0.267   0.0461    0.140 
+
+
+Matrix: BLOSUM62
+Gap Penalties: Existence: 11, Extension: 1
+Number of Hits to DB: 5,123,776,898
+Number of Sequences: 13841106
+Number of extensions: 228297158
+Number of successful extensions: 1448679
+Number of sequences better than 1.0e-03: 500
+Number of HSP's better than  0.0 without gapping: 1575
+Number of HSP's successfully gapped in prelim test: 1295
+Number of HSP's that attempted gapping in prelim test: 1438870
+Number of HSP's gapped (non-prelim): 3384
+length of query: 260
+length of database: 4,750,259,772
+effective HSP length: 136
+effective length of query: 124
+effective length of database: 2,867,869,356
+effective search space: 355615800144
+effective search space used: 355615800144
+T: 11
+A: 40
+X1: 16 ( 7.3 bits)
+X2: 38 (14.6 bits)
+X3: 64 (24.7 bits)
+S1: 40 (21.1 bits)
+S2: 114 (48.4 bits)

@@ -1,7 +1,4 @@
-import glob
-import math
-import os
-import sys
+import sys, os, math, glob, re
 
 parms = {
   'organism': 'gram+',
@@ -9,6 +6,7 @@ parms = {
   'lipop1_bin': 'LipoP',
   'tmhmm_bin': 'tmhmm',
   'hmmsearch3_bin': '/bio/sw/hmmer-3.0-linux-intel-x86_64/bin/hmmsearch',
+  'memsat3_bin': '/home/perry/programs/memsat3/runmemsat',
   'hmm_profiles_dir': 'hmm_profiles',
   'hmm_evalue_cutoff': 0.01,
   'terminal_exposed_loop_min': 50,
@@ -21,9 +19,11 @@ def basename(parms):
 
 
 def run(cmd, out_file="log.txt"):
+  if not out_file:
+    out_file = "/dev/null"
   full_cmd = cmd + " > " + out_file
   print "#", full_cmd
-  if os.path.isfile(out_file):
+  if os.path.isfile(out_file) and (out_file != None):
     print "# -> skipped: %s already exists" % out_file
   else:
     os.system(full_cmd)
@@ -32,6 +32,21 @@ def run(cmd, out_file="log.txt"):
 def read_fasta_keys(fname):
   return [l[1:] for l in open(fname) if l.startswith(">")]
 
+def get_fasta_seq_by_id(fname, prot_id):
+  f = open(fname)
+  l = f.readline()
+  while l:
+    if l.startswith(">") and (l[1:].split()[0] == prot_id):
+      seq = ""
+      l = f.readline()
+      while l and not l.startswith(">"):
+        seq += l.strip()
+        l = f.readline()
+      f.close()
+      return seq
+
+    l = f.readline()
+  f.close()
 
 def hmmsearch3(parms, proteins):
   base = basename(parms)
@@ -127,6 +142,67 @@ def tmhmm(parms, proteins):
       proteins[name]['tmhmm_helices'].append(
           (int(words[-2]), int(words[-1])))
 
+# TODO: cat all results of single sequence memsat3 runs
+#       into a single output file, with some divider between
+#       sequences
+#       change the parser so that it can parse this multi-sequence
+#       memsat3 output
+def memsat3(parms, proteins, fasta_db=None):
+  if not fasta_db:
+    fasta_db = sys.argv[1]
+  memsat3_out = basename(parms) + '.memsat3.out'
+  for name in proteins:
+    seq = get_fasta_seq_by_id(fasta_db, name)
+    # FIXME: use proper python temp file
+    tmpseq = open('tmp.fasta','w')
+    tmpseq.write(">%s\n%s\n" % (name, seq))
+    tmpseq.close()
+    run('%s %s' % (parms['memsat3_bin'], 'tmp.fasta'), None)
+    f = open('tmp.memsat')
+    l = f.readline()
+    while l:
+      l = f.readline()
+      if l == "FINAL PREDICTION\n":
+        num_tms = 0
+        f.readline()
+        l = f.readline()
+        s = l.split(":")
+        tm_scores = []
+        # read the final prediction scores
+        # TODO: parse out the tm boundries and '(in)' vs '(out)'
+        #       fill out helices, inner and outer loops as per tmhmm code
+        while re.match("\d", l[0]):
+          tm_scores.append( s[1].replace("\t", " ").replace("\n", " ") )
+          l = f.readline()
+          s = l.split(":")
+          num_tms += 1
+        f.readline() 
+        tm_pred = ""
+        seq = ""
+        while l != "":
+          tm_pred = tm_pred + f.readline()[:-1]
+          seq = seq + f.readline()[:-1]
+          l = f.readline()
+          l = f.readline()
+        if 'memsat3_helices' not in proteins[name]:
+          proteins[name].update({
+            'n_memsat3_helix':num_tms, 
+            'sequence_length':len(seq),
+            'memsat3_helices':[],
+            'memsat3_inner_loops':[],
+            'memsat3_outer_loops':[]
+          })
+          print (seq, tm_pred, tm_scores, num_tms)
+      elif l == "0 residues read from file.\n":
+          proteins[name].update({
+            'n_memsat3_helix':0, 
+            'sequence_length':len(seq),
+            'memsat3_helices':[],
+            'memsat3_inner_loops':[],
+            'memsat3_outer_loops':[]
+          })
+          print (None, None, None, None)
+    f.close()
 
 def chop_nterminal_peptide(protein, i_cut):
   protein['sequence_length'] -= i_cut
@@ -240,8 +316,8 @@ def identify_pse_proteins(parms, fasta):
       'n_tmhmm_helix': 0,
       'name': ' '.join(header.split()[1:]),
     }
-  for extract_protein_feature in \
-      [signalp4, lipop1, tmhmm, hmmsearch3]:
+  for extract_protein_feature in [memsat3]:\
+      #[signalp4, lipop1, tmhmm, hmmsearch3]:
     extract_protein_feature(parms, proteins)
   for prot_id in prot_ids:
     details, category = \
