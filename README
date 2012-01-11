@@ -1,7 +1,8 @@
 
 Dependencines:
 
-  * MEMSAT3 ( http://bioinf.cs.ucl.ac.uk/?id=756 )
+  * MEMSAT3 ( http://bioinf.cs.ucl.ac.uk/?id=756 
+              http://bioinfadmin.cs.ucl.ac.uk/downloads/memsat/memsat3/)
     Edit the runmemsat script included with MEMSAT3
     to point to the correct locations with absolute paths
     (eg dbname, ncbidir, execdir, datadir)
