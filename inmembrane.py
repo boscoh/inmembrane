@@ -57,7 +57,8 @@ def hmmsearch3(parms, proteins):
     hmm_profile = os.path.basename(parms['hmm_profile'])
     hmm_name = hmm_profile.replace('.hmm', '')
     hmmsearch3_out = '%s.hmm.%s.out' % (base, hmm_name)
-    run('%(hmmsearch3_bin)s -Z 2000 -E 10 %(hmm_profile)s %(fasta)s' % parms, hmmsearch3_out)
+    run('%(hmmsearch3_bin)s -Z 2000 -E 10 %(hmm_profile)s %(fasta)s' % \
+          parms, hmmsearch3_out)
     name = None
     for l in open(hmmsearch3_out):
       words = l.split()
