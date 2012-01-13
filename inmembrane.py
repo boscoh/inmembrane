@@ -143,24 +143,48 @@ def tmhmm(parms, proteins):
       proteins[name]['tmhmm_helices'].append(
           (int(words[-2]), int(words[-1])))
 
-# TODO: cat all results of single sequence memsat3 runs
-#       into a single output file, with some divider between
-#       sequences
-#       change the parser so that it can parse this multi-sequence
-#       memsat3 output
 def memsat3(parms, proteins, fasta_db=None):
+  """
+  Runs MEMSAT3 and parses the output files. Takes a standard 'inmembrane'
+  params dictionary and a global proteins dictionary which it populates with
+  results.
+  
+  In the current implementation, a fasta database filename (fasta_db) should
+  be provided since this function extracts and feeds sequences to MEMSAT3
+  one by one via a temporary file.
+  
+  These keys are added to the proteins dictionary: 
+    'n_memsat3_helix', the number of predicted transmembrane helices;
+  
+    'memsat3_helices', a list of tuples describing the first and last residue
+     number of each transmembrane segment; 
+  
+    'memsat3_scores', a list of confidence scores (floats) for each predicted 
+     tm segment;
+  
+    'memsat3_inner_loops', a list of tuples describing the first and last residue
+     number of each predicted internal loop segment;
+  
+    'memsat3_outer_loops', a list of tuples describing the first and last residue
+     number of each predicted outer loop segment;
+  """
+  
+  
   if not fasta_db:
     fasta_db = sys.argv[1]
   memsat3_out = basename(parms) + '.memsat3.out'
   for name in proteins:
     seq = get_fasta_seq_by_id(fasta_db, name)
-    # FIXME: use proper python temp file
+    sequence_length = len(seq)
+    # FIXME: use proper python temp file, or make a directory
+    #        full of output files named by sequence ID
     tmpseq = open('tmp.fasta','w')
     tmpseq.write(">%s\n%s\n" % (name, seq))
     tmpseq.close()
     run('%s %s' % (parms['memsat3_bin'], 'tmp.fasta'), None)
     f = open('tmp.memsat')
     l = f.readline()
+    # parse the final prediction scores from MEMSAT3 output
     while l:
       l = f.readline()
       if l == "FINAL PREDICTION\n":
@@ -170,15 +194,14 @@ def memsat3(parms, proteins, fasta_db=None):
         s = l.split(":")
         memsat3_helices = []
         memsat3_scores = []
-        # read the final prediction scores
-        # parse spanning residues and confidence scores
+        # parse tm spanning residues and confidence scores
         while re.match("\d", l[0]):
           tokens = s[1].strip().split()
           tok_offset = 0
           if len(tokens) > 2:
             tok_offset = 1
             # record the side of the membrane the N-terminus
-            # is on for later ..
+            # is on ... used later.
             nterm_side = tokens[0][1:-1] # 'in' or 'out'
           # i-j residus -> (i,j)
           span = (int(tokens[0+tok_offset].split('-')[0]), \
@@ -190,31 +213,58 @@ def memsat3(parms, proteins, fasta_db=None):
           l = f.readline()
           s = l.split(":")
           num_tms += 1
-        f.readline() 
+        f.readline()
         tm_pred = ""
         seq = ""
 
-        # TODO: record inner and outer loops
+        # record inner and outer loops
+        # TODO: optionally parse out inner and outer helix caps ?
+        #       eg OOOO and IIII - are these likely to be cleaved
+        #          regions in a shaving experiment ?
         if nterm_side == 'out':
-          pass
+          current_side = 'out'
         elif nterm_side == 'in':
-          pass
+          current_side = 'in'
+        inner_loops = []
+        outer_loops = []
+        loop_start = 1
+        for tm in memsat3_helices:
+          loop_end = tm[0] - 1
+          loop = (loop_start, loop_end)
+          if current_side == 'out':
+            outer_loops.append((loop_start, loop_end))
+            current_side = 'in'
+          elif current_side == 'in':
+            inner_loops.append((loop_start, loop_end))
+            current_side = 'out'
+          loop_start = tm[1] + 1     
+        # capture C-terminal loop segment
+        loop_start = tm[1]+1
+        loop_end = sequence_length
+        if current_side == 'out':
+          outer_loops.append((loop_start, loop_end))
+        elif current_side == 'in':
+          inner_loops.append((loop_start, loop_end))
 
-        # parse tm predictions
+        """
+        # CURRENTLY UNUSED
+        # parse tm predictions sequence string
+        # eg. +++++OOOOXXXXXXIIIII----- etc
         while l != "":
           tm_pred = tm_pred + f.readline()[:-1]
           seq = seq + f.readline()[:-1]
           l = f.readline()
           l = f.readline()
-
+        """
+        
         if 'memsat3_helices' not in proteins[name]:
           proteins[name].update({
             'n_memsat3_helix':num_tms, 
-            'sequence_length':len(seq),
+            'sequence_length':sequence_length,
             'memsat3_helices':memsat3_helices,
             'memsat3_scores':memsat3_scores,
-            'memsat3_inner_loops':[],
-            'memsat3_outer_loops':[]
+            'memsat3_inner_loops':inner_loops,
+            'memsat3_outer_loops':outer_loops
           })
           print proteins[name]
           #print (seq, tm_pred, memsat3_helices, num_tms)
