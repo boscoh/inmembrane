@@ -265,8 +265,13 @@ if __name__ == "__main__":
       parms, fasta)
   for prot_id in prot_ids:
     protein = proteins[prot_id]
+    word = prot_id.split()[0]
+    if "!" in word:
+      prot_id = word.split("|")[1]
+    else:
+      prot_id = word
     print "%-15s %-13s %-20s %s" % \
-        (prot_id.split("|")[1], 
+        (word, 
          protein['category'], 
          protein['details'],
          protein['name'][:60])
