@@ -5,10 +5,10 @@ import sys
 
 parms = {
   'organism': 'gram+',
-  'signalp4_bin': '/home/boscoh/packages/signalp-4.0/signalp',
-  'lipop1_bin': 'LipoP',
-  'tmhmm_bin': 'tmhmm',
-  'hmmsearch3_bin': '/bio/sw/hmmer-3.0-linux-intel-x86_64/bin/hmmsearch',
+  'signalp4_bin': '/home/bosco/Packages/signalp-4.0/signalp',
+  'lipop1_bin': '/home/bosco/Packages/LipoP-1.0/LipoP',
+  'tmhmm_bin': '/home/bosco/Packages/tmhmm-2.0/bin/tmhmm',
+  'hmmsearch3_bin': '/home/bosco/local/bin/hmmsearch',
   'hmm_profiles_dir': 'hmm_profiles',
   'hmm_evalue_cutoff': 0.01,
   'terminal_exposed_loop_min': 50,
@@ -95,7 +95,9 @@ def tmhmm(parms, proteins):
   tmhmm_out = basename(parms) + '.tmhmm.out'
   run('%(tmhmm_bin)s %(fasta)s' % parms, tmhmm_out)
   name = None
-  for l in open(tmhmm_out):
+  for i_line, l in enumerate(open(tmhmm_out)):
+    if i_line == 0:
+      continue
     words = l.split()
     if not words:
       continue
