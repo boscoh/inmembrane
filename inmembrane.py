@@ -176,14 +176,22 @@ def tmhmm(parms, proteins):
           (int(words[-2]), int(words[-1])))
 
 
-def memsat3(parms, proteins, fasta_db=None):
+def tmp_fasta_file(prot_id, seq):
+  # FIXME: use proper python temp file, or make a directory
+  #        full of output files named by sequence ID
+  tmpseq = open('tmp.fasta','w')
+  tmpseq.write(">%s\n%s\n" % (prot_id, seq))
+  tmpseq.close()
+  return 'tmp.fasta'
+  
+  
+def memsat3(parms, proteins):
   """
   Runs MEMSAT3 and parses the output files. Takes a standard 'inmembrane'
   params dictionary and a global proteins dictionary which it populates with
   results.
   
-  In the current implementation, a fasta database filename (fasta_db) should
-  be provided since this function extracts and feeds sequences to MEMSAT3
+  In the current implementation, this function extracts and feeds sequences to MEMSAT3
   one by one via a temporary file.
   
   These keys are added to the proteins dictionary: 
@@ -201,20 +209,28 @@ def memsat3(parms, proteins, fasta_db=None):
     'memsat3_outer_loops', a list of tuples describing the first and last residue
      number of each predicted outer loop segment;
   """
-  
-  
-  if not fasta_db:
-    fasta_db = sys.argv[1]
+
   memsat3_out = basename(parms) + '.memsat3.out'
-  for name in proteins:
-    seq = get_fasta_seq_by_id(fasta_db, name)
+  for prot_id in proteins:
+    seq = get_fasta_seq_by_id(parms['fasta'], prot_id)
     sequence_length = len(seq)
-    # FIXME: use proper python temp file, or make a directory
-    #        full of output files named by sequence ID
-    tmpseq = open('tmp.fasta','w')
-    tmpseq.write(">%s\n%s\n" % (name, seq))
-    tmpseq.close()
-    run('%s %s' % (parms['memsat3_bin'], 'tmp.fasta'), None)
+    temp_fasta = tmp_fasta_file(prot_id, seq)
+    parms['temp_fasta'] = temp_fasta
+    run('%(memsat3_bin)s %(temp_fasta)s' % parms, 'tmp.memsat')
+
+    protein = proteins[prot_id]
+    protein.update({
+      'n_memsat3_helix':0, 
+      'sequence_length':len(seq),
+      'memsat3_helices':[],
+      'memsat3_inner_loops':[],
+      'memsat3_outer_loops':[]
+    })
+    memsat3_helices = protein['memsat3_helices']
+    memsat3_scores = protein['memsat3_scores']
+    inner_loops = protein['memsat3_inner_loops']
+    outer_loops = protein['memsat3_outer_loops']
+
     f = open('tmp.memsat')
     l = f.readline()
     # parse the final prediction scores from MEMSAT3 output
@@ -225,27 +241,21 @@ def memsat3(parms, proteins, fasta_db=None):
         f.readline()
         l = f.readline()
         s = l.split(":")
-        memsat3_helices = []
-        memsat3_scores = []
         # parse tm spanning residues and confidence scores
         while re.match("\d", l[0]):
           tokens = s[1].strip().split()
           tok_offset = 0
           if len(tokens) > 2:
             tok_offset = 1
-            # record the side of the membrane the N-terminus
-            # is on ... used later.
-            nterm_side = tokens[0][1:-1] # 'in' or 'out'
-          # i-j residus -> (i,j)
-          span = (int(tokens[0+tok_offset].split('-')[0]), \
-                  int(tokens[0+tok_offset].split('-')[1]))
-          score = float(tokens[1+tok_offset][1:-1]) # memsat3 score
-
-          memsat3_helices.append(span)
-          memsat3_scores.append(score)
+            side_of_membrane_nterminus = tokens[0][1:-1] # 'in' or 'out'
+          i = int(tokens[0+tok_offset].split('-')[0])
+          j = int(tokens[0+tok_offset].split('-')[1])
+          memsat3_helices.append((i, j))
+          memsat3_score = float(tokens[1+tok_offset][1:-1])
+          memsat3_scores.append(memsat3_score)
           l = f.readline()
           s = l.split(":")
-          num_tms += 1
+          protein['n_memsat3_helix'] += 1
         f.readline()
         tm_pred = ""
         seq = ""
@@ -254,12 +264,10 @@ def memsat3(parms, proteins, fasta_db=None):
         # TODO: optionally parse out inner and outer helix caps ?
         #       eg OOOO and IIII - are these likely to be cleaved
         #          regions in a shaving experiment ?
-        if nterm_side == 'out':
+        if side_of_membrane_nterminus == 'out':
           current_side = 'out'
-        elif nterm_side == 'in':
+        elif side_of_membrane_nterminus == 'in':
           current_side = 'in'
-        inner_loops = []
-        outer_loops = []
         loop_start = 1
         for tm in memsat3_helices:
           loop_end = tm[0] - 1
@@ -289,28 +297,15 @@ def memsat3(parms, proteins, fasta_db=None):
           l = f.readline()
           l = f.readline()
         """
-        
-        if 'memsat3_helices' not in proteins[name]:
-          proteins[name].update({
-            'n_memsat3_helix':num_tms, 
-            'sequence_length':sequence_length,
-            'memsat3_helices':memsat3_helices,
-            'memsat3_scores':memsat3_scores,
-            'memsat3_inner_loops':inner_loops,
-            'memsat3_outer_loops':outer_loops
-          })
-          # print proteins[name]
-          #print (seq, tm_pred, memsat3_helices, num_tms)
-      elif l == "0 residues read from file.\n":
-          proteins[name].update({
-            'n_memsat3_helix':0, 
-            'sequence_length':len(seq),
-            'memsat3_helices':[],
-            'memsat3_inner_loops':[],
-            'memsat3_outer_loops':[]
-          })
-          print (None, None, None, None)
     f.close()
+    if len(memsat3_helices) > 0:
+      # print proteins[prot_id]
+      # print (seq, tm_pred, memsat3_helices, 
+      #     protein['n_memsat3_helix'])
+      pass
+    else:
+      # print (None, None, None, None)
+      pass
 
 def chop_nterminal_peptide(protein, i_cut):
   protein['sequence_length'] -= i_cut
@@ -431,7 +426,7 @@ def identify_pse_proteins(parms, fasta):
       'n_tmhmm_helix': 0,
       'name': ' '.join(header.split()[1:]),
     }
-  for extract_protein_feature in [tmhmm, signalp4]:\
+  for extract_protein_feature in [memsat3, signalp4]:\
       # FIXME: temporarily commented for testing
       #[signalp4, lipop1, tmhmm, hmmsearch3]:
     extract_protein_feature(parms, proteins)
