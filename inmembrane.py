@@ -1,25 +1,31 @@
 import sys, os, math, glob, re
 
-default_parms_str = """
-{
+default_parms_str = """{
   'organism': 'gram+',
-  'signalp4_bin': '/home/boscoh/packages/signalp-4.0/signalp',
+  'signalp4_bin': 'signalp',
   'lipop1_bin': 'LipoP',
   'tmhmm_bin': 'tmhmm',
-  'hmmsearch3_bin': '/bio/sw/hmmer-3.0-linux-intel-x86_64/bin/hmmsearch',
-  'memsat3_bin': '/Users/bosco/Packages/memsat3/runmemsat',
-  'hmm_profiles_dir': 'hmm_profiles',
+  'hmmsearch3_bin': 'hmmsearch',
+  'memsat3_bin': 'runmemsat',
+  'hmm_profiles_dir': '%(hmm_profiles)s',
   'hmm_evalue_cutoff': 0.01,
   'terminal_exposed_loop_min': 50,
   'internal_exposed_loop_min': 100,
 }
 """
-if not os.path.isfile('inmembrane.config'):
-  print "# Generating default inmembrane.config"
-  open('inmembrane.config', 'w').write(default_parms_str)
-else:
-  print "# Loading existing inmembrane.config"
-parms = eval(open('inmembrane.config').read())
+def get_parms():
+  module_dir = os.path.abspath(os.path.dirname(__file__))
+  config = os.path.join(module_dir, 'inmembrane.config')
+  if not os.path.isfile(config):
+    print "# Generating default config", os.path.abspath(config)
+    abs_hmm_profiles = os.path.join(module_dir, 'hmm_profiles')
+    default_str = default_parms_str % \
+        { 'hmm_profiles': abs_hmm_profiles }
+    open('inmembrane.config', 'w').write(default_str)
+  else:
+    print "# Loading existing inmembrane.config"
+  parms = eval(open(config).read())
+  return parms
 
 
 def basename(parms):
@@ -40,6 +46,7 @@ def run(cmd, out_file="log.txt"):
 def read_fasta_keys(fname):
   return [l[1:] for l in open(fname) if l.startswith(">")]
 
+
 def get_fasta_seq_by_id(fname, prot_id):
   f = open(fname)
   l = f.readline()
@@ -55,6 +62,7 @@ def get_fasta_seq_by_id(fname, prot_id):
 
     l = f.readline()
   f.close()
+
 
 def hmmsearch3(parms, proteins):
   base = basename(parms)
@@ -150,6 +158,7 @@ def tmhmm(parms, proteins):
     if 'TMhelix' in l:
       proteins[name]['tmhmm_helices'].append(
           (int(words[-2]), int(words[-1])))
+
 
 def memsat3(parms, proteins, fasta_db=None):
   """
@@ -274,7 +283,7 @@ def memsat3(parms, proteins, fasta_db=None):
             'memsat3_inner_loops':inner_loops,
             'memsat3_outer_loops':outer_loops
           })
-          print proteins[name]
+          # print proteins[name]
           #print (seq, tm_pred, memsat3_helices, num_tms)
       elif l == "0 residues read from file.\n":
           proteins[name].update({
@@ -426,6 +435,7 @@ def identify_pse_proteins(parms, fasta):
 
 if __name__ == "__main__":
   fasta = sys.argv[1]
+  parms = get_parms()
   prot_ids, proteins = identify_pse_proteins(
       parms, fasta)
   for prot_id in prot_ids:
