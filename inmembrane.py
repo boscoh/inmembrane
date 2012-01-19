@@ -1,17 +1,25 @@
 import sys, os, math, glob, re
 
-parms = {
+default_parms_str = """
+{
   'organism': 'gram+',
   'signalp4_bin': '/home/boscoh/packages/signalp-4.0/signalp',
   'lipop1_bin': 'LipoP',
   'tmhmm_bin': 'tmhmm',
   'hmmsearch3_bin': '/bio/sw/hmmer-3.0-linux-intel-x86_64/bin/hmmsearch',
-  'memsat3_bin': '/home/perry/programs/memsat3/runmemsat',
+  'memsat3_bin': '/Users/bosco/Packages/memsat3/runmemsat',
   'hmm_profiles_dir': 'hmm_profiles',
   'hmm_evalue_cutoff': 0.01,
   'terminal_exposed_loop_min': 50,
   'internal_exposed_loop_min': 100,
 }
+"""
+if not os.path.isfile('inmembrane.config'):
+  print "# Generating default inmembrane.config"
+  open('inmembrane.config', 'w').write(default_parms_str)
+else:
+  print "# Loading existing inmembrane.config"
+parms = eval(open('inmembrane.config').read())
 
 
 def basename(parms):
