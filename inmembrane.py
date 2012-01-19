@@ -106,6 +106,127 @@ def lipop1(parms, proteins):
         'lipop_cleave_position': i,
       })
 
+def bomp_web(parms, proteins, \
+             url="http://services.cbu.uib.no/tools/bomp/", force=False):
+  """
+  Uses the BOMP web service (http://services.cbu.uib.no/tools/bomp/) to
+  predict if proteins are outer membrane beta-barrels.
+  """
+  
+  bomp_out = basename(parms) + '.bomp.out'
+  print "# BOMP(web) %s > %s" % (parms['fasta'], bomp_out)
+  
+  if not force and os.path.isfile(bomp_out):
+    print "# -> skipped: %s already exists" % bomp_out
+    return
+  
+  import time, StringIO
+  import twill
+  from twill.commands import find, formfile, fv, go, show, showlinks, submit
+
+  # dump extraneous output here so we don't see it
+  twill.set_output(StringIO.StringIO())
+  
+  go(url)
+  #showforms()
+  formfile("1", "queryfile", parms["fasta"])
+  submit()
+  
+  # extract the job id from the page
+  links = showlinks()
+  job_id = None
+  for l in links:
+    if l.url.find("viewOutput") != -1:
+      # grab job id from "viewOutput?id=16745338"
+      job_id = int(l.url.split("=")[1])
+  
+  # print "BOMP job id: ", job_id
+  
+  if not job_id:
+    # something went wrong
+    sys.stderr.write("# BOMP error: Can't find job id")
+    return
+  
+  # parse the HTML table and extract categories
+  go("viewOutput?id=%i" % (job_id))
+  
+  polltime = 10
+  sys.stderr.write("# Waiting for BOMP to finish .")
+  while True:
+    try:
+      find("Not finished")
+      sys.stderr.write(".")
+    except:
+      # Finished ! Pull down the result page.
+      sys.stderr.write(". done!\n")
+      go("viewOutput?id=%i" % (job_id))
+      # print show()
+      break
+      
+    # Not finished. We keep polling for a time until
+    # we give up
+    time.sleep(polltime)
+    polltime = polltime * 2
+    if polltime >= 7200: # 2 hours
+      sys.stderr.write("# BOMP error: Taking too long.")
+      return
+    go("viewOutput?id=%i" % (job_id))
+    #print show()
+      
+  bomp_html = show()
+  #print bomp_html
+  
+  # Results are in the only <table> on this page, formatted like:
+  # <tr><th>gi|107836852|gb|ABF84721.1<th>5</tr>
+  from BeautifulSoup import BeautifulSoup
+  soup = BeautifulSoup(bomp_html)
+  bomp_categories = {} # dictionary of {name, category} pairs
+  for tr in soup.findAll('tr')[1:]:
+    n, c = tr.findAll('th')
+    name = n.text.split()[0].strip()
+    category = int(c.text)
+    bomp_categories[name] = category
+  
+  # write BOMP results to a tab delimited file
+  fh = open(bomp_out, 'w')
+  for k,v in bomp_categories.iteritems():
+    fh.write("%s\t%i\n" % (k,v))
+  fh.close()
+  
+  #print bomp_categories
+  
+  # label proteins with bomp classification (int) or False
+  for name in proteins:
+    if "bomp" not in proteins[name]:
+      if name in bomp_categories:
+        category = bomp_categories[name]
+        proteins[name]['bomp'] = category
+      else:
+        proteins[name]['bomp'] = False
+  
+  #print proteins
+  
+  return bomp_categories
+  
+  """
+  # Alternative: just get binary classification results via the
+  #              FASTA output BOMP links to
+  #
+  # use the job id to jump straight to the fasta results
+  # if a sequence is here, it's classified as an OMP barrel
+  go("viewFasta?id=%i" % (job_id))
+  bomp_seqs = show()
+  bomp_fasta_headers = read_fasta_keys(StringIO.StringIO(show()))
+  # label the predicted TMBs
+  for name in bomp_fasta_headers:
+    proteins[name]['bomp'] = True
+    
+  # label all the non-TMBs
+  for name in proteins:
+    if "bomp" not in proteins[name]:
+      proteins[name]['bomp'] = False
+  """
+
 
 def tmhmm(parms, proteins):
   tmhmm_out = basename(parms) + '.tmhmm.out'
@@ -298,7 +419,6 @@ def chop_nterminal_peptide(protein, i_cut):
         loops[i] = (1, k)
   protein['n_tmhmm_helix'] = len(protein['tmhmm_helices'])
 
-
 def has_surface_exposed_loop(parms, protein, program='tmhmm'):
   terminal_exposed_loop_min = parms['terminal_exposed_loop_min']
   internal_exposed_loop_min = parms['internal_exposed_loop_min']
@@ -381,11 +501,14 @@ def predict_surface_exposure(parms, protein):
 
   return s, "CYTOPLASM"
 
-
-def identify_pse_proteins(parms, fasta):
-  parms['fasta'] = fasta
+def init(parms):
+  """
+  Initialize the proteins data structure (dictionary keyed by sequence id).
+  Takes a parameter dictionary as input.
+  Returns a tuple (sequence id, proteins).
+  """
   # initialize the proteins data structure
-  headers = read_fasta_keys(fasta)
+  headers = read_fasta_keys(parms['fasta'])
   proteins = {}
   prot_ids = []
   for header in headers:
@@ -398,9 +521,20 @@ def identify_pse_proteins(parms, fasta):
       'n_tmhmm_helix': 0,
       'name': ' '.join(header.split()[1:]),
     }
+<<<<<<< HEAD
   for extract_protein_feature in [memsat3]:\
       # FIXME: temporarily commented for testing
       #[signalp4, lipop1, tmhmm, hmmsearch3]:
+=======
+    
+  return prot_ids, proteins
+
+def identify_pse_proteins(parms):
+  prot_ids, proteins = init(parms)
+  
+  for extract_protein_feature in \
+      [signalp4, lipop1, tmhmm, hmmsearch3, bomp_web]:
+>>>>>>> 2677e7c38fe9f967231da7c40f4900e57898f769
     extract_protein_feature(parms, proteins)
   for prot_id in prot_ids:
     details, category = \
@@ -418,20 +552,18 @@ def identify_pse_proteins(parms, fasta):
 
 if __name__ == "__main__":
   fasta = sys.argv[1]
-  prot_ids, proteins = identify_pse_proteins(
-      parms, fasta)
+  parms['fasta'] = fasta
+  prot_ids, proteins = identify_pse_proteins(parms)
   for prot_id in prot_ids:
     protein = proteins[prot_id]
+    word = prot_id.split()[0]
+    if "!" in word:
+      prot_id = word.split("|")[1]
+    else:
+      prot_id = word
     print "%-15s %-13s %-20s %s" % \
-        (prot_id.split("|")[1], 
+        (word, 
          protein['category'], 
          protein['details'],
          protein['name'][:60])
-
-
-  
-
-
-
-
 
