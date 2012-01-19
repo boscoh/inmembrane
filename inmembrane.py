@@ -1,4 +1,4 @@
-import sys, os, math, glob, re
+import sys, os, math, glob, re, subprocess
 
 default_parms_str = """{
   'organism': 'gram+',
@@ -32,9 +32,25 @@ def basename(parms):
   return '.'.join(os.path.splitext(parms['fasta'])[:-1])
 
 
+def run_with_output(cmd):
+  p = subprocess.Popen(
+      cmd, shell=True, stdout=subprocess.PIPE, 
+      stderr=subprocess.PIPE)
+  return p.stdout.read()
+
+
 def run(cmd, out_file="log.txt"):
   if not out_file:
     out_file = "/dev/null"
+  binary = cmd.split()[0]
+  is_binary_there = False
+  if os.path.isfile(binary):
+    is_binary_there = True
+  if run_with_output('which ' + binary):
+    is_binary_there = True
+  if not is_binary_there:
+    print "# Error: couldn't run executable " + binary
+    sys.exit(1)
   full_cmd = cmd + " > " + out_file
   print "#", full_cmd
   if os.path.isfile(out_file) and (out_file != None):
@@ -415,7 +431,7 @@ def identify_pse_proteins(parms, fasta):
       'n_tmhmm_helix': 0,
       'name': ' '.join(header.split()[1:]),
     }
-  for extract_protein_feature in [memsat3]:\
+  for extract_protein_feature in [tmhmm, signalp4]:\
       # FIXME: temporarily commented for testing
       #[signalp4, lipop1, tmhmm, hmmsearch3]:
     extract_protein_feature(parms, proteins)
