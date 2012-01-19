@@ -1,18 +1,22 @@
-import sys, os, math, glob, re, subprocess
+import sys, os, math, glob, re, subprocess, shutil
+
+
 
 default_parms_str = """{
   'organism': 'gram+',
   'signalp4_bin': 'signalp',
   'lipop1_bin': 'LipoP',
   'tmhmm_bin': 'tmhmm',
-  'hmmsearch3_bin': 'hmmsearch',
   'memsat3_bin': 'runmemsat',
+  'hmmsearch3_bin': 'hmmsearch',
   'hmm_profiles_dir': '%(hmm_profiles)s',
   'hmm_evalue_cutoff': 0.01,
   'terminal_exposed_loop_min': 50,
   'internal_exposed_loop_min': 100,
 }
 """
+
+
 def get_parms():
   module_dir = os.path.abspath(os.path.dirname(__file__))
   config = os.path.join(module_dir, 'inmembrane.config')
@@ -88,7 +92,7 @@ def hmmsearch3(parms, proteins):
     parms['hmm_profile'] = hmm_profile
     hmm_profile = os.path.basename(parms['hmm_profile'])
     hmm_name = hmm_profile.replace('.hmm', '')
-    hmmsearch3_out = '%s.hmm.%s.out' % (base, hmm_name)
+    hmmsearch3_out = 'hmm.%s.out' % hmm_name
     run('%(hmmsearch3_bin)s -Z 2000 -E 10 %(hmm_profile)s %(fasta)s' % \
           parms, hmmsearch3_out)
     name = None
@@ -108,7 +112,7 @@ def hmmsearch3(parms, proteins):
 
 
 def signalp4(parms, proteins):
-  signalp4_out = basename(parms) + '.signalp.out'
+  signalp4_out = 'signalp.out'
   run('%(signalp4_bin)s -t %(organism)s  %(fasta)s' % parms, signalp4_out)
   for l in open(signalp4_out):
     if l.startswith("#"):
@@ -122,7 +126,7 @@ def signalp4(parms, proteins):
 
 
 def lipop1(parms, proteins):
-  lipop1_out = basename(parms) + '.lipop.out' 
+  lipop1_out = 'lipop.out'
   run('%(lipop1_bin)s %(fasta)s' % parms, lipop1_out)
   for l in open(lipop1_out):
     words = l.split()
@@ -140,10 +144,12 @@ def lipop1(parms, proteins):
 
 
 def tmhmm(parms, proteins):
-  tmhmm_out = basename(parms) + '.tmhmm.out'
+  tmhmm_out = 'tmhmm.out'
   run('%(tmhmm_bin)s %(fasta)s' % parms, tmhmm_out)
   name = None
-  for l in open(tmhmm_out):
+  for i_line, l in enumerate(open(tmhmm_out)):
+    if i_line == 0:
+      continue
     words = l.split()
     if not words:
       continue
@@ -176,15 +182,6 @@ def tmhmm(parms, proteins):
           (int(words[-2]), int(words[-1])))
 
 
-def tmp_fasta_file(prot_id, seq):
-  # FIXME: use proper python temp file, or make a directory
-  #        full of output files named by sequence ID
-  tmpseq = open('tmp.fasta','w')
-  tmpseq.write(">%s\n%s\n" % (prot_id, seq))
-  tmpseq.close()
-  return 'tmp.fasta'
-  
-  
 def memsat3(parms, proteins):
   """
   Runs MEMSAT3 and parses the output files. Takes a standard 'inmembrane'
@@ -210,30 +207,34 @@ def memsat3(parms, proteins):
      number of each predicted outer loop segment;
   """
 
-  memsat3_out = basename(parms) + '.memsat3.out'
   for prot_id in proteins:
     seq = get_fasta_seq_by_id(parms['fasta'], prot_id)
     sequence_length = len(seq)
-    temp_fasta = tmp_fasta_file(prot_id, seq)
-    parms['temp_fasta'] = temp_fasta
-    run('%(memsat3_bin)s %(temp_fasta)s' % parms, 'tmp.memsat')
 
+    # FIXME: use proper python temp file, or make a directory
+    #        full of output files named by sequence ID
+    fname = prot_id.replace("|", "_") + '.fasta'
+    single_fasta = fname
+    f = open(single_fasta,'w')
+    f.write(">%s\n%s\n" % (prot_id, seq))
+    f.close()
+    memsat_out = single_fasta.replace('fasta', 'memsat')
+    run('%s %s' % (parms['memsat3_bin'], single_fasta), memsat_out)
+
+    # parse the final prediction scores from MEMSAT3 output
+    f = open(memsat_out)
+    l = f.readline()
     protein = proteins[prot_id]
     protein.update({
       'n_memsat3_helix':0, 
-      'sequence_length':len(seq),
+      'sequence_length':sequence_length,
+      'memsat3_scores':[],
       'memsat3_helices':[],
       'memsat3_inner_loops':[],
       'memsat3_outer_loops':[]
     })
-    memsat3_helices = protein['memsat3_helices']
-    memsat3_scores = protein['memsat3_scores']
     inner_loops = protein['memsat3_inner_loops']
     outer_loops = protein['memsat3_outer_loops']
-
-    f = open('tmp.memsat')
-    l = f.readline()
-    # parse the final prediction scores from MEMSAT3 output
     while l:
       l = f.readline()
       if l == "FINAL PREDICTION\n":
@@ -250,9 +251,9 @@ def memsat3(parms, proteins):
             side_of_membrane_nterminus = tokens[0][1:-1] # 'in' or 'out'
           i = int(tokens[0+tok_offset].split('-')[0])
           j = int(tokens[0+tok_offset].split('-')[1])
-          memsat3_helices.append((i, j))
+          protein['memsat3_helices'].append((i, j))
           memsat3_score = float(tokens[1+tok_offset][1:-1])
-          memsat3_scores.append(memsat3_score)
+          protein['memsat3_scores'].append(memsat3_score)
           l = f.readline()
           s = l.split(":")
           protein['n_memsat3_helix'] += 1
@@ -269,7 +270,7 @@ def memsat3(parms, proteins):
         elif side_of_membrane_nterminus == 'in':
           current_side = 'in'
         loop_start = 1
-        for tm in memsat3_helices:
+        for tm in protein['memsat3_helices']:
           loop_end = tm[0] - 1
           loop = (loop_start, loop_end)
           if current_side == 'out':
@@ -298,14 +299,12 @@ def memsat3(parms, proteins):
           l = f.readline()
         """
     f.close()
-    if len(memsat3_helices) > 0:
-      # print proteins[prot_id]
-      # print (seq, tm_pred, memsat3_helices, 
-      #     protein['n_memsat3_helix'])
-      pass
-    else:
-      # print (None, None, None, None)
-      pass
+#     if len(protein['memsat3_helices']) > 0:
+#       print (seq, tm_pred, protein['memsat3_helices'], 
+#           protein['n_memsat3_helix'])
+#     else:
+#       print (None, None, None, None)
+      
 
 def chop_nterminal_peptide(protein, i_cut):
   protein['sequence_length'] -= i_cut
@@ -410,10 +409,15 @@ def predict_surface_exposure(parms, protein):
   return s, "CYTOPLASM"
 
 
-def identify_pse_proteins(parms, fasta):
-  parms['fasta'] = fasta
+def identify_pse_proteins(parms):
   # initialize the proteins data structure
-  headers = read_fasta_keys(fasta)
+  headers = read_fasta_keys(parms['fasta'])
+  base = basename(parms)
+  if not os.path.isdir(base):
+    os.makedirs(base)
+  shutil.copy(parms['fasta'], base)
+  parms['fasta'] = os.path.basename(parms['fasta'])
+  os.chdir(base)
   proteins = {}
   prot_ids = []
   for header in headers:
@@ -424,11 +428,13 @@ def identify_pse_proteins(parms, fasta):
       'is_signalp': False,
       'is_lipop': None,
       'n_tmhmm_helix': 0,
+      'n_memsat3_helix': 0,
       'name': ' '.join(header.split()[1:]),
     }
-  for extract_protein_feature in [memsat3, signalp4]:\
+  for extract_protein_feature in \
+      [signalp4, lipop1, tmhmm, hmmsearch3, memsat3]:
+      #       [memsat3, signalp4]:
       # FIXME: temporarily commented for testing
-      #[signalp4, lipop1, tmhmm, hmmsearch3]:
     extract_protein_feature(parms, proteins)
   for prot_id in prot_ids:
     details, category = \
@@ -445,10 +451,9 @@ def identify_pse_proteins(parms, fasta):
 
 
 if __name__ == "__main__":
-  fasta = sys.argv[1]
   parms = get_parms()
-  prot_ids, proteins = identify_pse_proteins(
-      parms, fasta)
+  parms['fasta'] = sys.argv[1]
+  prot_ids, proteins = identify_pse_proteins(parms)
   for prot_id in prot_ids:
     protein = proteins[prot_id]
     print "%-15s %-13s %-20s %s" % \
