@@ -419,8 +419,8 @@ def identify_pse_proteins(params):
     }
 
   for extract_protein_feature in \
-      [memsat3]:
-      # [signalp4, lipop1, tmhmm, hmmsearch3]:
+      [signalp4, lipop1, tmhmm, hmmsearch3]:
+#       [memsat3]:
     extract_protein_feature(params, proteins)
 
   for prot_id in prot_ids:
