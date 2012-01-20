@@ -330,7 +330,7 @@ def has_surface_exposed_loop(parms, protein, program='tmhmm'):
   terminal_exposed_loop_min = parms['terminal_exposed_loop_min']
   internal_exposed_loop_min = parms['internal_exposed_loop_min']
 
-  tmhmm_outer_loops = protein['%s_outer_loops' % (program)]
+  outer_loops = protein['%s_outer_loops' % (program)]
   sequence_length = protein['sequence_length']
   has_no_transmembrane_helices = protein['n_%s_helix' % (program)] == 0
 
@@ -340,26 +340,26 @@ def has_surface_exposed_loop(parms, protein, program='tmhmm'):
     # treat protein as one entire exposed loop
     return sequence_length >= terminal_exposed_loop_min
 
-  if not tmhmm_outer_loops:
+  if not outer_loops:
     return False
 
   # if the N-terminal loop sticks outside
-  if tmhmm_outer_loops[0][0] == 1:
-    nterminal_loop = tmhmm_outer_loops[0]
-    del tmhmm_outer_loops[0]
+  if outer_loops[0][0] == 1:
+    nterminal_loop = outer_loops[0]
+    del outer_loops[0]
     if loop_len(nterminal_loop) >= terminal_exposed_loop_min:
       return True
 
   # if the C-terminal loop sticks outside
-  if tmhmm_outer_loops:
-    if tmhmm_outer_loops[-1][-1] == sequence_length:
-      cterminal_loop = tmhmm_outer_loops[-1]
-      del tmhmm_outer_loops[-1]
+  if outer_loops:
+    if outer_loops[-1][-1] == sequence_length:
+      cterminal_loop = outer_loops[-1]
+      del outer_loops[-1]
       if loop_len(cterminal_loop) >= terminal_exposed_loop_min:
         return True
 
   # test remaining outer loops for length
-  for loop in tmhmm_outer_loops:
+  for loop in outer_loops:
     if loop_len(loop) >= internal_exposed_loop_min:
       return True
 
