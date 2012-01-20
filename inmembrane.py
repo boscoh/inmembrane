@@ -292,7 +292,7 @@ def memsat3(params, proteins):
 
     if has_transmembrane_in_globmem(globmem_out):
       parse_memsat(protein, memsat_out)
-    print (protein['memsat3_helices'], protein['n_memsat3_helix'])
+    # print (protein['memsat3_helices'], protein['n_memsat3_helix'])
       
 
 def chop_nterminal_peptide(protein, i_cut):
