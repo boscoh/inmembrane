@@ -197,8 +197,6 @@ def parse_memsat(protein, memsat_out):
     inner_loops = protein['memsat3_inner_loops']
     outer_loops = protein['memsat3_outer_loops']
     sequence_length = protein['sequence_length']
-    
-    # parse tm spanning residues and confidence scores
     f = open(memsat_out)
     l = f.readline()
     while l:
@@ -207,6 +205,8 @@ def parse_memsat(protein, memsat_out):
         f.readline()
         l = f.readline()
         s = l.split(":")
+
+        # parse tm spanning residues and confidence scores
         while re.match("\d", l[0]):
           tokens = s[1].strip().split()
           tok_offset = 0
@@ -225,28 +225,23 @@ def parse_memsat(protein, memsat_out):
 
         # record inner and outer loops
         if side_of_membrane_nterminus == 'out':
-          current_side = 'out'
+          loops = outer_loops
         elif side_of_membrane_nterminus == 'in':
-          current_side = 'in'
+          loops = inner_loops
         loop_start = 1
         for tm in protein['memsat3_helices']:
           loop_end = tm[0] - 1
           loop = (loop_start, loop_end)
-          if current_side == 'out':
-            outer_loops.append((loop_start, loop_end))
-            current_side = 'in'
-          elif current_side == 'in':
-            inner_loops.append((loop_start, loop_end))
-            current_side = 'out'
+          loops.append((loop_start, loop_end))
+          if loops == inner_loops:
+            loops == outer_loops
+          else:
+            loops == inner_loops
           loop_start = tm[1] + 1     
-
         # capture C-terminal loop segment
         loop_start = tm[1]+1
         loop_end = sequence_length
-        if current_side == 'out':
-          outer_loops.append((loop_start, loop_end))
-        elif current_side == 'in':
-          inner_loops.append((loop_start, loop_end))
+        loops.append((loop_start, loop_end))
     f.close()
 
     
