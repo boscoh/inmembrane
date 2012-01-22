@@ -39,10 +39,6 @@ def get_params():
   return params
 
 
-def get_base_dir(params):
-  return '.'.join(os.path.splitext(params['fasta'])[:-1])
-
-
 def dict_prop_truthy(this_dict, prop):
   if prop not in this_dict:
     return False
@@ -201,9 +197,7 @@ def has_transmembrane_in_globmem(globmem_out):
 
 
 def parse_memsat(protein, memsat_out):
-    inner_loops = protein['memsat3_inner_loops']
-    outer_loops = protein['memsat3_outer_loops']
-    sequence_length = protein['sequence_length']
+    # parse tm spanning residues and confidence scores
     f = open(memsat_out)
     l = f.readline()
     while l:
@@ -212,25 +206,26 @@ def parse_memsat(protein, memsat_out):
         f.readline()
         l = f.readline()
         s = l.split(":")
-
-        # parse tm spanning residues and confidence scores
         while re.match("\d", l[0]):
           tokens = s[1].strip().split()
           tok_offset = 0
           if len(tokens) > 2:
             tok_offset = 1
             side_of_membrane_nterminus = tokens[0][1:-1] # 'in' or 'out'
-          i = int(tokens[0+tok_offset].split('-')[0])
-          j = int(tokens[0+tok_offset].split('-')[1])
+          i = int(tokens[tok_offset].split('-')[0])
+          j = int(tokens[tok_offset].split('-')[1])
           protein['memsat3_helices'].append((i, j))
-          memsat3_score = float(tokens[1+tok_offset][1:-1])
-          protein['memsat3_scores'].append(memsat3_score)
+          score = float(tokens[1+tok_offset][1:-1])
+          protein['memsat3_scores'].append(score)
+          protein['n_memsat3_helix'] += 1
           l = f.readline()
           s = l.split(":")
-          protein['n_memsat3_helix'] += 1
         f.readline()
-
+        
         # record inner and outer loops
+        inner_loops = protein['memsat3_inner_loops']
+        outer_loops = protein['memsat3_outer_loops']
+        sequence_length = protein['sequence_length']
         if side_of_membrane_nterminus == 'out':
           loops = outer_loops
         elif side_of_membrane_nterminus == 'in':
@@ -240,17 +235,19 @@ def parse_memsat(protein, memsat_out):
           loop_end = tm[0] - 1
           loop = (loop_start, loop_end)
           loops.append((loop_start, loop_end))
-          if loops == inner_loops:
-            loops == outer_loops
+          if loops == outer_loops:
+            loops = inner_loops
           else:
-            loops == inner_loops
+            loops = outer_loops
           loop_start = tm[1] + 1     
         # capture C-terminal loop segment
         loop_start = tm[1]+1
         loop_end = sequence_length
         loops.append((loop_start, loop_end))
+
     f.close()
 
+    
     
 def memsat3(params, proteins):
   """
@@ -291,15 +288,16 @@ def memsat3(params, proteins):
 
     # write seq to single fasta file
     single_fasta = prot_id.replace("|", "_") + '.fasta'
-    open(single_fasta, 'w').write(">%s\n%s\n" % (prot_id, seq))
-
+    if not os.path.isfile(single_fasta):
+      open(single_fasta, 'w').write(">%s\n%s\n" % (prot_id, seq))
     memsat_out = single_fasta.replace('fasta', 'memsat')
-    globmem_out = single_fasta.replace('fasta', 'globmem')
     run('%s %s' % (params['memsat3_bin'], single_fasta), memsat_out)
 
+    globmem_out = single_fasta.replace('fasta', 'globmem')
     if has_transmembrane_in_globmem(globmem_out):
       parse_memsat(protein, memsat_out)
-    # print (protein['memsat3_helices'], protein['n_memsat3_helix'])
+#     print (protein['memsat3_helices'], protein['n_memsat3_helix'],
+#          protein['memsat3_inner_loops'], protein['memsat3_outer_loops'])
       
 
 def chop_nterminal_peptide(protein, i_cut):
@@ -333,7 +331,7 @@ def eval_surface_exposed_loop(
   if not outer_loops:
     return False
 
-  loop_len = lambda loop: abs(int(loop[1])-int(loop[0])) + 1
+  loop_len = lambda loop: abs(loop[1]-loop[0]) + 1
 
   # if the N-terminal loop sticks outside
   if outer_loops[0][0] == 1:
@@ -408,13 +406,14 @@ def identify_pse_proteins(params):
   if dict_prop_truthy(params, 'out_dir'):
     base_dir = params['out_dir']
   else:
-    base_dir = get_base_dir(params)
-
+    base_dir = '.'.join(os.path.splitext(params['fasta'])[:-1])
   if not os.path.isdir(base_dir):
     os.makedirs(base_dir)
+
   fasta = os.path.basename(params['fasta'])
   shutil.copy(params['fasta'], os.path.join(base_dir, fasta))
   params['fasta'] = fasta
+
   os.chdir(base_dir)
 
   # initialize the proteins data structure
@@ -427,8 +426,9 @@ def identify_pse_proteins(params):
       'name': ' '.join(header.split()[1:]),
     }
 
-  # for extract_protein_feature in [signalp4, lipop1, tmhmm, hmmsearch3]:
-  for extract_protein_feature in [memsat3]:
+  for extract_protein_feature in \
+      [signalp4, lipop1, tmhmm, hmmsearch3, memsat3]:
+#       [memsat3]:
     extract_protein_feature(params, proteins)
 
   for prot_id in prot_ids:
