@@ -13,6 +13,7 @@ default_params_str = """{
   'signalp4_bin': 'signalp',
   'lipop1_bin': 'LipoP',
   'tmhmm_bin': 'tmhmm',
+  'helix_program': 'tmhmm',
   'memsat3_bin': 'runmemsat',
   'hmmsearch3_bin': 'hmmsearch',
   'hmm_profiles_dir': '%(hmm_profiles)s',
@@ -72,8 +73,25 @@ def run(cmd, out_file=None):
   os.system(full_cmd)
 
 
-def read_fasta_keys(fname):
-  return [l[1:] for l in open(fname) if l.startswith(">")]
+def create_protein_data_structure(fasta):
+  prot_ids = []
+  prot_id = None
+  proteins = {}
+  for l in open(fasta):
+    if l.startswith(">"):
+      tokens = l.split()
+      prot_id = tokens[0][1:]
+      prot_ids.append(prot_id)
+      proteins[prot_id] = {
+        'seq':"",
+        'name':' '.join(tokens[1:])
+      }
+      continue
+    if prot_id is not None:
+      words = l.split()
+      if words:
+        proteins[prot_id]['seq'] += words[0]
+  return prot_ids, proteins
 
 
 def get_fasta_seq_by_id(fname, prot_id):
@@ -215,9 +233,9 @@ def parse_memsat(protein, memsat_out):
           i = int(tokens[tok_offset].split('-')[0])
           j = int(tokens[tok_offset].split('-')[1])
           protein['memsat3_helices'].append((i, j))
+          protein['n_memsat3_helix'] += 1
           score = float(tokens[1+tok_offset][1:-1])
           protein['memsat3_scores'].append(score)
-          protein['n_memsat3_helix'] += 1
           l = f.readline()
           s = l.split(":")
         f.readline()
@@ -275,8 +293,8 @@ def memsat3(params, proteins):
   """
 
   for prot_id in proteins:
-    seq = get_fasta_seq_by_id(params['fasta'], prot_id)
     protein = proteins[prot_id]
+    seq = protein['seq']
     protein.update({
       'n_memsat3_helix':0, 
       'sequence_length':len(seq),
@@ -302,22 +320,29 @@ def memsat3(params, proteins):
 
 def chop_nterminal_peptide(protein, i_cut):
   protein['sequence_length'] -= i_cut
-  for loop_type in ['tmhmm_outer_loops', 'tmhmm_inner_loops', 'tmhmm_helices']:
-    loops = protein[loop_type]
-    for i in range(len(loops)):
-      j, k = loops[i]
-      loops[i] = (j - i_cut, k - i_cut)
-  for loop_type in ['tmhmm_outer_loops', 'tmhmm_inner_loops', 'tmhmm_helices']:
-    loops = protein[loop_type]
-    for i in reversed(range(len(loops))):
-      j, k = loops[i]
-      # tests if this loop has been cut out
-      if j<=0 and k<=0:
-        del loops[i]
-      # otherewise, neg value means loop is at the new N-terminal
-      elif j<=0 and k>0:
-        loops[i] = (1, k)
-  protein['n_tmhmm_helix'] = len(protein['tmhmm_helices'])
+  for prop in protein:
+    if '_loops' in prop or '_helices' in prop:
+      loops = protein[loop_type]
+      for i in range(len(loops)):
+        j, k = loops[i]
+        loops[i] = (j - i_cut, k - i_cut)
+  for prop in protein:
+    if '_loops' in prop or '_helices' in prop:
+      loops = protein[loop_type]
+      for i in reversed(range(len(loops))):
+        j, k = loops[i]
+        # tests if this loop has been cut out
+        if j<=0 and k<=0:
+          del loops[i]
+        # otherewise, neg value means loop is at the new N-terminal
+        elif j<=0 and k>0:
+          loops[i] = (1, k)
+  for prop in protein:
+    if '_helices' in prop:
+      n = len(protein[prop])
+      program = prop.replace('_helices', '')
+      protein['n_%s_helix' % program] = n
+      print 'n_%s_helix' % program, prop
 
 
 def eval_surface_exposed_loop(
@@ -356,50 +381,59 @@ def eval_surface_exposed_loop(
   return False
 
 
-def has_surface_exposed_loop(params, protein, program='tmhmm'):
-  return eval_surface_exposed_loop(
-    protein['sequence_length'], 
-    protein['n_%s_helix' % (program)], 
-    protein['%s_outer_loops' % (program)], 
-    params['terminal_exposed_loop_min'], 
-    params['internal_exposed_loop_min'])
-
-
 def predict_surface_exposure(params, protein):
-  if dict_prop_truthy(protein, 'hmmsearch'):
-    return "hmmsearch;", "PSE"
+  program = params['helix_program']
+  terminal_exposed_loop_min = \
+      params['terminal_exposed_loop_min']
+
+  is_hmm_profile_match = dict_prop_truthy(protein, 'hmmsearch')
+  is_lipop = dict_prop_truthy(protein, 'is_lipop')
+  if is_lipop:
+    i_lipop_cut = protein['lipop_cleave_position']
+  is_signalp = dict_prop_truthy(protein, 'is_signalp')
+  if is_signalp:
+    i_signalp_cut = protein['signalp_cleave_position']
+
+  def sequence_length(protein):
+    return protein['sequence_length']
+    
+  def has_tm_helix(protein):
+    return dict_prop_truthy(protein, 'n_%s_helix' % program)
+
+  def has_surface_exposed_loop(protein):
+    return eval_surface_exposed_loop(
+      protein['sequence_length'], 
+      protein['n_%s_helix' % (program)], 
+      protein['%s_outer_loops' % (program)], 
+      params['terminal_exposed_loop_min'], 
+      params['internal_exposed_loop_min'])
 
   details = ""
-  
-  if dict_prop_truthy(protein, 'is_lipop'): 
+  if is_hmm_profile_match:
+    details += "hmmsearch;"
+    return details, "PSE"
+  if is_lipop: 
     details += "lipop;"
-    chop_nterminal_peptide(protein, protein['lipop_cleave_position'])
-    if not dict_prop_truthy(protein, 'n_tmhmm_helix'):
-      if protein['sequence_length'] < params['terminal_exposed_loop_min']:
+    chop_nterminal_peptide(protein, i_lipop_cut)
+  elif is_signalp:
+    details += "signalp;"
+    chop_nterminal_peptide(protein, i_signalp_cut)
+  if has_tm_helix(protein):
+    details += program + ";"
+    if has_surface_exposed_loop(protein):
+      return details, "PSE"
+    else:
+      return details, "MEMBRANE"
+  else:
+    if is_lipop:
+      if sequence_length(protein) < terminal_exposed_loop_min:
         return details, "MEMBRANE"
       else:
         return details, "PSE"
-  elif dict_prop_truthy(protein, 'is_signalp'):
-    details += "signalp;"
-    chop_nterminal_peptide(protein, protein['signalp_cleave_position'])
-    if not dict_prop_truthy(protein, 'n_tmhmm_helix'):
+    elif is_signalp:
       return details, "SECRETED"
-
-  if dict_prop_truthy(protein, 'n_tmhmm_helix'):
-    details += "tmhmm;"
-    if has_surface_exposed_loop(params, protein, program='tmhmm'):
-      return details, "PSE"
-    else:
-      return details, "MEMBRANE"
-
-  if dict_prop_truthy(protein, 'n_memsat3_helix'):
-    details += "memsat3;"
-    if has_surface_exposed_loop(params, protein, program='memsat3'):
-      return details, "PSE"
-    else:
-      return details, "MEMBRANE"
-
-  return details, "CYTOPLASM"
+    else
+      return details, "CYTOPLASM"
 
 
 def identify_pse_proteins(params):
@@ -410,25 +444,17 @@ def identify_pse_proteins(params):
   if not os.path.isdir(base_dir):
     os.makedirs(base_dir)
 
-  fasta = os.path.basename(params['fasta'])
+  fasta = "input.fasta"
   shutil.copy(params['fasta'], os.path.join(base_dir, fasta))
   params['fasta'] = fasta
 
   os.chdir(base_dir)
 
   # initialize the proteins data structure
-  proteins = {}
-  prot_ids = []
-  for header in read_fasta_keys(fasta):
-    prot_id = header.split()[0]
-    prot_ids.append(prot_id)
-    proteins[prot_id] = {
-      'name': ' '.join(header.split()[1:]),
-    }
-
+  prot_ids, proteins = create_protein_data_structure(fasta)
+  print prot_ids, proteins
   for extract_protein_feature in \
       [signalp4, lipop1, tmhmm, hmmsearch3, memsat3]:
-#       [memsat3]:
     extract_protein_feature(params, proteins)
 
   for prot_id in prot_ids:
@@ -463,7 +489,7 @@ if __name__ == "__main__":
       parser.print_help()
       sys.exit(1)
 
-  if not params['fasta']:
+  if 'fasta' not in params or not params['fasta']:
       params['fasta'] = args[0]
 
   prot_ids, proteins = identify_pse_proteins(params)
