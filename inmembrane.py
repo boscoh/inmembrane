@@ -1,4 +1,11 @@
-import sys, os, math, glob, re, subprocess, shutil
+import sys
+import os
+import math
+import glob
+import re
+import subprocess
+import shutil
+from optparse import OptionParser
 
 
 default_params_str = """{
@@ -437,10 +444,30 @@ def identify_pse_proteins(params):
   return prot_ids, proteins
 
 
+description = """
+Inmembrane is a python script that sequentially carries out
+bioinformatic analysis of a fasta file, collates the results
+and generates a combined analysis of all the analyses.
+
+(c) 2001 Bosco Ho and Andrew Perry
+"""
+
 if __name__ == "__main__":
+  parser = OptionParser()
+  (options, args) = parser.parse_args()
+
   params = get_params()
-  params['fasta'] = sys.argv[1]
+  
+  if ('fasta' not in params or not params['fasta']) and not args:
+      print description
+      parser.print_help()
+      sys.exit(1)
+
+  if not params['fasta']:
+      params['fasta'] = args[0]
+
   prot_ids, proteins = identify_pse_proteins(params)
+
   for prot_id in prot_ids:
     protein = proteins[prot_id]
     word = prot_id.split()[0]
