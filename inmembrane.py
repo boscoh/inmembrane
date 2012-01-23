@@ -186,14 +186,13 @@ def tmhmm(params, proteins):
       continue
     if 'tmhmm_helices' not in proteins[name]:
       proteins[name].update({
-        'n_tmhmm_helix':0, 
         'sequence_length':0,
         'tmhmm_helices':[],
         'tmhmm_inner_loops':[],
         'tmhmm_outer_loops':[]
       })
     if 'Number of predicted TMHs' in l:
-      proteins[name]['n_tmhmm_helix'] = int(words[-1])
+      n_helix = int(words[-1])
     if 'Length' in l:
       proteins[name]['sequence_length'] = int(words[-1])
     if 'inside' in l:
@@ -205,6 +204,7 @@ def tmhmm(params, proteins):
     if 'TMhelix' in l:
       proteins[name]['tmhmm_helices'].append(
           (int(words[-2]), int(words[-1])))
+      assert len(proteins[name]['tmhmm_helices']) == n_helix
 
 
 def has_transmembrane_in_globmem(globmem_out):
@@ -296,7 +296,6 @@ def memsat3(params, proteins):
     protein = proteins[prot_id]
     seq = protein['seq']
     protein.update({
-      'n_memsat3_helix':0, 
       'sequence_length':len(seq),
       'memsat3_scores':[],
       'memsat3_helices':[],
@@ -314,8 +313,6 @@ def memsat3(params, proteins):
     globmem_out = single_fasta.replace('fasta', 'globmem')
     if has_transmembrane_in_globmem(globmem_out):
       parse_memsat(protein, memsat_out)
-#     print (protein['memsat3_helices'], protein['n_memsat3_helix'],
-#          protein['memsat3_inner_loops'], protein['memsat3_outer_loops'])
       
 
 def chop_nterminal_peptide(protein, i_cut):
@@ -337,12 +334,6 @@ def chop_nterminal_peptide(protein, i_cut):
         # otherewise, neg value means loop is at the new N-terminal
         elif j<=0 and k>0:
           loops[i] = (1, k)
-  for prop in protein:
-    if '_helices' in prop:
-      n = len(protein[prop])
-      program = prop.replace('_helices', '')
-      protein['n_%s_helix' % program] = n
-      print 'n_%s_helix' % program, prop
 
 
 def eval_surface_exposed_loop(
@@ -398,12 +389,12 @@ def predict_surface_exposure(params, protein):
     return protein['sequence_length']
     
   def has_tm_helix(protein):
-    return dict_prop_truthy(protein, 'n_%s_helix' % program)
+    return dict_prop_truthy(protein, '%s_helices' % program)
 
   def has_surface_exposed_loop(protein):
     return eval_surface_exposed_loop(
       protein['sequence_length'], 
-      protein['n_%s_helix' % (program)], 
+      len(protein['%s_helices' % (program)]), 
       protein['%s_outer_loops' % (program)], 
       params['terminal_exposed_loop_min'], 
       params['internal_exposed_loop_min'])
