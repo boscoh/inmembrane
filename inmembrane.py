@@ -314,21 +314,19 @@ def memsat3(params, proteins):
     globmem_out = single_fasta.replace('fasta', 'globmem')
     if has_transmembrane_in_globmem(globmem_out):
       parse_memsat(protein, memsat_out)
-#     print (protein['memsat3_helices'], protein['n_memsat3_helix'],
-#          protein['memsat3_inner_loops'], protein['memsat3_outer_loops'])
       
 
 def chop_nterminal_peptide(protein, i_cut):
   protein['sequence_length'] -= i_cut
   for prop in protein:
     if '_loops' in prop or '_helices' in prop:
-      loops = protein[loop_type]
+      loops = protein[prop]
       for i in range(len(loops)):
         j, k = loops[i]
         loops[i] = (j - i_cut, k - i_cut)
   for prop in protein:
     if '_loops' in prop or '_helices' in prop:
-      loops = protein[loop_type]
+      loops = protein[prop]
       for i in reversed(range(len(loops))):
         j, k = loops[i]
         # tests if this loop has been cut out
@@ -342,7 +340,6 @@ def chop_nterminal_peptide(protein, i_cut):
       n = len(protein[prop])
       program = prop.replace('_helices', '')
       protein['n_%s_helix' % program] = n
-      print 'n_%s_helix' % program, prop
 
 
 def eval_surface_exposed_loop(
@@ -426,13 +423,14 @@ def predict_surface_exposure(params, protein):
       return details, "MEMBRANE"
   else:
     if is_lipop:
+      # the protein is stuck to the lipid
       if sequence_length(protein) < terminal_exposed_loop_min:
         return details, "MEMBRANE"
       else:
         return details, "PSE"
     elif is_signalp:
       return details, "SECRETED"
-    else
+    else:
       return details, "CYTOPLASM"
 
 
@@ -452,7 +450,6 @@ def identify_pse_proteins(params):
 
   # initialize the proteins data structure
   prot_ids, proteins = create_protein_data_structure(fasta)
-  print prot_ids, proteins
   for extract_protein_feature in \
       [signalp4, lipop1, tmhmm, hmmsearch3, memsat3]:
     extract_protein_feature(params, proteins)
