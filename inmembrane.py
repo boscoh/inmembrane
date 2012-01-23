@@ -291,7 +291,6 @@ def memsat3(params, proteins):
     'memsat3_outer_loops', a list of tuples describing the first and last residue
      number of each predicted outer loop segment;
   """
-
   for prot_id in proteins:
     protein = proteins[prot_id]
     seq = protein['seq']
@@ -402,30 +401,39 @@ def predict_surface_exposure(params, protein):
   details = ""
   if is_hmm_profile_match:
     details += "hmmsearch;"
-    return details, "PSE"
   if is_lipop: 
     details += "lipop;"
-    chop_nterminal_peptide(protein, i_lipop_cut)
-  elif is_signalp:
+  if is_signalp:
     details += "signalp;"
-    chop_nterminal_peptide(protein, i_signalp_cut)
   if has_tm_helix(protein):
     details += program + ";"
+
+  if is_lipop: 
+    chop_nterminal_peptide(protein, i_lipop_cut)
+  elif is_signalp:
+    chop_nterminal_peptide(protein, i_signalp_cut)
+
+  if is_hmm_profile_match:
+    category =  "PSE"
+  elif has_tm_helix(protein):
     if has_surface_exposed_loop(protein):
-      return details, "PSE"
+      category = "PSE"
     else:
-      return details, "MEMBRANE"
+      category = "MEMBRANE"
   else:
     if is_lipop:
-      # the protein is stuck to the lipid
+      # the protein is stuck to the lipid and the whole
+      # protein is potentially an outer terminal loop
       if sequence_length(protein) < terminal_exposed_loop_min:
-        return details, "MEMBRANE"
+        category = "MEMBRANE"
       else:
-        return details, "PSE"
+        category = "PSE"
     elif is_signalp:
-      return details, "SECRETED"
+      category = "SECRETED"
     else:
-      return details, "CYTOPLASM"
+      category = "CYTOPLASM"
+
+  return details, category
 
 
 def identify_pse_proteins(params):
