@@ -9,11 +9,13 @@ from optparse import OptionParser
 
 
 default_params_str = """{
+  'fasta': '',
+  'out_dir': '',
   'organism': 'gram+',
   'signalp4_bin': 'signalp',
   'lipop1_bin': 'LipoP',
   'tmhmm_bin': 'tmhmm',
-  'helix_program': 'tmhmm',
+  'helix_programs': ['tmhmm', 'memsat3'],
   'memsat3_bin': 'runmemsat',
   'hmmsearch3_bin': 'hmmsearch',
   'hmm_profiles_dir': '%(hmm_profiles)s',
@@ -204,7 +206,6 @@ def tmhmm(params, proteins):
     if 'TMhelix' in l:
       proteins[name]['tmhmm_helices'].append(
           (int(words[-2]), int(words[-1])))
-      assert len(proteins[name]['tmhmm_helices']) == n_helix
 
 
 def has_transmembrane_in_globmem(globmem_out):
@@ -233,7 +234,6 @@ def parse_memsat(protein, memsat_out):
           i = int(tokens[tok_offset].split('-')[0])
           j = int(tokens[tok_offset].split('-')[1])
           protein['memsat3_helices'].append((i, j))
-          protein['n_memsat3_helix'] += 1
           score = float(tokens[1+tok_offset][1:-1])
           protein['memsat3_scores'].append(score)
           l = f.readline()
@@ -372,7 +372,27 @@ def eval_surface_exposed_loop(
 
 
 def predict_surface_exposure(params, protein):
-  program = params['helix_program']
+
+  def sequence_length(protein):
+    return protein['sequence_length']
+    
+  def has_tm_helix(protein):
+    for program in params['helix_programs']:
+      if dict_prop_truthy(protein, '%s_helices' % program):
+        return True
+    return False
+
+  def has_surface_exposed_loop(protein):
+    for program in params['helix_programs']:
+      if eval_surface_exposed_loop(
+          protein['sequence_length'], 
+          len(protein['%s_helices' % (program)]), 
+          protein['%s_outer_loops' % (program)], 
+          params['terminal_exposed_loop_min'], 
+          params['internal_exposed_loop_min']):
+        return True
+    return False
+
   terminal_exposed_loop_min = \
       params['terminal_exposed_loop_min']
 
@@ -384,29 +404,17 @@ def predict_surface_exposure(params, protein):
   if is_signalp:
     i_signalp_cut = protein['signalp_cleave_position']
 
-  def sequence_length(protein):
-    return protein['sequence_length']
-    
-  def has_tm_helix(protein):
-    return dict_prop_truthy(protein, '%s_helices' % program)
-
-  def has_surface_exposed_loop(protein):
-    return eval_surface_exposed_loop(
-      protein['sequence_length'], 
-      len(protein['%s_helices' % (program)]), 
-      protein['%s_outer_loops' % (program)], 
-      params['terminal_exposed_loop_min'], 
-      params['internal_exposed_loop_min'])
-
   details = ""
   if is_hmm_profile_match:
-    details += "hmmsearch;"
+    details += "hmm(%s);" % protein['hmmsearch'][0]
   if is_lipop: 
     details += "lipop;"
   if is_signalp:
     details += "signalp;"
-  if has_tm_helix(protein):
-    details += program + ";"
+  for program in params['helix_programs']:
+    if has_tm_helix(protein):
+      n = len(protein['%s_helices' % program])
+      details += program + "(%d);" % n
 
   if is_lipop: 
     chop_nterminal_peptide(protein, i_lipop_cut)
@@ -422,8 +430,7 @@ def predict_surface_exposure(params, protein):
       category = "MEMBRANE"
   else:
     if is_lipop:
-      # the protein is stuck to the lipid and the whole
-      # protein is potentially an outer terminal loop
+      # whole protein considered outer terminal loop
       if sequence_length(protein) < terminal_exposed_loop_min:
         category = "MEMBRANE"
       else:
@@ -500,7 +507,7 @@ if __name__ == "__main__":
       prot_id = word.split("|")[1]
     else:
       prot_id = word
-    print "%-15s %-13s %-20s %s" % \
+    print "%-15s %-13s %-50s %s" % \
         (word, 
          protein['category'], 
          protein['details'],
