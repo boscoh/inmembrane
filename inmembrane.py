@@ -462,7 +462,7 @@ def identify_pse_proteins(params):
 
   # initialize the proteins data structure
   prot_ids, proteins = create_protein_data_structure(fasta)
-  features = [signalp4, lipop1, tmhmm, hmmsearch3, memsat3]
+  features = [signalp4, lipop1, hmmsearch3]
   if 'tmhmm' in params['helix_programs']:
     features.append(tmhmm)
   if memsat3 in params['helix_programs']:
