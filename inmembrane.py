@@ -19,7 +19,8 @@ default_params_str = """{
   'memsat3_bin': 'runmemsat',
   'hmmsearch3_bin': 'hmmsearch',
   'hmm_profiles_dir': '%(hmm_profiles)s',
-  'hmm_evalue_cutoff': 0.01,
+  'hmm_evalue_max': 0.1,
+  'hmm_score_min': 10,
   'terminal_exposed_loop_min': 50,
   'internal_exposed_loop_min': 100,
 }
@@ -134,7 +135,9 @@ def hmmsearch3(params, proteins):
         continue
       if 'conditional E-value' in l:
         evalue = float(words[-1])
-        if evalue < params['hmm_evalue_cutoff']:
+        score = float(words[-5])
+        if evalue < params['hmm_evalue_max'] and \
+            score > params['hmm_score_min']:
           proteins[name]['hmmsearch'].append(hmm_name)
 
 
