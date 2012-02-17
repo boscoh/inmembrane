@@ -87,7 +87,7 @@ def create_protein_data_structure(fasta):
       prot_ids.append(prot_id)
       proteins[prot_id] = {
         'seq':"",
-        'name':' '.join(tokens[1:])
+        'name':l[1:-1],
       }
       continue
     if prot_id is not None:
@@ -136,8 +136,9 @@ def hmmsearch3(params, proteins):
       if 'conditional E-value' in l:
         evalue = float(words[-1])
         score = float(words[-5])
-        if evalue < params['hmm_evalue_max'] and \
-            score > params['hmm_score_min']:
+        if evalue <= params['hmm_evalue_max'] and \
+            score >= params['hmm_score_min']:
+          print evalue, score
           proteins[name]['hmmsearch'].append(hmm_name)
 
 
@@ -319,9 +320,12 @@ def memsat3(params, proteins):
 
 def chop_nterminal_peptide(protein, i_cut):
   protein['sequence_length'] -= i_cut
+  print "#"
+  print "# cut %s:" % protein['name'].strip()
   for prop in protein:
     if '_loops' in prop or '_helices' in prop:
       loops = protein[prop]
+      print "# original %s: %s" % (prop, loops)
       for i in range(len(loops)):
         j, k = loops[i]
         loops[i] = (j - i_cut, k - i_cut)
@@ -336,6 +340,7 @@ def chop_nterminal_peptide(protein, i_cut):
         # otherewise, neg value means loop is at the new N-terminal
         elif j<=0 and k>0:
           loops[i] = (1, k)
+      print "# cut at %d %s: %s" % (i_cut, prop, loops)
 
 
 def eval_surface_exposed_loop(
