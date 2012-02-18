@@ -31,15 +31,49 @@ As it is the nature of bioinformatic programs that they are changed and updated 
 
 Nevertheless, we believe that it is essential skill to rewrite parsers to handle the subtle but significant changes in different versions. 
 
-The programs that we requre, and their versions:
+Required dependencies, and their versions:
 
-- MEMSAT3 <http://bioinf.cs.ucl.ac.uk/?id=756> Edit the runmemsat script included with MEMSAT3 to point to the correct locations with absolute paths (eg dbname, ncbidir, execdir, datadir)
-  - MEMSAT3 in turns requires the NCBI BLAST using the SwissProt database
+- TMHMM 2.0 _or_ MEMSAT3
 
-- SignalP 1.0
+- SignalP 4.0
 
 - LipoP 1.0  
 
 - HMMER 3.0
 
-- TMHMM 2.0
+## Installing dependencies
+
+These instructions have been tailored for Debian-based systems, in particular Ubuntu 11.10. Each of these dependencies are licensed free to academic users.
+
+### TMHMM 2.0
+Only one of TMHMM or MEMSAT3 are required, but users that want to compare transmembrane segment predictions can install both.
+
+- Download and install TMHMM 2.0 from <http://www.cbs.dtu.dk/cgi-bin/nph-sw_request?tmhmm>.
+
+### SignalP 4.0
+- Download SignalP 4.0 <http://www.cbs.dtu.dk/cgi-bin/nph-sw_request?signalp>. You will need to fill out the form with an institutional email address and accept the academic license. The software will be emailed to you.
+
+- Follow the installation instructions at <http://www.cbs.dtu.dk/services/doc/signalp-4.0.readme>.
+
+### HMMER 3.0
+- Download HMMER 3.0 from <http://hmmer.janelia.org/software>.
+- The HMMER user guide describes how to install it. For the pre-compiled packages, this is as simple as putting the binaries on your PATH.
+
+### LipoP 1.0
+- Download LipoP 1.0 from <http://www.cbs.dtu.dk/cgi-bin/nph-sw_request?lipop>. The installation proceedure is similar to that for SignalP.
+
+### MEMSAT3
+
+- Download MEMSAT3 from <http://bioinfadmin.cs.ucl.ac.uk/downloads/memsat/memsat3/> (only memsat3_academic.tar is required). 
+
+- MEMSAT3 requires NCBI BLAST ("legacy" BLAST, not BLAST+) using the SwissProt (swissprot) database.
+ - Legacy BLAST can be downloaded at <ftp://ftp.ncbi.nlm.nih.gov/blast/executables/release/LATEST/> installed using the instructions provided by NCBI <http://www.ncbi.nlm.nih.gov/staff/tao/URLAPI/unix_setup.html>. We have tested with version 2.2.25.
+ - You will need both the 'nr' database and the 'swissprot' database, since 'swissprot' is indexed against 'nr'. (The other option is to download the FASTA version of Uniprot/Swiss-Prot from <ftp://ftp.uniprot.org/pub/databases/uniprot/current_release/knowledgebase/complete/uniprot_sprot.fasta.gz> and create your own BLAST formatted database with using the BLAST formatdb tool).
+
+- Edit the _runmemsat_ script included with MEMSAT3 to point to the correct locations using absolute paths:
+ - 'dbname' is the location of your BLAST formatted swissprot database
+ - 'ncbidir' is the base directory of your BLAST installation
+ - 'execdir' is the path where the MEMSAT3 executable resides
+ - 'datadir' is the the path to the MEMSAT3 data directory )
+
+Note the the 'runmemsat' script refers to PSIPRED v2, but it means MEMSAT3 - PSIPRED is not required.

@@ -470,7 +470,7 @@ def identify_pse_proteins(params):
   features = [signalp4, lipop1, hmmsearch3]
   if 'tmhmm' in params['helix_programs']:
     features.append(tmhmm)
-  if memsat3 in params['helix_programs']:
+  if 'memsat3' in params['helix_programs']:
     features.append(memsat3)
   for extract_protein_feature in features:
     extract_protein_feature(params, proteins)
@@ -493,7 +493,7 @@ Inmembrane is a python script that sequentially carries out
 bioinformatic analysis of a fasta file, collates the results
 and generates a combined analysis of all the analyses.
 
-(c) 2001 Bosco Ho and Andrew Perry
+(c) 2011 Bosco Ho and Andrew Perry
 """
 
 if __name__ == "__main__":
@@ -524,11 +524,4 @@ if __name__ == "__main__":
          protein['category'], 
          protein['details'],
          protein['name'][:60])
-
-
-  
-
-
-
-
 
