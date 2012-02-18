@@ -2,40 +2,50 @@
 
 ## Abstract 
 
-__inmembrane__ is a tool to predict surface membrane proteins from a set of sequences. It is  intended to be a direct replacement for surfg+, which designed the protocol for surface membrane analysis. As well __inmembrane__ demonstrates the dramatic simplification in code through using a modern scripting language, which is particularly suited to such analysis of such bioinformatic problems. This leads to a program that is much more robust and amenable to modification and extensibility. This provides an example of writing such glue programs for bioinformatic analysis. 
+__inmembrane__ is a tool to predict the surface exposed regions of membrane proteins in sets of bacterial protein sequences. It is intended to be a direct replacement for SurfG+, which originally implemented a protocol for predicting extracellular regions of polypeptide in gram positive bacterial proteomes. __inmembrane__ provides a clearer, more accessible and transparent code base through use of a modern scripting language, which is particularly suited to such analysis of such bioinformatic problems. This leads to a program that is much more robust and amenable to modification and extensibility and provides an example of writing such glue programs for bioinformatic analysis. 
 
 ## Introduction
 
 A common task in bioinformatics is to integrate the results of protein prediction programs to deduce complex properties of proteins. As sequencing techniques improve, the high volume of data will require a greater capacity to process such sequences in an automated way to provide high-level analysis.
 
-One example is the program SurfG+, which is designed to predict proteins that are exposed on the surface of Gram+ bacteria. SurfG+ is a JAVA program that carries out batch processing of several standard bioinformatic tools to specifically identify Gram+ bacterial proteins that may be exposed out of the peptidoglycan layer of the bacterium.These predictions are meant to identify a set of proteins that would be amenable to cell shaving experiments. SurfG+ itself does not carry out any extensive analysis, but rather relies on a transmembrane helix predictor (THMMOD), a secretion signal predictor (SignalP), a lipoprotein signal predictior (LipoP) and a sequence alignment for protein profiles (HMMER). All these programs function as  Linux command tools that take FASTA sequences as input and generates output as formatted text. 
+In studies of membrane proteomes, quick annotation of an experimentally detected set of the proteins can help detect sequences of unexpected localization, and can alert researchers to possible contamination from other subcellular fractions. Ultimately, a concise summary of the properties of the detect membrane proteins in a particular proteomic set allows meaningful comparisons between different bacterial strains, species, and their responses in membrane remodelling to host and enviromental challenges.
 
-Nevertheless, __SurfG+__ suffers several problems that plague much bioinformatic software. The most egregrious being that the program is not generally available anymore. We were able to find a poorly-managed source-code repository but the we were not able to get the program to work. With the source code, it was possible to deduce the basic algorithm of the program, however, the software architecture of SurfG+ mdade it impossible to debug properly. Although it may appear at first, to be a redundant effort, there are several compelling reasons for rewriting SurfG+. First, the URL mentioned in the original reference no longer exists, even though the paper was only published in 2009. Second, after a google search, we managed to find a compiled version of Surfg+ but could not get it to work under Mac OSX or Ubuntu Linux. Third, after more searching, we managed to find a copy of the source-code. Unfortunately, due to the architecture of the program, it would have been prohibitively time-consuming to debug the program to work on our systems.  
+One example of this type of annotation is the program SurfG+, which is designed to predict proteins that are exposed on the surface of Gram+ bacteria. SurfG+ is a Java program that carries out batch processing of several standard bioinformatic tools to specifically identify Gram+ bacterial proteins that may be exposed out of the peptidoglycan layer of the bacterium. These predictions are intended to identify a set of proteins that would be amenable to cell surface protease shaving experiments. SurfG+ itself does not carry out any extensive analysis, but rather relies on a transmembrane helix predictor (TMMOD), a secretion signal predictor (SignalP), a lipoprotein signal predictior (LipoP) and a sequence alignment for protein profiles (HMMER). All these programs function as Linux command tools that take FASTA sequences as input and generates output as formatted text.
 
-However, the core of __SurfG+__ is rather simple and consequently, we decided to write a tool to reproduce the functionality of __SurfG+__. In the process of improving the architecture of SurfG+ in writing __inmembrane__, we have generated a better template for this class of bioinformatic software. One example is that from a JAVA source of 700K, we have reduced it down 8K of PYTHON code, where the terseness of the code greatly facilitates modifiability. Here, we discuss the issues involved in writing robust bioinformatic source code.
+Nevertheless, __SurfG+__ suffers several problems that plague much bioinformatic software. The most egregrious being that the program is not generally available anymore. We were able to find a poorly-managed source-code repository but the we were not able to get the program to work. With the source code, it was possible to deduce the basic algorithm of the program, however, the software architecture of SurfG+ made it extremely difficult to debug properly. Although it may appear at first, to be a redundant effort, there are several compelling reasons for rewriting SurfG+. First, the URL mentioned in the original reference no longer exists, even though the paper was only published in 2009. Second, after a Google search, we managed to find a compiled version of SurfG+ but could not get it to work under Mac OSX or Ubuntu Linux. Third, after more searching, we managed to find a copy of the source-code. Unfortunately, due to the architecture and dependencies of the program, it would have been prohibitively time-consuming to debug the program to work on our systems.
+
+However, at it's core __SurfG+__ uses a relatively straightforward algorithm and consequently, we decided to write a tool to reproduce the functionality of __SurfG+__. In the process of improving the architecture of SurfG+ and writing __inmembrane__, we have generated a better template for this class of bioinformatic software. One example is that from a Java source of 700K, we have reduced it down 8K of Python code, where the terseness of the code greatly facilitates modifiability. Here, we discuss the issues involved in writing robust and comprehensible bioinformatic source code.
+
 
 ## Discussion
 
-
 ### Public Open Source Repository
 
-Perhaps the single most important step is to distribute our code on an open-source repository, Github. Our code is public, and is presented in best-of-breed. There is excellent code browsing, with history. As well, convenient downloads are automatically generated, with well-defined URL links. These are generally not provided in typical academic releases of software including the dreaded login and register with some lab manager. As well, Github provides download statistics.
+Perhaps the single most important step is to distribute our code on an open-source repository, Github. There is excellent code browsing, with history. As well, convenient downloads are automatically generated, with well-defined URL links. These are generally not provided in typical academic releases of software including the dreaded login and registeration pages. Github provides download statistics, which are useful as a metric to determine the popularity and broader impact of the software.
 
-More importantly, the code will be guaranteed to stay in existence, in a way that most labs cannot provide for. As well, Github provides excellent facilities to fork a project. That is, if you were to come across a project that did something useful but had been abandoned a while ago, it is almost trivial to create a duplicate and that make changes. This is the best guarantee for orphan code
+More importantly, the source code has a higher probability of remaining accessible in the long term, something that historically most academic labs have shown they cannot provide through in-house hosting. As well, Github provides excellent facilities to fork a project. That is, if you were to come across a project that did something useful but had been abandoned a while ago, it is almost trivial to create a duplicate and that make changes. This is the best guarantee for orphan code.
+
+, under a liberal XXX license which encourages enhancement and reuse.
+
 
 ### Program Workflow 
 
-The heart of SurfG+ is actually quite simple. SurfG+ is a wrapper that takes FASTA sequences, and runs a number of bioinformatic programs (HMMER, LipoP, SignalP and THMMOD) that also take FASTA sequences as input, parses the result of these programs, and then generates a text report. The bulk of the computation occurs in the other programs, where most of the work is in parsing the text output. A very small amount of analysis is done at the end to produce the text output.
+The heart of SurfG+ is actually quite simple. SurfG+ is a wrapper that takes FASTA sequences, and sequentially runs a number of sequence analysis programs (HMMER, LipoP, SignalP and TMMOD) that each take FASTA sequences as input, parses the result of these programs, and then generates a plain text report. The bulk of the computation occurs in the associated analysis programs, where most of the work is in parsing the text output. A very small amount of analysis is done at the end to produce the text output.
+
 
 ### Scripting Languages 
 
-However, one might argue that one big advantage of Java over scripting languages in speed, but there is very little computation done in the workflow. Indeed, the bulk of the program is spent parsing text, and running other programs. These are two areas where scripting languages such as Python outperform languages such as Java. Consequently, writing __inmembrane__ in a modern scripting language results in a vastly simpler program that is easier to modify, where __inmembrane__ is smaller by almost two orders of magnitue in code size. The simplification arises mostly from the use of standard language features that have to be written from scratch in Java. 
+The virtues of Python as a language for solving problems in life science research have been previously recognized (Bassi, 2007).
+
+However, one might argue that one big advantage of Java over scripting languages in speed, but there is very little computation done in the workflow. Indeed, the bulk of the program is spent parsing text, and running other programs. These are two areas where scripting languages such as Python outperform languages such as Java. Consequently, writing __inmembrane__ in a modern scripting language results in a vastly simpler program that is easier to modify, where __inmembrane__ is smaller by almost two orders of magnitue in code size. The simplification arises mostly from the use of standard language features that have to be written from scratch in Java.
 
 The other major saving is the use of powerful and flexible native data structures in Python. Due to the dynamic nature of Python data structures, very little code is needed to add extra modules to the pipeline as we will demonstrate below.
 
 Another great advantage of scripting languages is that the source code is the executable. As long as Python is installed on the system, the actual script itself is all that is needed to run the program. This makes it very easy to deploy on your system. Modifications to the program is instantly applied. However, there is one last caveat as regards the cross-platform of __inmembrane__. As some of the executables it depends on only have Linux executables, it will only be fully operational on a Linux platform. 
 
 Something about intermediate output files. 
+
+Raw output from each analysis program is kept after parsing so that if __inmembrane__ is terminated mid-analysis for any reason, it can easily be restarted with repeating the entire workflow. Additionally, expert users can examine the detailed results for any particular sequence.
 
 
 ### Data Structures
@@ -55,7 +65,7 @@ Whilst in a more complex program, allowing dyanmic modification of the data stru
 
 Typically, each module is embodied in a function, for example `run_signalp(protein)` which takes the main protein data structure, runs SignalP, reads the output, extracts from the output whether a secretion signal is found for all the proteins in `protein`, and annotates the `protein` structure, by assigning new properties to each protein `protein['ECOLG_HEME']['is_signalp'] == True`. 
 
-In Python, the built in grammar is very powerful, and text processing can be expressed in very terse, yet readable. Indeed, you cannot abstract the text-processing any better - trying to create an object that is flexible enough to handle different text-output actually results in more complicated code. It is a fact of life that new versions of these programs will result in some incompatible text structure so that the formatting will break. We take the philosophy that it is better to expose the text parsing, so that with newer versions, it is easier to just rewrite the text parsing, rather than try to anticipate any future changes by writing complex Parsing objects.
+In Python, the built in grammar is very powerful, and text processing can be expressed in very terse, yet readable. Indeed, you cannot abstract the text-processing any better - trying to create an object that is flexible enough to handle different text-output actually results in more complicated code. It is a fact of life that new versions of these programs will result in some incompatible text structure so that the formatting will break. We take the philosophy that it is better to expose the text parsing, so that with newer versions, it is easier to just rewrite the text parsing, rather than try to anticipate any future changes by writing complex parsing objects.
 
 Taking this functional approach - where we encapsulates the analysis of each program in a simple form `run_program(protein)`, we can thus abstract the pipeline, as a series of functions with exactly the same interface. This defines a very simple API to extend new modules. Simply write a new function that annotates the data structure.
 
@@ -83,4 +93,11 @@ The clarity of Python code better reflects the work-flow described in Surfg+. Py
 
 Barinov A, Loux V, Hammani A, Nicolas P, Langella P, et al. (2009) Prediction of surface exposed proteins in Streptococcus pyogenes, with a potential application to other Gram-positive bacteria. __Proteomics__ 9: 61-73. <http://dx.doi.org/10.1002/pmic.200800195>
 
+Bassi S (2007) A Primer on Python for Life Science Researchers. PLoS Comput Biol 3(11): e199. <http://dx.doi.org/10.1371/journal.pcbi.0030199>
 
+
+HMMER
+LipoP
+SignalP
+TMMOD
+TMHMM
