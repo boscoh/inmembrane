@@ -231,7 +231,10 @@ def tmbhunt_web(params, proteins, \
   submit()
   #showlinks()
 
-  polltime = 2 #len(proteins)*0.1
+  # rough sleep to ensure TMB-HUNT finishes before fetch
+  # TODO: do proper error check and polling link bomp_web code
+  polltime = int(len(proteins)*0.1)+2
+  print "# TMB-HUNT(web): waiting %i sec ..." % (polltime)
   time.sleep(polltime)
   follow("Full results")
   txt_out = show()
