@@ -9,7 +9,7 @@ import subprocess
 import shutil
 from optparse import OptionParser
 import twill
-from twill.commands import find, formfile, fv, go, show, \
+from twill.commands import find, formfile, follow, fv, go, show, \
                              showforms, showlinks, submit
 
 
@@ -80,6 +80,27 @@ def run(cmd, out_file=None):
     sys.exit(1)
   os.system(full_cmd)
 
+def parse_fasta_header(header):
+  """
+  Parses a FASTA format header (including the '>') and returns a
+  tuple of sequence id and sequence name/description.
+  
+  If NCBI SeqID format (gi|gi-number|gb|accession etc, is detected
+  the first id in the list is used as the canonical id (see see
+  http://www.ncbi.nlm.nih.gov/books/NBK21097/#A631 ).
+  """
+  # check to see if we have an NCBI-style header
+  if header.find("|") != -1:
+    tokens = header.split('|')
+    seq_id = tokens[1].upper()
+    name = tokens[-1:][0]
+  # otherwise just split on spaces & hope for the best
+  else:
+    tokens = header.split()
+    seq_id = tokens[0][1:].upper()
+    name = header[1:-1]
+  
+  return seq_id, name
 
 def create_protein_data_structure(fasta):
   prot_ids = []
@@ -87,12 +108,11 @@ def create_protein_data_structure(fasta):
   proteins = {}
   for l in open(fasta):
     if l.startswith(">"):
-      tokens = l.split()
-      prot_id = tokens[0][1:]
+      prot_id, name = parse_fasta_header(l)
       prot_ids.append(prot_id)
       proteins[prot_id] = {
         'seq':"",
-        'name':l[1:-1],
+        'name':name,
       }
       continue
     if prot_id is not None:
@@ -178,7 +198,80 @@ def lipop1(params, proteins):
         'lipop_cleave_position': i,
       })
 
-def bomp_web(parms, proteins, \
+def tmbhunt_web(params, proteins, \
+             url="http://bmbpcu36.leeds.ac.uk/~andy/betaBarrel/AACompPred/aaTMB_Hunt.cgi",
+             force=False):
+  """
+  Uses the TMB-HUNT web service 
+  (http://bmbpcu36.leeds.ac.uk/~andy/betaBarrel/AACompPred/aaTMB_Hunt.cgi) to
+  predict if proteins are outer membrane beta-barrels.
+  """
+  
+  out = 'tmbhunt.out'
+  print "# TMB-HUNT(web) %s > %s" % (params['fasta'], out)
+  
+  if not force and os.path.isfile(out):
+    print "# -> skipped: %s already exists" % out
+    return
+  
+  # dump extraneous output here so we don't see it
+  twill.set_output(StringIO.StringIO())
+  
+  go(url)
+  #showforms()
+
+  # read up the FASTA format seqs
+  fh = open(params['fasta'], 'r')
+  fasta_seqs = fh.read()
+  fh.close()
+  
+  # fill out the form
+  fv("1", "sequences", fasta_seqs)
+
+  submit()
+  #showlinks()
+
+  polltime = 2 #len(proteins)*0.1
+  time.sleep(polltime)
+  follow("Full results")
+  txt_out = show()
+  
+  # write raw TMB-HUNT results
+  fh = open(out, 'w')
+  fh.write(txt_out)
+  fh.close()
+  
+  # parse TMB-HUNT text output
+  tmbhunt_classes = {}
+  for l in open(out, 'r'):
+    #print "# TMB-HUNT raw:", l[:-1]
+    if l[0] == ">":
+      seqid, desc = parse_fasta_header(l)
+      probability = None
+      classication = None
+      tmbhunt_classes[seqid] = {}
+    if l.find("Probability of a NON-BETA BARREL protein with this score:") != -1:
+      probability = float(l.split(":")[1].strip())
+    if l[0:11] == "Conclusion:":
+      classication = l.split(":")[1].strip()
+      if classication == "BBMP":
+        tmbhunt_classes[seqid]['tmbhunt'] = True
+        tmbhunt_classes[seqid]['tmbhunt_prob'] = 1 - probability
+        
+        proteins[seqid]['tmbhunt'] = True
+        proteins[seqid]['tmbhunt_prob'] = 1 - probability
+        
+      elif classication == "Non BBMP":
+        tmbhunt_classes[seqid]['tmbhunt'] = False
+        tmbhunt_classes[seqid]['tmbhunt_prob'] = probability
+        
+        proteins[seqid]['tmbhunt'] = False
+        proteins[seqid]['tmbhunt_prob'] = probability
+  
+  #print tmbhunt_classes
+  return tmbhunt_classes
+
+def bomp_web(params, proteins, \
              url="http://services.cbu.uib.no/tools/bomp/", force=False):
   """
   Uses the BOMP web service (http://services.cbu.uib.no/tools/bomp/) to
@@ -186,7 +279,7 @@ def bomp_web(parms, proteins, \
   """
   
   bomp_out = 'bomp.out'
-  print "# BOMP(web) %s > %s" % (parms['fasta'], bomp_out)
+  print "# BOMP(web) %s > %s" % (params['fasta'], bomp_out)
   
   if not force and os.path.isfile(bomp_out):
     print "# -> skipped: %s already exists" % bomp_out
@@ -197,7 +290,7 @@ def bomp_web(parms, proteins, \
   
   go(url)
   #showforms()
-  formfile("1", "queryfile", parms["fasta"])
+  formfile("1", "queryfile", params["fasta"])
   submit()
   #show()
   
