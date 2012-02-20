@@ -127,7 +127,7 @@ def get_fasta_seq_by_id(fname, prot_id):
   f = open(fname)
   l = f.readline()
   while l:
-    if l.startswith(">") and (l[1:].split()[0] == prot_id):
+    if l.startswith(">") and (parse_fasta_header(l)[0] == prot_id):
       seq = ""
       l = f.readline()
       while l and not l.startswith(">"):
@@ -138,7 +138,6 @@ def get_fasta_seq_by_id(fname, prot_id):
 
     l = f.readline()
   f.close()
-
 
 def hmmsearch3(params, proteins):
   file_tag = os.path.join(params['hmm_profiles_dir'], '*.hmm')
@@ -200,7 +199,6 @@ def lipop1(params, proteins):
       })
 
 def tmbhunt_web(params, proteins, \
-             url="http://bmbpcu36.leeds.ac.uk/~andy/betaBarrel/AACompPred/aaTMB_Hunt.cgi",
              force=False):
   """
   Uses the TMB-HUNT web service 
@@ -211,8 +209,8 @@ def tmbhunt_web(params, proteins, \
   #       TMB-HUNT will only take 10000 seqs at a time
   if len(proteins) >= 10000:
     print "# TMB-HUNT(web): error, can't take more than 10,000 sequences."
-    break
-    
+    return
+  
   out = 'tmbhunt.out'
   print "# TMB-HUNT(web) %s > %s" % (params['fasta'], out)
   
@@ -221,9 +219,9 @@ def tmbhunt_web(params, proteins, \
     return
   
   # dump extraneous output here so we don't see it
-  twill.set_output(StringIO.StringIO())
+  #twill.set_output(StringIO.StringIO())
   
-  go(url)
+  go("http://bmbpcu36.leeds.ac.uk/~andy/betaBarrel/AACompPred/aaTMB_Hunt.cgi")
   #showforms()
 
   # read up the FASTA format seqs
@@ -237,25 +235,29 @@ def tmbhunt_web(params, proteins, \
   submit()
   #showlinks()
 
+  # small jobs will lead us straight to the results, big jobs
+  # go via a 'waiting' page which we skip past if we get it
+  try:
+    # we see this with big jobs
+    result_table_url = follow("http://www.bioinformatics.leeds.ac.uk/~andy/betaBarrel/AACompPred/tmp/tmp_output.*.html")
+  except:
+    # small jobs take us straight to the html results table
+    pass
+
+  # parse the job_id from the url, since due to a bug in
+  # TMB-HUNT the link on the results page from large jobs is wrong
+  job_id = follow("Full results").split('/')[-1:][0].split('.')[0]
+  print "# TMB-HUNT(web) job_id is: %s <http://www.bioinformatics.leeds.ac.uk/~andy/betaBarrel/AACompPred/tmp/tmp_output%s.html>" % (job_id, job_id)
+  
   # polling until TMB-HUNT finishes
   # TMB-HUNT advises that 4000 sequences take ~10 mins
-  polltime = len(proteins)+2
+  # we poll a little faster than that
+  polltime = (len(proteins)*0.1)+2
   while True:
     print "# TMB-HUNT(web): waiting another %i sec ..." % (polltime)
     time.sleep(polltime)
     try:
-      # FIXME: for small sets, follow("Full results") works, but for
-      #        larger sets (100's ?) TMB-HUNT forwards to a 'waiting' page.
-      #        therefore, we need to handle both cases.
-      #        We need to instead detect if we are on the results table page.
-      #        If so, parse it. If not, follow the link (eg http://www.bioinformatics.leeds.ac.uk/~andy/betaBarrel/AACompPred/tmp/tmp_output7001.html )
-      #        to the results table. This page keeps getting updated, so we
-      #        should keep polling until the expected number of sequences have
-      #        been predicted.
-      #        Alternative: check, maybe the txt results appear once everything's
-      #        finished - in this case we should parse these but need to wait for
-      #        them.
-      follow("Full results")
+      go("http://bmbpcu36.leeds.ac.uk/~andy/betaBarrel/AACompPred/tmp/%s.txt" % (job_id))
       break
     except:
       polltime = polltime * 2
@@ -272,6 +274,11 @@ def tmbhunt_web(params, proteins, \
   fh.close()
   
   # parse TMB-HUNT text output
+  # FIXME: TMB-HUNT munges FASTA ids by making them all uppercase
+  #        however they are output in the order they are input,
+  #        so, we should take the ids in order from the original
+  #        FASTA file and ignore the TMB-HUNT id (maybe with an uppercase
+  #        comparison sanity check)
   tmbhunt_classes = {}
   for l in open(out, 'r'):
     #print "# TMB-HUNT raw:", l[:-1]
