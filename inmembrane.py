@@ -1,11 +1,16 @@
 import sys
 import os
+import time
+import StringIO
 import math
 import glob
 import re
 import subprocess
 import shutil
 from optparse import OptionParser
+import twill
+from twill.commands import find, formfile, fv, go, show, \
+                             showforms, showlinks, submit
 
 
 default_params_str = """{
@@ -180,17 +185,13 @@ def bomp_web(parms, proteins, \
   predict if proteins are outer membrane beta-barrels.
   """
   
-  bomp_out = basename(parms) + '.bomp.out'
+  bomp_out = 'bomp.out'
   print "# BOMP(web) %s > %s" % (parms['fasta'], bomp_out)
   
   if not force and os.path.isfile(bomp_out):
     print "# -> skipped: %s already exists" % bomp_out
     return
   
-  import time, StringIO
-  import twill
-  from twill.commands import find, formfile, fv, go, show, showlinks, submit
-
   # dump extraneous output here so we don't see it
   twill.set_output(StringIO.StringIO())
   
@@ -198,6 +199,7 @@ def bomp_web(parms, proteins, \
   #showforms()
   formfile("1", "queryfile", parms["fasta"])
   submit()
+  #show()
   
   # extract the job id from the page
   links = showlinks()
@@ -207,7 +209,7 @@ def bomp_web(parms, proteins, \
       # grab job id from "viewOutput?id=16745338"
       job_id = int(l.url.split("=")[1])
   
-  # print "BOMP job id: ", job_id
+  #print "BOMP job id: ", job_id
   
   if not job_id:
     # something went wrong
