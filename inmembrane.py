@@ -21,6 +21,7 @@ default_params_str = """{
   'lipop1_bin': 'LipoP',
   'tmhmm_bin': 'tmhmm',
   'helix_programs': ['tmhmm', 'memsat3'],
+  'barrel_programs': ['tmbhunt'],
   'memsat3_bin': 'runmemsat',
   'hmmsearch3_bin': 'hmmsearch',
   'hmm_profiles_dir': '%(hmm_profiles)s',
@@ -92,12 +93,12 @@ def parse_fasta_header(header):
   # check to see if we have an NCBI-style header
   if header.find("|") != -1:
     tokens = header.split('|')
-    seq_id = tokens[1].upper()
+    seq_id = tokens[1]
     name = tokens[-1:][0]
   # otherwise just split on spaces & hope for the best
   else:
     tokens = header.split()
-    seq_id = tokens[0][1:].upper()
+    seq_id = tokens[0][1:]
     name = header[1:-1]
   
   return seq_id, name
@@ -206,7 +207,12 @@ def tmbhunt_web(params, proteins, \
   (http://bmbpcu36.leeds.ac.uk/~andy/betaBarrel/AACompPred/aaTMB_Hunt.cgi) to
   predict if proteins are outer membrane beta-barrels.
   """
-  
+  # TODO: automatically split large sets into multiple jobs
+  #       TMB-HUNT will only take 10000 seqs at a time
+  if len(proteins) >= 10000:
+    print "# TMB-HUNT(web): error, can't take more than 10,000 sequences."
+    break
+    
   out = 'tmbhunt.out'
   print "# TMB-HUNT(web) %s > %s" % (params['fasta'], out)
   
@@ -231,9 +237,33 @@ def tmbhunt_web(params, proteins, \
   submit()
   #showlinks()
 
-  polltime = 2 #len(proteins)*0.1
-  time.sleep(polltime)
-  follow("Full results")
+  # polling until TMB-HUNT finishes
+  # TMB-HUNT advises that 4000 sequences take ~10 mins
+  polltime = len(proteins)+2
+  while True:
+    print "# TMB-HUNT(web): waiting another %i sec ..." % (polltime)
+    time.sleep(polltime)
+    try:
+      # FIXME: for small sets, follow("Full results") works, but for
+      #        larger sets (100's ?) TMB-HUNT forwards to a 'waiting' page.
+      #        therefore, we need to handle both cases.
+      #        We need to instead detect if we are on the results table page.
+      #        If so, parse it. If not, follow the link (eg http://www.bioinformatics.leeds.ac.uk/~andy/betaBarrel/AACompPred/tmp/tmp_output7001.html )
+      #        to the results table. This page keeps getting updated, so we
+      #        should keep polling until the expected number of sequences have
+      #        been predicted.
+      #        Alternative: check, maybe the txt results appear once everything's
+      #        finished - in this case we should parse these but need to wait for
+      #        them.
+      follow("Full results")
+      break
+    except:
+      polltime = polltime * 2
+      
+    if polltime >= 7200: # 2 hours
+      sys.stderr.write("# TMB-HUNT error: Taking too long.")
+      return
+    
   txt_out = show()
   
   # write raw TMB-HUNT results
@@ -687,6 +717,10 @@ def identify_pse_proteins(params):
     features.append(tmhmm)
   if 'memsat3' in params['helix_programs']:
     features.append(memsat3)
+  if 'tmbhunt' in params['barrel_programs']:
+    features.append(tmbhunt_web)
+  if 'bomp' in params['barrel_programs']:
+    features.append(bomp_web)
   for extract_protein_feature in features:
     extract_protein_feature(params, proteins)
 
