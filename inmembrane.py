@@ -1,3 +1,4 @@
+#!/usr/bin/env python
 import sys
 import os
 import time
@@ -21,6 +22,7 @@ default_params_str = """{
   'lipop1_bin': 'LipoP',
   'tmhmm_bin': 'tmhmm',
   'helix_programs': ['tmhmm', 'memsat3'],
+  'barrel_programs': ['tmbhunt'],
   'memsat3_bin': 'runmemsat',
   'hmmsearch3_bin': 'hmmsearch',
   'hmm_profiles_dir': '%(hmm_profiles)s',
@@ -82,7 +84,7 @@ def run(cmd, out_file=None):
 
 def parse_fasta_header(header):
   """
-  Parses a FASTA format header (including the '>') and returns a
+  Parses a FASTA format header (with our without the initial '>') and returns a
   tuple of sequence id and sequence name/description.
   
   If NCBI SeqID format (gi|gi-number|gb|accession etc, is detected
@@ -90,17 +92,19 @@ def parse_fasta_header(header):
   http://www.ncbi.nlm.nih.gov/books/NBK21097/#A631 ).
   """
   # check to see if we have an NCBI-style header
+  if header[0] == '>':
+    header = header[1:]
   if header.find("|") != -1:
     tokens = header.split('|')
-    seq_id = tokens[1].upper()
-    name = tokens[-1:][0]
+    seq_id = tokens[1]
+    desc = tokens[-1:][0]
   # otherwise just split on spaces & hope for the best
   else:
     tokens = header.split()
-    seq_id = tokens[0][1:].upper()
-    name = header[1:-1]
+    seq_id = tokens[0]
+    desc = header[0:-1]
   
-  return seq_id, name
+  return seq_id, desc
 
 def create_protein_data_structure(fasta):
   prot_ids = []
@@ -126,7 +130,7 @@ def get_fasta_seq_by_id(fname, prot_id):
   f = open(fname)
   l = f.readline()
   while l:
-    if l.startswith(">") and (l[1:].split()[0] == prot_id):
+    if l.startswith(">") and (parse_fasta_header(l)[0] == prot_id):
       seq = ""
       l = f.readline()
       while l and not l.startswith(">"):
@@ -137,7 +141,6 @@ def get_fasta_seq_by_id(fname, prot_id):
 
     l = f.readline()
   f.close()
-
 
 def hmmsearch3(params, proteins):
   file_tag = os.path.join(params['hmm_profiles_dir'], '*.hmm')
@@ -152,7 +155,7 @@ def hmmsearch3(params, proteins):
     for l in open(hmmsearch3_out):
       words = l.split()
       if l.startswith(">>"):
-        name = words[1]
+        name = parse_fasta_header(l[3:])[0]
         if 'hmmsearch' not in proteins[name]:
           proteins[name]['hmmsearch'] = []
         continue
@@ -174,7 +177,7 @@ def signalp4(params, proteins):
     if l.startswith("#"):
       continue
     words = l.split()
-    name = words[0]
+    name = parse_fasta_header(">"+words[0])[0]
     proteins[name].update({ 
       'is_signalp': (words[9] == "Y"),
       'signalp_cleave_position': int(words[4]),
@@ -187,7 +190,7 @@ def lipop1(params, proteins):
   for l in open(lipop1_out):
     words = l.split()
     if 'score' in l:
-      name = words[1]
+      name = parse_fasta_header(words[1])[0]
       if 'cleavage' in l:
         pair = words[5].split("=")[1]
         i = int(pair.split('-')[0])
@@ -199,13 +202,17 @@ def lipop1(params, proteins):
       })
 
 def tmbhunt_web(params, proteins, \
-             url="http://bmbpcu36.leeds.ac.uk/~andy/betaBarrel/AACompPred/aaTMB_Hunt.cgi",
              force=False):
   """
   Uses the TMB-HUNT web service 
   (http://bmbpcu36.leeds.ac.uk/~andy/betaBarrel/AACompPred/aaTMB_Hunt.cgi) to
   predict if proteins are outer membrane beta-barrels.
   """
+  # TODO: automatically split large sets into multiple jobs
+  #       TMB-HUNT will only take 10000 seqs at a time
+  if len(proteins) >= 10000:
+    print "# TMB-HUNT(web): error, can't take more than 10,000 sequences."
+    return
   
   out = 'tmbhunt.out'
   print "# TMB-HUNT(web) %s > %s" % (params['fasta'], out)
@@ -214,10 +221,10 @@ def tmbhunt_web(params, proteins, \
     print "# -> skipped: %s already exists" % out
     return
   
-  # dump extraneous output here so we don't see it
+  # dump extraneous output into this blackhole so we don't see it
   twill.set_output(StringIO.StringIO())
   
-  go(url)
+  go("http://bmbpcu36.leeds.ac.uk/~andy/betaBarrel/AACompPred/aaTMB_Hunt.cgi")
   #showforms()
 
   # read up the FASTA format seqs
@@ -231,12 +238,37 @@ def tmbhunt_web(params, proteins, \
   submit()
   #showlinks()
 
-  # rough sleep to ensure TMB-HUNT finishes before fetch
-  # TODO: do proper error check and polling link bomp_web code
-  polltime = int(len(proteins)*0.1)+2
-  print "# TMB-HUNT(web): waiting %i sec ..." % (polltime)
-  time.sleep(polltime)
-  follow("Full results")
+  # small jobs will lead us straight to the results, big jobs
+  # go via a 'waiting' page which we skip past if we get it
+  try:
+    # we see this with big jobs
+    result_table_url = follow("http://www.bioinformatics.leeds.ac.uk/~andy/betaBarrel/AACompPred/tmp/tmp_output.*.html")
+  except:
+    # small jobs take us straight to the html results table
+    pass
+
+  # parse the job_id from the url, since due to a bug in
+  # TMB-HUNT the link on the results page from large jobs is wrong
+  job_id = follow("Full results").split('/')[-1:][0].split('.')[0]
+  print "# TMB-HUNT(web) job_id is: %s <http://www.bioinformatics.leeds.ac.uk/~andy/betaBarrel/AACompPred/tmp/tmp_output%s.html>" % (job_id, job_id)
+  
+  # polling until TMB-HUNT finishes
+  # TMB-HUNT advises that 4000 sequences take ~10 mins
+  # we poll a little faster than that
+  polltime = (len(proteins)*0.1)+2
+  while True:
+    print "# TMB-HUNT(web): waiting another %i sec ..." % (polltime)
+    time.sleep(polltime)
+    try:
+      go("http://bmbpcu36.leeds.ac.uk/~andy/betaBarrel/AACompPred/tmp/%s.txt" % (job_id))
+      break
+    except:
+      polltime = polltime * 2
+      
+    if polltime >= 7200: # 2 hours
+      sys.stderr.write("# TMB-HUNT error: Taking too long.")
+      return
+    
   txt_out = show()
   
   # write raw TMB-HUNT results
@@ -249,7 +281,15 @@ def tmbhunt_web(params, proteins, \
   for l in open(out, 'r'):
     #print "# TMB-HUNT raw:", l[:-1]
     if l[0] == ">":
+      # TMB-HUNT munges FASTA ids by making them all uppercase,
+      # so we find the equivalent any-case id in our proteins list
+      # and use that. ugly but necessary.
       seqid, desc = parse_fasta_header(l)
+      for i in proteins.keys():
+        if seqid.upper() == i.upper():
+          seqid = i
+          desc = proteins[i]['name']
+        
       probability = None
       classication = None
       tmbhunt_classes[seqid] = {}
@@ -288,7 +328,7 @@ def bomp_web(params, proteins, \
     print "# -> skipped: %s already exists" % bomp_out
     return
   
-  # dump extraneous output here so we don't see it
+  # dump extraneous output into this blackhole so we don't see it
   twill.set_output(StringIO.StringIO())
   
   go(url)
@@ -348,7 +388,7 @@ def bomp_web(params, proteins, \
   bomp_categories = {} # dictionary of {name, category} pairs
   for tr in soup.findAll('tr')[1:]:
     n, c = tr.findAll('th')
-    name = n.text.split()[0].strip()
+    name = parse_fasta_header(n.text.strip())[0]
     category = int(c.text)
     bomp_categories[name] = category
   
@@ -404,9 +444,9 @@ def tmhmm(params, proteins):
     if not words:
       continue
     if l.startswith("#"):
-      name = words[1]
+      name = parse_fasta_header(words[1])[0]
     else:
-      name = words[0]
+      name = parse_fasta_header(words[0])[0]
     if name is None:
       continue
     if 'tmhmm_helices' not in proteins[name]:
@@ -690,6 +730,10 @@ def identify_pse_proteins(params):
     features.append(tmhmm)
   if 'memsat3' in params['helix_programs']:
     features.append(memsat3)
+  if 'tmbhunt' in params['barrel_programs']:
+    features.append(tmbhunt_web)
+  if 'bomp' in params['barrel_programs']:
+    features.append(bomp_web)
   for extract_protein_feature in features:
     extract_protein_feature(params, proteins)
 
