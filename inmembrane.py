@@ -354,7 +354,8 @@ def bomp_web(params, proteins, \
       seqid = parse_fasta_header(l)[0]
       proteins[seqid]['bomp'] = bomp_category
       bomp_categories[seqid] = bomp_category
-    return bomp_category
+    fh.close()
+    return bomp_categories
   
   # dump extraneous output into this blackhole so we don't see it
   twill.set_output(StringIO.StringIO())
@@ -779,13 +780,13 @@ def identify_pse_proteins(params):
 
 def print_summary_table(proteins):
   counts = {}
-  #counts["BARREL"] = 0
+  counts["BARREL"] = 0
   for seqid in proteins:
     category = proteins[seqid]['category']
     
     # WIP: greedy barrel annotation
     if (dict_prop_truthy(protein, 'tmbhunt_prob') >= params['tmbhunt_cutoff']) or \
-     (dict_prop_truthy(protein, 'bomp') >= params['bomp_cutoff']):
+       (dict_prop_truthy(protein, 'bomp') >= params['bomp_cutoff']):
        counts["BARREL"] += 1
     
     if category not in counts:
