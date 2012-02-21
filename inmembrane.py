@@ -779,7 +779,7 @@ def identify_pse_proteins(params):
 
 def print_summary_table(proteins):
   counts = {}
-  #counts["BARREL"] = 0
+  counts["BARREL"] = 0
   for seqid in proteins:
     category = proteins[seqid]['category']
     
