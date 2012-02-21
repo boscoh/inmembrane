@@ -96,7 +96,8 @@ def parse_fasta_header(header):
     header = header[1:]
   if header.find("|") != -1:
     tokens = header.split('|')
-    seq_id = tokens[1]
+    # gi|ginumber becomes gi-ginumber
+    seq_id = "%s|%s" % (tokens[0], tokens[1])
     desc = tokens[-1:][0]
   # otherwise just split on spaces & hope for the best
   else:
@@ -749,6 +750,19 @@ def identify_pse_proteins(params):
         
   return prot_ids, proteins
 
+def print_summary_table(proteins):
+  counts = {}
+  for seqid in proteins:
+    category = proteins[seqid]['category'] 
+    if category not in counts:
+      counts[category] = 0
+    else:
+      counts[category] += 1
+      
+  print
+  print "# Number of proteins in each class:"
+  for c in counts:
+    print "%-15s %i" % (c, counts[c])
 
 description = """
 Inmembrane is a python script that sequentially carries out
@@ -776,14 +790,10 @@ if __name__ == "__main__":
 
   for prot_id in prot_ids:
     protein = proteins[prot_id]
-    word = prot_id.split()[0]
-    if "!" in word:
-      prot_id = word.split("|")[1]
-    else:
-      prot_id = word
     print "%-15s %-13s %-50s %s" % \
-        (word, 
+        (prot_id, 
          protein['category'], 
          protein['details'],
          protein['name'][:60])
 
+  print_summary_table(proteins)
