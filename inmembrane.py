@@ -784,8 +784,8 @@ def print_summary_table(proteins):
     category = proteins[seqid]['category']
     
     # WIP: greedy barrel annotation
-    if (dict_prop_truthy(protein, 'tmbhunt_prob') >= params['tmbhunt_cutoff']) or \
-     (dict_prop_truthy(protein, 'bomp') >= params['bomp_cutoff']):
+    if (dict_prop_truthy(proteins[seqid], 'tmbhunt_prob') >= params['tmbhunt_cutoff']) or \
+     (dict_prop_truthy(proteins[seqid], 'bomp') >= params['bomp_cutoff']):
        counts["BARREL"] += 1
     
     if category not in counts:
@@ -797,6 +797,13 @@ def print_summary_table(proteins):
   print "# Number of proteins in each class:"
   for c in counts:
     print "%-15s %i" % (c, counts[c])
+
+def dump_results(proteins):
+  for i,d in proteins.items():
+    print "#", i
+    for x,y in d.items():
+      print `x`+": "+`y`
+    print
 
 description = """
 Inmembrane is a python script that sequentially carries out
@@ -822,6 +829,7 @@ if __name__ == "__main__":
 
   prot_ids, proteins = identify_pse_proteins(params)
 
+  """
   for prot_id in prot_ids:
     protein = proteins[prot_id]
     print "%-15s %-13s %-50s %s" % \
@@ -829,5 +837,7 @@ if __name__ == "__main__":
          protein['category'], 
          protein['details'],
          protein['name'][:60])
-
+  """
+  
+  dump_results(proteins)
   print_summary_table(proteins)
