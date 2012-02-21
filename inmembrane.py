@@ -1,3 +1,4 @@
+#!/usr/bin/env python
 import sys
 import os
 import time
@@ -83,7 +84,7 @@ def run(cmd, out_file=None):
 
 def parse_fasta_header(header):
   """
-  Parses a FASTA format header (including the '>') and returns a
+  Parses a FASTA format header (with our without the initial '>') and returns a
   tuple of sequence id and sequence name/description.
   
   If NCBI SeqID format (gi|gi-number|gb|accession etc, is detected
@@ -91,17 +92,19 @@ def parse_fasta_header(header):
   http://www.ncbi.nlm.nih.gov/books/NBK21097/#A631 ).
   """
   # check to see if we have an NCBI-style header
+  if header[0] == '>':
+    header = header[1:]
   if header.find("|") != -1:
     tokens = header.split('|')
     seq_id = tokens[1]
-    name = tokens[-1:][0]
+    desc = tokens[-1:][0]
   # otherwise just split on spaces & hope for the best
   else:
     tokens = header.split()
-    seq_id = tokens[0][1:]
-    name = header[1:-1]
+    seq_id = tokens[0]
+    desc = header[0:-1]
   
-  return seq_id, name
+  return seq_id, desc
 
 def create_protein_data_structure(fasta):
   prot_ids = []
@@ -152,7 +155,7 @@ def hmmsearch3(params, proteins):
     for l in open(hmmsearch3_out):
       words = l.split()
       if l.startswith(">>"):
-        name = words[1]
+        name = parse_fasta_header(l[3:])[0]
         if 'hmmsearch' not in proteins[name]:
           proteins[name]['hmmsearch'] = []
         continue
@@ -174,7 +177,7 @@ def signalp4(params, proteins):
     if l.startswith("#"):
       continue
     words = l.split()
-    name = words[0]
+    name = parse_fasta_header(">"+words[0])[0]
     proteins[name].update({ 
       'is_signalp': (words[9] == "Y"),
       'signalp_cleave_position': int(words[4]),
@@ -187,7 +190,7 @@ def lipop1(params, proteins):
   for l in open(lipop1_out):
     words = l.split()
     if 'score' in l:
-      name = words[1]
+      name = parse_fasta_header(words[1])[0]
       if 'cleavage' in l:
         pair = words[5].split("=")[1]
         i = int(pair.split('-')[0])
@@ -218,8 +221,8 @@ def tmbhunt_web(params, proteins, \
     print "# -> skipped: %s already exists" % out
     return
   
-  # dump extraneous output here so we don't see it
-  #twill.set_output(StringIO.StringIO())
+  # dump extraneous output into this blackhole so we don't see it
+  twill.set_output(StringIO.StringIO())
   
   go("http://bmbpcu36.leeds.ac.uk/~andy/betaBarrel/AACompPred/aaTMB_Hunt.cgi")
   #showforms()
@@ -274,16 +277,19 @@ def tmbhunt_web(params, proteins, \
   fh.close()
   
   # parse TMB-HUNT text output
-  # FIXME: TMB-HUNT munges FASTA ids by making them all uppercase
-  #        however they are output in the order they are input,
-  #        so, we should take the ids in order from the original
-  #        FASTA file and ignore the TMB-HUNT id (maybe with an uppercase
-  #        comparison sanity check)
   tmbhunt_classes = {}
   for l in open(out, 'r'):
     #print "# TMB-HUNT raw:", l[:-1]
     if l[0] == ">":
+      # TMB-HUNT munges FASTA ids by making them all uppercase,
+      # so we find the equivalent any-case id in our proteins list
+      # and use that. ugly but necessary.
       seqid, desc = parse_fasta_header(l)
+      for i in proteins.keys():
+        if seqid.upper() == i.upper():
+          seqid = i
+          desc = proteins[i]['name']
+        
       probability = None
       classication = None
       tmbhunt_classes[seqid] = {}
@@ -322,7 +328,7 @@ def bomp_web(params, proteins, \
     print "# -> skipped: %s already exists" % bomp_out
     return
   
-  # dump extraneous output here so we don't see it
+  # dump extraneous output into this blackhole so we don't see it
   twill.set_output(StringIO.StringIO())
   
   go(url)
@@ -382,7 +388,7 @@ def bomp_web(params, proteins, \
   bomp_categories = {} # dictionary of {name, category} pairs
   for tr in soup.findAll('tr')[1:]:
     n, c = tr.findAll('th')
-    name = n.text.split()[0].strip()
+    name = parse_fasta_header(n.text.strip())[0]
     category = int(c.text)
     bomp_categories[name] = category
   
@@ -438,9 +444,9 @@ def tmhmm(params, proteins):
     if not words:
       continue
     if l.startswith("#"):
-      name = words[1]
+      name = parse_fasta_header(words[1])[0]
     else:
-      name = words[0]
+      name = parse_fasta_header(words[0])[0]
     if name is None:
       continue
     if 'tmhmm_helices' not in proteins[name]:
