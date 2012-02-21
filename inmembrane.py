@@ -785,8 +785,8 @@ def print_summary_table(proteins):
     category = proteins[seqid]['category']
     
     # WIP: greedy barrel annotation
-    if (dict_prop_truthy(protein, 'tmbhunt_prob') >= params['tmbhunt_cutoff']) or \
-       (dict_prop_truthy(protein, 'bomp') >= params['bomp_cutoff']):
+    if (dict_prop_truthy(proteins[seqid], 'tmbhunt_prob') >= params['tmbhunt_cutoff']) or \
+       (dict_prop_truthy(proteins[seqid], 'bomp') >= params['bomp_cutoff']):
        counts["BARREL"] += 1
     
     if category not in counts:
