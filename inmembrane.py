@@ -22,7 +22,9 @@ default_params_str = """{
   'lipop1_bin': 'LipoP',
   'tmhmm_bin': 'tmhmm',
   'helix_programs': ['tmhmm', 'memsat3'],
-  'barrel_programs': ['tmbhunt'],
+  'barrel_programs': ['bomp'],
+  'bomp_cutoff': 1,
+  'tmbhunt_cutoff': 0.5,
   'memsat3_bin': 'runmemsat',
   'hmmsearch3_bin': 'hmmsearch',
   'hmm_profiles_dir': '%(hmm_profiles)s',
@@ -50,6 +52,7 @@ def get_params():
   return params
 
 
+# FIXME: refactor this to something like 'dict_contains' or 'dict_has' ?
 def dict_prop_truthy(this_dict, prop):
   if prop not in this_dict:
     return False
@@ -96,8 +99,8 @@ def parse_fasta_header(header):
     header = header[1:]
   if header.find("|") != -1:
     tokens = header.split('|')
-    # gi|ginumber becomes gi-ginumber
-    seq_id = "%s|%s" % (tokens[0], tokens[1])
+    # "gi|ginumber|gb|accession bla bla" becomes "gi|ginumber"
+    seq_id = "%s|%s" % (tokens[0], tokens[1].split()[0])
     desc = tokens[-1:][0]
   # otherwise just split on spaces & hope for the best
   else:
@@ -184,7 +187,11 @@ def signalp4(params, proteins):
       'signalp_cleave_position': int(words[4]),
     })
 
-
+# FIXME: I believe the interpretation here of what constitutes
+#        a lipoprotein is incorrect. SpI denotes a predicted signal peptidase I
+#        cleavage site, which is the same as what SignalP predicts.
+#        Only proteins cleaved by SpII (signal peptidase II) (with a
+#        lipobox and +1 cysteine) should be considered lipoproteins
 def lipop1(params, proteins):
   lipop1_out = 'lipop.out'
   run('%(lipop1_bin)s %(fasta)s' % params, lipop1_out)
@@ -208,6 +215,10 @@ def tmbhunt_web(params, proteins, \
   Uses the TMB-HUNT web service 
   (http://bmbpcu36.leeds.ac.uk/~andy/betaBarrel/AACompPred/aaTMB_Hunt.cgi) to
   predict if proteins are outer membrane beta-barrels.
+  
+  NOTE: In my limited testing, TMB-HUNT tends to perform very poorly in
+        terms of false positives and false negetives. I'd suggest using only
+        BOMP.
   """
   # TODO: automatically split large sets into multiple jobs
   #       TMB-HUNT will only take 10000 seqs at a time
@@ -220,7 +231,7 @@ def tmbhunt_web(params, proteins, \
   
   if not force and os.path.isfile(out):
     print "# -> skipped: %s already exists" % out
-    return
+    return parse_tmbhunt(proteins, out)
   
   # dump extraneous output into this blackhole so we don't see it
   twill.set_output(StringIO.StringIO())
@@ -277,6 +288,13 @@ def tmbhunt_web(params, proteins, \
   fh.write(txt_out)
   fh.close()
   
+  return parse_tmbhunt(proteins, out)
+
+def parse_tmbhunt(proteins, out):
+  """
+  Takes the filename of a TMB-HUNT output file (text format)
+  & parses the outer membrane beta-barrel predictions into the proteins dictionary.
+  """
   # parse TMB-HUNT text output
   tmbhunt_classes = {}
   for l in open(out, 'r'):
@@ -295,15 +313,16 @@ def tmbhunt_web(params, proteins, \
       classication = None
       tmbhunt_classes[seqid] = {}
     if l.find("Probability of a NON-BETA BARREL protein with this score:") != -1:
-      probability = float(l.split(":")[1].strip())
+      # we convert from probability of NON-BARREL to probability of BARREL
+      probability = 1 - float(l.split(":")[1].strip())
     if l[0:11] == "Conclusion:":
       classication = l.split(":")[1].strip()
       if classication == "BBMP":
         tmbhunt_classes[seqid]['tmbhunt'] = True
-        tmbhunt_classes[seqid]['tmbhunt_prob'] = 1 - probability
+        tmbhunt_classes[seqid]['tmbhunt_prob'] = probability
         
         proteins[seqid]['tmbhunt'] = True
-        proteins[seqid]['tmbhunt_prob'] = 1 - probability
+        proteins[seqid]['tmbhunt_prob'] = probability
         
       elif classication == "Non BBMP":
         tmbhunt_classes[seqid]['tmbhunt'] = False
@@ -327,7 +346,15 @@ def bomp_web(params, proteins, \
   
   if not force and os.path.isfile(bomp_out):
     print "# -> skipped: %s already exists" % bomp_out
-    return
+    bomp_categories = {}
+    fh = open(bomp_out, 'r')
+    for l in fh:
+      words = l.split()
+      bomp_category = int(words[-1:][0])
+      seqid = parse_fasta_header(l)[0]
+      proteins[seqid]['bomp'] = bomp_category
+      bomp_categories[seqid] = bomp_category
+    return bomp_category
   
   # dump extraneous output into this blackhole so we don't see it
   twill.set_output(StringIO.StringIO())
@@ -405,7 +432,7 @@ def bomp_web(params, proteins, \
   for name in proteins:
     if "bomp" not in proteins[name]:
       if name in bomp_categories:
-        category = bomp_categories[name]
+        category = int(bomp_categories[name])
         proteins[name]['bomp'] = category
       else:
         proteins[name]['bomp'] = False
@@ -752,8 +779,15 @@ def identify_pse_proteins(params):
 
 def print_summary_table(proteins):
   counts = {}
+  #counts["BARREL"] = 0
   for seqid in proteins:
-    category = proteins[seqid]['category'] 
+    category = proteins[seqid]['category']
+    
+    # WIP: greedy barrel annotation
+    if (dict_prop_truthy(protein, 'tmbhunt_prob') >= params['tmbhunt_cutoff']) or \
+     (dict_prop_truthy(protein, 'bomp') >= params['bomp_cutoff']):
+       counts["BARREL"] += 1
+    
     if category not in counts:
       counts[category] = 0
     else:
