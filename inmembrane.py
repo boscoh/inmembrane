@@ -110,6 +110,13 @@ def parse_fasta_header(header):
   
   return seq_id, desc
 
+def seqid_to_filename(seqid):
+  """
+  Makes a sequence id filename friendly.
+  (eg, replaces '|' with '_')
+  """
+  return seqid.replace("|", "_")
+
 def create_protein_data_structure(fasta):
   prot_ids = []
   prot_id = None
@@ -466,9 +473,10 @@ def tmbeta_net_web(params, proteins, \
   Uses the TMBETA-NET web service (http://psfs.cbrc.jp/tmbeta-net/) to
   predict strands of outer membrane beta-barrels.
 
-  Adds the key 'tmbeta_strands' to the proteins object under the 
-  appropriate sequence id, as a list of lists with start and end 
-  residues of each predicted strand. (eg [[3,9],[14,21], ..etc ])
+  These keys are added to the proteins dictionary: 
+    'tmbeta_strands' - a list of lists with paired start and end 
+                       residues of each predicted strand. 
+                       (eg [[3,9],[14,21], ..etc ])
   """
   import json
   outfile = 'tmbeta_net.out'
@@ -645,7 +653,7 @@ def memsat3(params, proteins):
     })
 
     # write seq to single fasta file
-    single_fasta = prot_id.replace("|", "_") + '.fasta'
+    single_fasta = seq_id_to_filename(prot_id) + '.fasta'
     if not os.path.isfile(single_fasta):
       open(single_fasta, 'w').write(">%s\n%s\n" % (prot_id, seq))
     memsat_out = single_fasta.replace('fasta', 'memsat')
