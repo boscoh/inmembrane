@@ -22,7 +22,7 @@ default_params_str = """{
   'lipop1_bin': 'LipoP',
   'tmhmm_bin': 'tmhmm',
   'helix_programs': ['tmhmm', 'memsat3'],
-  'barrel_programs': ['bomp'],
+  'barrel_programs': ['bomp', 'tmbeta'],
   'bomp_cutoff': 1,
   'tmbhunt_cutoff': 0.5,
   'memsat3_bin': 'runmemsat',
@@ -52,19 +52,19 @@ def get_params():
   return params
 
 
-# FIXME: refactor this to something like 'dict_contains' or 'dict_has' ?
+# FIXME: refactor this to something like dict_contains, dict_get or dict_has ?
 def dict_prop_truthy(this_dict, prop):
   if prop not in this_dict:
     return False
   return this_dict[prop]
   
+dict_get = dict_prop_truthy
 
 def run_with_output(cmd):
   p = subprocess.Popen(
       cmd, shell=True, stdout=subprocess.PIPE, 
       stderr=subprocess.PIPE)
   return p.stdout.read()
-
 
 def run(cmd, out_file=None):
   full_cmd = cmd + " > " + out_file
@@ -101,12 +101,12 @@ def parse_fasta_header(header):
     tokens = header.split('|')
     # "gi|ginumber|gb|accession bla bla" becomes "gi|ginumber"
     seq_id = "%s|%s" % (tokens[0], tokens[1].split()[0])
-    desc = tokens[-1:][0]
+    desc = tokens[-1:][0].strip()
   # otherwise just split on spaces & hope for the best
   else:
     tokens = header.split()
     seq_id = tokens[0]
-    desc = header[0:-1]
+    desc = header[0:-1].strip()
   
   return seq_id, desc
 
@@ -117,6 +117,8 @@ def seqid_to_filename(seqid):
   """
   return seqid.replace("|", "_")
 
+# TODO: Given that proteins.keys() should be identical to
+#       prot_ids, wouldn't it make sense to only return 'proteins' ?
 def create_protein_data_structure(fasta):
   prot_ids = []
   prot_id = None
@@ -468,10 +470,16 @@ def bomp_web(params, proteins, \
   """
 
 def tmbeta_net_web(params, proteins, \
-                   url="http://psfs.cbrc.jp/tmbeta-net/", force=False):
+                   url="http://psfs.cbrc.jp/tmbeta-net/", \
+                   category='BARREL',
+                   force=False):
   """
   Uses the TMBETA-NET web service (http://psfs.cbrc.jp/tmbeta-net/) to
   predict strands of outer membrane beta-barrels.
+  
+  By default, category='BARREL' means prediction will only be run
+  on proteins in the set with this category property. To process all
+  proteins, change category to None.
 
   These keys are added to the proteins dictionary: 
     'tmbeta_strands' - a list of lists with paired start and end 
@@ -497,12 +505,24 @@ def tmbeta_net_web(params, proteins, \
   twill.set_output(StringIO.StringIO())
 
   for seqid in proteins:
+    
+    # only run on sequences which match the category filter
+    if (category == None) or \
+       (dict_get(proteins[seqid], 'category') == category):
+      pass
+    else:
+      continue
+      
     go(url)
     #showforms()
     fv("1","sequence",proteins[seqid]['seq'])
     submit()
+    sys.stderr.write("# TMBETA-NET: Predicting strands for %s - %s\n" \
+                      % (seqid, proteins[seqid]['name']))
     out = show()
+    time.sleep(1)
     
+    # parse the web page returned, extract strand boundaries
     proteins[seqid]['tmbeta_strands'] = []
     for l in out.split('\n'):
       #print "##", l
@@ -514,6 +534,7 @@ def tmbeta_net_web(params, proteins, \
         #print "# TMBETA-NET(web) segments: %s, %s" % (i, j)
     tmbeta_strands[seqid] = proteins[seqid]['tmbeta_strands']
 
+  # we store the parsed strand boundaries in JSON format
   fh = open(outfile, 'w')
   fh.write(json.dumps(tmbeta_strands, separators=(',',':\n')))
   fh.close()
@@ -796,7 +817,11 @@ def predict_surface_exposure(params, protein):
 
   return details, category
 
-def identify_pse_proteins(params):
+def init_output_dir(params):
+  """
+  Creates a directory for all output files and makes it the current 
+  working directory. copies the input sequences into it as 'input.fasta'.
+  """
   if dict_prop_truthy(params, 'out_dir'):
     base_dir = params['out_dir']
   else:
@@ -809,9 +834,13 @@ def identify_pse_proteins(params):
   params['fasta'] = fasta
 
   os.chdir(base_dir)
+  
+def identify_pse_proteins(params):
+  
+  init_output_dir(params)
 
   # initialize the proteins data structure
-  prot_ids, proteins = create_protein_data_structure(fasta)
+  prot_ids, proteins = create_protein_data_structure(params['fasta'])
   features = [signalp4, lipop1, hmmsearch3]
   if 'tmhmm' in params['helix_programs']:
     features.append(tmhmm)
@@ -836,6 +865,84 @@ def identify_pse_proteins(params):
         
   return prot_ids, proteins
 
+def predict_surface_exposure_barrel(params, protein):
+  # TODO: This is a placeholder for a function which will do something
+  #       similar to predict_surface_exposure, but focussed on inferring 
+  #       outer membrane beta barrel topology.
+  #       Essentially, we should:
+  #        * Move through the strand list in reverse.
+  #        * Strand annotation alternates 'up' strand and 'down' strand
+  #        * Loop annotation (starting with the C-terminal residue) alternates
+  #          'inside' and 'outside'.
+  #        * If everything is sane, we should finish on a down strand. If not,
+  #          consider a rule to make an 'N-terminal up strand' become 
+  #          an 'inside loop'
+  #        * Sanity check on loop lengths ? 'Outside' loops should be on average
+  #          longer than non-terminal 'inside' loops.
+  #        * For alternative strand predictors (eg transFold, ProfTMB), which
+  #          may specifically label inner and outer loops, we should obviously
+  #          use those annotations directly.
+  pass
+
+def identify_omps(params, stringent=False):
+  """
+  Identifies outer membrane proteins from gram-negative bacteria.
+  
+  If stringent=True, all predicted outer membrane barrels must also
+  have a predicted signal sequence to be categorized as BARREL.
+  """
+  init_output_dir(params)
+  
+  # initialize the proteins data structure
+  seqids, proteins = create_protein_data_structure(params['fasta'])
+  features = [signalp4, lipop1, hmmsearch3]
+  if 'tmhmm' in params['helix_programs']:
+    features.append(tmhmm)
+  if 'memsat3' in params['helix_programs']:
+    features.append(memsat3)
+  if 'tmbhunt' in params['barrel_programs']:
+    features.append(tmbhunt_web)
+  if 'bomp' in params['barrel_programs']:
+    features.append(bomp_web)
+  for extract_protein_feature in features:
+    extract_protein_feature(params, proteins)
+  
+  for seqid, protein in proteins.items():
+    # TODO: this is used for setting 'category', however
+    #       we may need to make a gram- OM specific version
+    #       (eg, run after strand prediction so we can look at
+    #            strand topology, detect long extracellular loops etc) 
+    details, category = predict_surface_exposure(params, protein)
+    proteins[seqid]['category'] = category
+    proteins[seqid]['details'] = details
+    
+    if stringent:
+      if dict_get(protein, 'is_signalp') and \
+       ( dict_get(protein, 'bomp') or \
+         dict_get(protein, 'tmbhunt') ):
+       proteins[seqid]['category'] = 'BARREL'
+    else:
+      if dict_get(protein, 'bomp') or \
+         dict_get(protein, 'tmbhunt'):
+         proteins[seqid]['category'] = 'BARREL'
+    
+  # TMBETA-NET knows to only run on predicted barrels
+  if 'tmbeta' in params['barrel_programs']:
+    tmbeta_net_web(params, proteins, category='BARREL')
+
+  for seqid in proteins:
+    details = proteins[seqid]['details']
+    if dict_get(proteins[seqid], 'tmbeta_strands'):
+      num_strands = len(proteins[seqid]['tmbeta_strands'])
+      details += 'tmbeta(%i)' % (num_strands)
+    if details.endswith(';'):
+      details = details[:-1]
+    if details is '':
+      details = "."
+    proteins[seqid]['details'] = details
+    
+  return seqids, proteins
+  
 def print_summary_table(proteins):
   counts = {}
   counts["BARREL"] = 0
@@ -886,17 +993,20 @@ if __name__ == "__main__":
   if 'fasta' not in params or not params['fasta']:
       params['fasta'] = args[0]
 
-  prot_ids, proteins = identify_pse_proteins(params)
+  if params['organism'] == 'gram+':
+    seqids, proteins = identify_pse_proteins(params)
+  elif params['organism'] == 'gram-':
+    seqids, proteins = identify_omps(params, stringent=False)
+  else:
+    sys.stderr.write("You must specify 'gram+' or 'gram-' in inmembrane.config\n")
 
-  """
-  for prot_id in prot_ids:
+  for prot_id in seqids:
     protein = proteins[prot_id]
     print "%-15s %-13s %-50s %s" % \
         (prot_id, 
          protein['category'], 
          protein['details'],
          protein['name'][:60])
-  """
   
-  dump_results(proteins)
+  #dump_results(proteins)
   print_summary_table(proteins)
