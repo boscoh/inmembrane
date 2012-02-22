@@ -800,7 +800,7 @@ def print_summary_table(proteins):
 
 def dump_results(proteins):
   for i,d in proteins.items():
-    print "#", i
+    print "# %s - %s" % (i, proteins[i]['name'])
     for x,y in d.items():
       print `x`+": "+`y`
     print
