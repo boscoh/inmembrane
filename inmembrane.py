@@ -52,8 +52,7 @@ def get_params():
   return params
 
 
-# FIXME: refactor this to something like 'dict_contains' or 'dict_has' ?
-def dict_prop_truthy(this_dict, prop):
+def dict_get(this_dict, prop):
   if prop not in this_dict:
     return False
   return this_dict[prop]
@@ -145,6 +144,7 @@ def get_fasta_seq_by_id(fname, prot_id):
 
     l = f.readline()
   f.close()
+
 
 def hmmsearch3(params, proteins):
   file_tag = os.path.join(params['hmm_profiles_dir'], '*.hmm')
@@ -674,7 +674,7 @@ def predict_surface_exposure(params, protein):
     
   def has_tm_helix(protein):
     for program in params['helix_programs']:
-      if dict_prop_truthy(protein, '%s_helices' % program):
+      if dict_get(protein, '%s_helices' % program):
         return True
     return False
 
@@ -692,11 +692,11 @@ def predict_surface_exposure(params, protein):
   terminal_exposed_loop_min = \
       params['terminal_exposed_loop_min']
 
-  is_hmm_profile_match = dict_prop_truthy(protein, 'hmmsearch')
-  is_lipop = dict_prop_truthy(protein, 'is_lipop')
+  is_hmm_profile_match = dict_get(protein, 'hmmsearch')
+  is_lipop = dict_get(protein, 'is_lipop')
   if is_lipop:
     i_lipop_cut = protein['lipop_cleave_position']
-  is_signalp = dict_prop_truthy(protein, 'is_signalp')
+  is_signalp = dict_get(protein, 'is_signalp')
   if is_signalp:
     i_signalp_cut = protein['signalp_cleave_position']
 
@@ -738,31 +738,21 @@ def predict_surface_exposure(params, protein):
 
   return details, category
 
+
 def identify_pse_proteins(params):
-  if dict_prop_truthy(params, 'out_dir'):
-    base_dir = params['out_dir']
-  else:
-    base_dir = '.'.join(os.path.splitext(params['fasta'])[:-1])
-  if not os.path.isdir(base_dir):
-    os.makedirs(base_dir)
-
-  fasta = "input.fasta"
-  shutil.copy(params['fasta'], os.path.join(base_dir, fasta))
-  params['fasta'] = fasta
-
-  os.chdir(base_dir)
-
   # initialize the proteins data structure
-  prot_ids, proteins = create_protein_data_structure(fasta)
+  prot_ids, proteins = create_protein_data_structure(params['fasta'])
   features = [signalp4, lipop1, hmmsearch3]
-  if 'tmhmm' in params['helix_programs']:
-    features.append(tmhmm)
-  if 'memsat3' in params['helix_programs']:
-    features.append(memsat3)
-  if 'tmbhunt' in params['barrel_programs']:
-    features.append(tmbhunt_web)
-  if 'bomp' in params['barrel_programs']:
-    features.append(bomp_web)
+  if dict_get(params, 'helix_programs'):
+    if 'tmhmm' in params['helix_programs']:
+      features.append(tmhmm)
+    if 'memsat3' in params['helix_programs']:
+      features.append(memsat3)
+  if dict_get(params, 'barrel_programs'):
+    if 'tmbhunt' in params['barrel_programs']:
+      features.append(tmbhunt_web)
+    if 'bomp' in params['barrel_programs']:
+      features.append(bomp_web)
   for extract_protein_feature in features:
     extract_protein_feature(params, proteins)
 
@@ -778,6 +768,7 @@ def identify_pse_proteins(params):
         
   return prot_ids, proteins
 
+
 def print_summary_table(proteins):
   counts = {}
   counts["BARREL"] = 0
@@ -785,8 +776,8 @@ def print_summary_table(proteins):
     category = proteins[seqid]['category']
     
     # WIP: greedy barrel annotation
-    if (dict_prop_truthy(proteins[seqid], 'tmbhunt_prob') >= params['tmbhunt_cutoff']) or \
-       (dict_prop_truthy(proteins[seqid], 'bomp') >= params['bomp_cutoff']):
+    if (dict_get(proteins[seqid], 'tmbhunt_prob') >= params['tmbhunt_cutoff']) or \
+       (dict_get(proteins[seqid], 'bomp') >= params['bomp_cutoff']):
        counts["BARREL"] += 1
     
     if category not in counts:
@@ -799,27 +790,20 @@ def print_summary_table(proteins):
   for c in counts:
     print "%-15s %i" % (c, counts[c])
 
-description = """
-Inmembrane is a python script that sequentially carries out
-bioinformatic analysis of a fasta file, collates the results
-and generates a combined analysis of all the analyses.
 
-(c) 2011 Bosco Ho and Andrew Perry
-"""
+def process(params):
+  if dict_get(params, 'out_dir'):
+    base_dir = params['out_dir']
+  else:
+    base_dir = '.'.join(os.path.splitext(params['fasta'])[:-1])
+  if not os.path.isdir(base_dir):
+    os.makedirs(base_dir)
 
-if __name__ == "__main__":
-  parser = OptionParser()
-  (options, args) = parser.parse_args()
+  fasta = "input.fasta"
+  shutil.copy(params['fasta'], os.path.join(base_dir, fasta))
+  params['fasta'] = fasta
 
-  params = get_params()
-  
-  if ('fasta' not in params or not params['fasta']) and not args:
-      print description
-      parser.print_help()
-      sys.exit(1)
-
-  if 'fasta' not in params or not params['fasta']:
-      params['fasta'] = args[0]
+  os.chdir(base_dir)
 
   prot_ids, proteins = identify_pse_proteins(params)
 
@@ -832,3 +816,25 @@ if __name__ == "__main__":
          protein['name'][:60])
 
   print_summary_table(proteins)
+
+
+description = """
+Inmembrane is a python script that sequentially carries out
+bioinformatic analysis of a fasta file, collates the results
+and generates a combined analysis of all the analyses.
+
+(c) 2011 Bosco Ho and Andrew Perry
+"""
+
+if __name__ == "__main__":
+  parser = OptionParser()
+  (options, args) = parser.parse_args()
+  params = get_params()
+  if ('fasta' not in params or not params['fasta']) and not args:
+      print description
+      parser.print_help()
+      sys.exit(1)
+  if 'fasta' not in params or not params['fasta']:
+      params['fasta'] = args[0]
+  process(params)
+
