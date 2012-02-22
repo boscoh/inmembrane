@@ -1,4 +1,4 @@
-# Annotation of proteomes: bioinformatic workflow with __inmembrane__, a surface membrane predictor for gram+ bacteria
+# __inmembrane__, a bioinformatic workflow for annotation of bacterial cell surface proteomes
 
 ## Abstract 
 

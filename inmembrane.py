@@ -460,6 +460,57 @@ def bomp_web(params, proteins, \
       proteins[name]['bomp'] = False
   """
 
+def tmbeta_net_web(params, proteins, \
+                   url="http://psfs.cbrc.jp/tmbeta-net/", force=False):
+  """
+  Uses the TMBETA-NET web service (http://psfs.cbrc.jp/tmbeta-net/) to
+  predict strands of outer membrane beta-barrels.
+
+  Adds the key 'tmbeta_strands' to the proteins object under the 
+  appropriate sequence id, as a list of lists with start and end 
+  residues of each predicted strand. (eg [[3,9],[14,21], ..etc ])
+  """
+  import json
+  outfile = 'tmbeta_net.out'
+  print "# TMBETA-NET(web) %s > %s" % (params['fasta'], outfile)
+  
+  tmbeta_strands = {}
+  if not force and os.path.isfile(outfile):
+    print "# -> skipped: %s already exists" % outfile
+    fh = open(outfile, 'r')
+    tmbeta_strands = json.loads(fh.read())
+    fh.close()
+    for seqid in tmbeta_strands:
+      proteins[seqid]['tmbeta_strands'] = tmbeta_strands[seqid]
+
+    return tmbeta_strands
+
+  # dump extraneous output into this blackhole so we don't see it
+  twill.set_output(StringIO.StringIO())
+
+  for seqid in proteins:
+    go(url)
+    #showforms()
+    fv("1","sequence",proteins[seqid]['seq'])
+    submit()
+    out = show()
+    
+    proteins[seqid]['tmbeta_strands'] = []
+    for l in out.split('\n'):
+      #print "##", l
+      if "<BR>Segment " in l:
+        i,j = l.split(":")[1].split("to")
+        i = int(i.strip()[1:])
+        j = int(j.strip()[1:])
+        proteins[seqid]['tmbeta_strands'].append([i,j])
+        #print "# TMBETA-NET(web) segments: %s, %s" % (i, j)
+    tmbeta_strands[seqid] = proteins[seqid]['tmbeta_strands']
+
+  fh = open(outfile, 'w')
+  fh.write(json.dumps(tmbeta_strands, separators=(',',':\n')))
+  fh.close()
+
+  return tmbeta_strands
 
 def tmhmm(params, proteins):
   tmhmm_out = 'tmhmm.out'
