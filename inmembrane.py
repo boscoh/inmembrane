@@ -197,7 +197,7 @@ def lipop1(params, proteins):
   run('%(lipop1_bin)s %(fasta)s' % params, lipop1_out)
   for l in open(lipop1_out):
     words = l.split()
-    if 'score' in l:
+    if 'SpII score' in l:
       name = parse_fasta_header(words[1])[0]
       if 'cleavage' in l:
         pair = words[5].split("=")[1]
@@ -208,6 +208,7 @@ def lipop1(params, proteins):
         'is_lipop': 'Sp' in words[2],
         'lipop_cleave_position': i,
       })
+
 
 def tmbhunt_web(params, proteins, \
              force=False):
@@ -333,6 +334,7 @@ def parse_tmbhunt(proteins, out):
   
   #print tmbhunt_classes
   return tmbhunt_classes
+
 
 def bomp_web(params, proteins, \
              url="http://services.cbu.uib.no/tools/bomp/", force=False):
@@ -606,6 +608,22 @@ def memsat3(params, proteins):
       parse_memsat(protein, memsat_out)
       
 
+def analyze_proteins_with_external_programs(params, proteins):
+  features = [signalp4, lipop1, hmmsearch3]
+  if dict_get(params, 'helix_programs'):
+    if 'tmhmm' in params['helix_programs']:
+      features.append(tmhmm)
+    if 'memsat3' in params['helix_programs']:
+      features.append(memsat3)
+  if dict_get(params, 'barrel_programs'):
+    if 'tmbhunt' in params['barrel_programs']:
+      features.append(tmbhunt_web)
+    if 'bomp' in params['barrel_programs']:
+      features.append(bomp_web)
+  for extract_protein_feature in features:
+    extract_protein_feature(params, proteins)
+
+
 def chop_nterminal_peptide(protein, i_cut):
   protein['sequence_length'] -= i_cut
   print "#"
@@ -739,24 +757,8 @@ def predict_surface_exposure(params, protein):
   return details, category
 
 
-def identify_pse_proteins(params):
-  # initialize the proteins data structure
-  prot_ids, proteins = create_protein_data_structure(params['fasta'])
-  features = [signalp4, lipop1, hmmsearch3]
-  if dict_get(params, 'helix_programs'):
-    if 'tmhmm' in params['helix_programs']:
-      features.append(tmhmm)
-    if 'memsat3' in params['helix_programs']:
-      features.append(memsat3)
-  if dict_get(params, 'barrel_programs'):
-    if 'tmbhunt' in params['barrel_programs']:
-      features.append(tmbhunt_web)
-    if 'bomp' in params['barrel_programs']:
-      features.append(bomp_web)
-  for extract_protein_feature in features:
-    extract_protein_feature(params, proteins)
-
-  for prot_id in prot_ids:
+def deduce_surface_exposure(params, proteins):
+  for prot_id in proteins:
     details, category = \
         predict_surface_exposure(params, proteins[prot_id])
     if details.endswith(';'):
@@ -765,8 +767,6 @@ def identify_pse_proteins(params):
       details = "."
     proteins[prot_id]['details'] = details
     proteins[prot_id]['category'] = category
-        
-  return prot_ids, proteins
 
 
 def print_summary_table(proteins):
@@ -801,11 +801,11 @@ def process(params):
 
   fasta = "input.fasta"
   shutil.copy(params['fasta'], os.path.join(base_dir, fasta))
-  params['fasta'] = fasta
 
   os.chdir(base_dir)
-
-  prot_ids, proteins = identify_pse_proteins(params)
+  prot_ids, proteins = create_protein_data_structure(fasta)
+  analyze_proteins_with_external_programs(params, proteins)
+  deduce_surface_exposure(params, proteins)
 
   for prot_id in prot_ids:
     protein = proteins[prot_id]
@@ -815,13 +815,14 @@ def process(params):
          protein['details'],
          protein['name'][:60])
 
-  print_summary_table(proteins)
+#   print_summary_table(proteins)
 
 
 description = """
-Inmembrane is a python script that sequentially carries out
-bioinformatic analysis of a fasta file, collates the results
-and generates a combined analysis of all the analyses.
+Inmembrane is a proteome annotation pipeline. It takes 
+a FASTA file, then carries out sequential analysis of 
+each sequence with a bunch of third-party programs, and 
+collates the results.
 
 (c) 2011 Bosco Ho and Andrew Perry
 """
