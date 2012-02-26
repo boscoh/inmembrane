@@ -1003,7 +1003,6 @@ def process(params):
     sys.stderr.write("You must specify 'gram+' or 'gram-' in inmembrane.config\n")
     
 
-
 description = """
 Inmembrane is a proteome annotation pipeline. It takes 
 a FASTA file, then carries out sequential analysis of 
@@ -1018,10 +1017,10 @@ if __name__ == "__main__":
   (options, args) = parser.parse_args()
   params = get_params()
   if ('fasta' not in params or not params['fasta']) and not args:
-      print description
-      parser.print_help()
-      sys.exit(1)
+    print description
+    parser.print_help()
+    sys.exit(1)
   if 'fasta' not in params or not params['fasta']:
-      params['fasta'] = args[0]
+    params['fasta'] = args[0]
   process(params)
 

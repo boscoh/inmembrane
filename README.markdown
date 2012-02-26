@@ -1,29 +1,22 @@
-# INMEMBRANE
+# _inmembrane_
 
-Inmembrane.py is a program that is designed to bind the results of various other bioinformatic programs together to form an analysis.
+_inmembrane_ is a pipeline for proteome annotation to predict if a protein  is exposed on the surface of a bacteria. It takes a FASTA input file and runs  a number of external bioinformatic analysis programs on the sequences. It then collects the output to make the final analysis.
 
-The philosophy of inmembrane.py is that the standard Python library provides a clean class of functions to process the relatively straightforward analysis and that simple dictionaries and python functions should be able to provide all the analysis required for the analysis.
+The program is written to use as much of the standard Python library as possible, and specifically uses native data structures which provide an incredible amount of flexibility.
 
-the current set of scripting languages provide such a clean interface to the tasks required for scripting that we believe that it represents a significant obscuratuon to wrap these commonly used fuctions in further abstraction. 
-
-You cannot any better expressability than in the native language constructs. 
-
-As well experience has shown that programs can and most obviously will change over iterative versions. it is better to accept that output will change and allow easy additions to the parser rather than try to write a monolithic parser that will premot all future changes. light and adaptability. 
-
+In particular, the goal of _inmembrane_ is to write the parsing code for each program as concise as possible. It is better to write a new parser for different versions of a program than to to try to write a monolithic parser that handles many versions. 
 
 ## Installation
 
-inmembrane.py is a plain Python script, and has been tested with Python 2.7. 
+_inmembrane_ is written in Python, and runs in Python 2.7. It can be run in two modes:
 
-Since inmembrane is basically a wrapper, it requires a lot programs to be installed. The parameters and locations for these dependencies are held in a file called inmembrane.config, which is located in the same directory as the main script. If this is not found, simply running INMEMBRANE with no arguments will generate the default inmembrane.config file. Edit the file to match your system after this file is generated.
+1. as a command-line program in the _inmembrane_ directory: python _inmembrane_.py 
+2. through a wrapped python program, that can be double-clicked in a file-manager on many systems
 
-unit tests to see if your bioinformatics works with inmembrane. 
+_inmembrane_ is basically a wrapper around a large number of standard bioinformatics tools. 
 
-run a test with a short example and see if it crashes. 
-
-if it cannot find the binary, it will quit and inform you of this. 
-
-One problem with testing something like imembrane is that there is a wide variety of ways in which its dependencies can be installed. For instance, memsat3 in turn runs a local copy of NCBI Blast , it is difficult to test because memsat3 uses blast which in turn depends on the exact version of the blast binaries and databases that you install. 
+The parameters and locations for these dependencies are held in a file called _inmembrane_.config, which is located in the same directory as the main script. 
+If _inmembrane_.config is not found, running _inmembrane_ with no arguments will generate a default _inmembrane_.config file. Edit the locations of the binaries in the config file to match your system.
 
 ## Dependencines
 
@@ -77,3 +70,10 @@ Only one of TMHMM or MEMSAT3 are required, but users that want to compare transm
  - 'datadir' is the the path to the MEMSAT3 data directory )
 
 Note the the 'runmemsat' script refers to PSIPRED v2, but it means MEMSAT3 - PSIPRED is not required.
+
+## Tests
+
+We provide a number of tests for _inmembrane_, but given the variety of different versions of the programs that _inmembrane_ depends, we are unable to comprehensively test all of them. In the _inmembrane_ directory:
+
+     python runtest.py
+
