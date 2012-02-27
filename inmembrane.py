@@ -16,6 +16,7 @@ from twill.commands import find, formfile, follow, fv, go, show, \
 
 default_params_str = """{
   'fasta': '',
+  'output': '',
   'out_dir': '',
   'organism': 'gram+',
   'signalp4_bin': 'signalp',
@@ -34,6 +35,18 @@ default_params_str = """{
   'internal_exposed_loop_min': 100,
 }
 """
+
+
+output_fname = None
+def print_output(params, s):
+  if not output_fname:
+    print s
+  else:
+    f = open(output_fname, 'a')
+    if s and s[-1] != "\n":
+      s += "\n"
+    f.write(s)
+    f.close()
 
 
 def get_params():
@@ -204,7 +217,6 @@ def hmmsearch3(params, proteins):
         score = float(words[-5])
         if evalue <= params['hmm_evalue_max'] and \
             score >= params['hmm_score_min']:
-          print evalue, score
           proteins[name]['hmmsearch'].append(hmm_name)
 
 
@@ -710,12 +722,9 @@ def memsat3(params, proteins):
 
 def chop_nterminal_peptide(protein, i_cut):
   protein['sequence_length'] -= i_cut
-  print "#"
-  print "# cut %s:" % protein['name'].strip()
   for prop in protein:
     if '_loops' in prop or '_helices' in prop:
       loops = protein[prop]
-      print "# original %s: %s" % (prop, loops)
       for i in range(len(loops)):
         j, k = loops[i]
         loops[i] = (j - i_cut, k - i_cut)
@@ -730,7 +739,6 @@ def chop_nterminal_peptide(protein, i_cut):
         # otherewise, neg value means loop is at the new N-terminal
         elif j<=0 and k>0:
           loops[i] = (1, k)
-      print "# cut at %d %s: %s" % (i_cut, prop, loops)
 
 
 def eval_surface_exposed_loop(
@@ -993,7 +1001,19 @@ def identify_omps(params, stringent=False):
   return seqids, proteins
   
   
+class Logger(object):
+    def __init__(self, log_fname):
+        self.terminal = sys.stdout
+        self.log = open(log_fname, 'w')
+
+    def write(self, message):
+        self.terminal.write(message)
+        self.log.write(message)  
+
+
 def process(params):
+  if params['output']:
+    sys.stdout = Logger(params['output'])
   init_output_dir(params)
   if params['organism'] == 'gram+':
     seqids, proteins = identify_pse_proteins(params)

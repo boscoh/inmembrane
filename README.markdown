@@ -15,17 +15,48 @@ It can be run as a command-line program in the _inmembrane_ directory:
      
     python inmembrane.py your_fasta_file
 
-It can also be run as an auxiliary script that can be double-clicked in a file-manager. An example is give in:
+The other way of running imembrane.py is with a custom script, such as  `run_example.py`. If you open it with a **text editor**, you will see that the input file and the output file are filled in. The output file will be created for you. You can run it on the command-line: 
 
-    run_example.py
+    python run_example.py
+
+Or easier still, on most systems with Python installed, you simply double-click it in a file-manager.
+
+## Output format
+
+Given that this is a glue script that runs a lot of programs, there will be many places for error, and as such, to aid in debugging, we print out all the commands run in the script. These lines will be preceeded by the hash # character so that it can easily be commented out.
+
+The output is designed is designed to be easily parsed using whitespace delineation. For instance, if no feature of interest is found for a sequence, then a '.' is put in the third column. The full name, which has variable number of tokens is put at the end. Here's an example:
+
+    SPy_0008  CYTOPLASM     .                   SPy_0008 from AE004092
+    SPy_0009  CYTOPLASM     .                   SPy_0009 from AE004092
+    SPy_0010  PSE           tmhmm(1)            SPy_0010 from AE004092
+    SPy_0012  PSE           hmm(GW1);signalp    SPy_0012 from AE004092
+
+The first column is the SeqID which is the first token in the identifier line of the sequence in the FASTA file
+
+The second column is the prediction, it is CYTOPLASM, MEMBRANE, PSE, or SECRETED.
+
+The third line is a summary of features picked up by the other program. 
+- tmhmm(2) means 2 transmembrane helices were found
+- hmm(GW1) means the GW1 motif was found in HMMER
+- signalp means a secretion signal was found
+- lipop means a Sp II secretion signal found with an appropriate CYS residue at the cleavage site, which will be attached to a phospholipid in the membrane
+
+The rest of the line gives the full name as given in the rest of the identifier line in the FASTA file.
 
 
 ## Configuration file
 
 The parameters and locations for the dependencies of _inmembrane_ are held in a file called `inmembrane.config`, which is located in the same directory as the main script. The `inmemmbrane.py` script will always look for `inmembrane.config` there.
 
-If `inmembrane.config` is not found, running `inmembrane.py` with no arguments will generate a default `inmembrane.config`. Edit the locations of the binaries in the config file to match your system.
+If `inmembrane.config` is not found, running `inmembrane.py` with no arguments will generate a default `inmembrane.config`. Edit the locations of the binaries in the config file to match your system. The options are:
 
+- the full path location of the binaries for SignalP, LipoP, TMHMM, HMMSEARCH, and MEMSAT. 
+- 'organsim' indicates the type of organism - Gram+, Gram- are supported so far
+- 'hmm_profiles_dir': the location of the HMM profiles for peptidoglycan binding motifs for Gram+ 
+-  for HMM, you can set the cutoffs for significance, the E-value 'hmm_evalue_max', and the score 'hmm_score_min'
+- the shortest length of a loop that sticks out of the peptidoglycan layer of a Gram+ bacteria. The SurfG+ determined this to be 50 amino acids for terminal loops, and twice that for internal loops, 100
+- 'helix_programs' you can choose which of the transmembrane-helix prediction programs you want to use
 
 ## Installing dependencies
 
