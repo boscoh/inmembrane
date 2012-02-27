@@ -36,7 +36,8 @@ The first column is the SeqID which is the first token in the identifier line of
 
 The second column is the prediction, it is CYTOPLASM, MEMBRANE, PSE, or SECRETED.
 
-The third line is a summary of features picked up by the other program. 
+The third line is a summary of features picked up by the other program:
+
 - tmhmm(2) means 2 transmembrane helices were found
 - hmm(GW1) means the GW1 motif was found in HMMER
 - signalp means a secretion signal was found
