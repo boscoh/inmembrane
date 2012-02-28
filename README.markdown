@@ -25,12 +25,12 @@ Or easier still, on most systems with Python installed, you simply double-click 
 
 Given that this is a glue script that runs a lot of programs, there will be many places for error, and as such, to aid in debugging, we print out all the commands run in the script. These lines will be preceeded by the hash # character so that it can easily be commented out.
 
-The output is designed is designed to be easily parsed using whitespace delineation. For instance, if no feature of interest is found for a sequence, then a '.' is put in the third column. The full name, which has variable number of tokens is put at the end. Here's an example:
+The output is CSV compatible. You can open it with EXCEL. It is also designed to be whitespace delineated. For instance, if no feature of interest is found for a sequence, then a '.' is put in the third column. The full name, which has variable number of tokens is put at the end. Here's an example:
 
-    SPy_0008  CYTOPLASM     .                   SPy_0008 from AE004092
-    SPy_0009  CYTOPLASM     .                   SPy_0009 from AE004092
-    SPy_0010  PSE           tmhmm(1)            SPy_0010 from AE004092
-    SPy_0012  PSE           hmm(GW1);signalp    SPy_0012 from AE004092
+    SPy_0008 , CYTOPLASM    , .                  , "SPy_0008 from AE004092"
+    SPy_0009 , CYTOPLASM    , .                  , "SPy_0009 from AE004092"
+    SPy_0010 , PSE          , tmhmm(1)           , "SPy_0010 from AE004092"
+    SPy_0012 , PSE          , hmm(GW1);signalp   , "SPy_0012 from AE004092"
 
 The first column is the SeqID which is the first token in the identifier line of the sequence in the FASTA file
 
@@ -43,7 +43,7 @@ The third line is a summary of features picked up by the other program:
 - signalp means a secretion signal was found
 - lipop means a Sp II secretion signal found with an appropriate CYS residue at the cleavage site, which will be attached to a phospholipid in the membrane
 
-The rest of the line gives the full name as given in the rest of the identifier line in the FASTA file.
+The rest of the line gives the full name as given in the rest of the identifier line in the FASTA file. This is enclosed by quotation marks "" for CSV compatability.
 
 
 ## Configuration file

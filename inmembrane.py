@@ -200,7 +200,7 @@ def hmmsearch3(params, proteins):
     name = None
     for l in open(hmmsearch3_out):
       words = l.split()
-      if l.startswith(">>"):
+      if l.startswith("git"):
         name = parse_fasta_header(l[3:])[0]
         if 'hmmsearch' not in proteins[name]:
           proteins[name]['hmmsearch'] = []
