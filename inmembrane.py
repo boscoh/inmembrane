@@ -24,8 +24,10 @@ default_params_str = """{
   'signalp4_bin': 'signalp',
   'lipop1_bin': 'LipoP',
   'tmhmm_bin': 'tmhmm',
-  'helix_programs': ['tmhmm', 'memsat3'],
+  'helix_programs': ['tmhmm'],
+#' helix_programs': ['tmhmm', 'memsat3'],
   'barrel_programs': ['bomp', 'tmbeta'],
+# 'barrel_programs': ['bomp', 'tmbeta', 'tmbhunt'],
   'bomp_cutoff': 1,
   'tmbhunt_cutoff': 0.5,
   'memsat3_bin': 'runmemsat',
@@ -715,7 +717,7 @@ def memsat3(params, proteins):
     })
 
     # write seq to single fasta file
-    single_fasta = seq_id_to_filename(prot_id) + '.fasta'
+    single_fasta = seqid_to_filename(prot_id) + '.fasta'
     if not os.path.isfile(single_fasta):
       open(single_fasta, 'w').write(">%s\n%s\n" % (prot_id, seq))
     memsat_out = single_fasta.replace('fasta', 'memsat')
