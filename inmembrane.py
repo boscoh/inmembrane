@@ -90,6 +90,9 @@ def init_output_dir(params):
   shutil.copy(params['fasta'], os.path.join(base_dir, fasta))
   params['fasta'] = fasta
 
+  config_file = "inmembrane.config"
+  shutil.copy(config_file, os.path.join(base_dir, config_file))
+
   os.chdir(base_dir)
 
 

@@ -7,9 +7,9 @@ class TestBomp(unittest.TestCase):
     self.parms = get_params()
     # TODO: put output file in the right place
     self.parms['fasta'] = "tests/bomp/bomps.fasta"
-    self.expected_bomp_categories = {u'107837101': 3, \
-                                     u'107836588': 5, \
-                                     u'107836852': 5}
+    self.expected_bomp_categories = {u'gi|107837101': 3, \
+                                     u'gi|107836588': 5, \
+                                     u'gi|107836852': 5}
     self.prot_ids, \
     self.proteins = create_protein_data_structure(self.parms['fasta'])
     # run bomp
