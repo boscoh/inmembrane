@@ -13,6 +13,8 @@ import twill
 from twill.commands import find, formfile, follow, fv, go, show, \
                              showforms, showlinks, submit
 
+# when True, dumps lots of raw info to stdout to help debugging
+__DEBUG__ = False
 
 default_params_str = """{
   'fasta': '',
@@ -22,8 +24,10 @@ default_params_str = """{
   'signalp4_bin': 'signalp',
   'lipop1_bin': 'LipoP',
   'tmhmm_bin': 'tmhmm',
-  'helix_programs': ['tmhmm', 'memsat3'],
+  'helix_programs': ['tmhmm'],
+#' helix_programs': ['tmhmm', 'memsat3'],
   'barrel_programs': ['bomp', 'tmbeta'],
+# 'barrel_programs': ['bomp', 'tmbeta', 'tmbhunt'],
   'bomp_cutoff': 1,
   'tmbhunt_cutoff': 0.5,
   'memsat3_bin': 'runmemsat',
@@ -77,6 +81,9 @@ def init_output_dir(params):
   fasta = "input.fasta"
   shutil.copy(params['fasta'], os.path.join(base_dir, fasta))
   params['fasta'] = fasta
+
+  config_file = "inmembrane.config"
+  shutil.copy(config_file, os.path.join(base_dir, config_file))
 
   os.chdir(base_dir)
 
@@ -265,10 +272,10 @@ def tmbhunt_web(params, proteins, \
     return parse_tmbhunt(proteins, out)
   
   # dump extraneous output into this blackhole so we don't see it
-  twill.set_output(StringIO.StringIO())
+  if not __DEBUG__: twill.set_output(StringIO.StringIO())
   
   go("http://bmbpcu36.leeds.ac.uk/~andy/betaBarrel/AACompPred/aaTMB_Hunt.cgi")
-  #showforms()
+  if __DEBUG__: showforms()
 
   # read up the FASTA format seqs
   fh = open(params['fasta'], 'r')
@@ -279,7 +286,7 @@ def tmbhunt_web(params, proteins, \
   fv("1", "sequences", fasta_seqs)
 
   submit()
-  #showlinks()
+  if __DEBUG__: showlinks()
 
   # small jobs will lead us straight to the results, big jobs
   # go via a 'waiting' page which we skip past if we get it
@@ -391,13 +398,13 @@ def bomp_web(params, proteins, \
     return bomp_categories
   
   # dump extraneous output into this blackhole so we don't see it
-  twill.set_output(StringIO.StringIO())
+  if not __DEBUG__: twill.set_output(StringIO.StringIO())
   
   go(url)
-  #showforms()
+  if __DEBUG__: showforms()
   formfile("1", "queryfile", params["fasta"])
   submit()
-  #show()
+  if __DEBUG__: show()
   
   # extract the job id from the page
   links = showlinks()
@@ -407,7 +414,7 @@ def bomp_web(params, proteins, \
       # grab job id from "viewOutput?id=16745338"
       job_id = int(l.url.split("=")[1])
   
-  #sys.stderr.write("BOMP job id: " + job_id)
+  if __DEBUG__: print "BOMP job id: ", job_id
   
   if not job_id:
     # something went wrong
@@ -427,7 +434,7 @@ def bomp_web(params, proteins, \
       # Finished ! Pull down the result page.
       sys.stderr.write(". done!\n")
       go("viewOutput?id=%i" % (job_id))
-      # print show()
+      if __DEBUG__: print show()
       break
       
     # Not finished. We keep polling for a time until
@@ -438,10 +445,10 @@ def bomp_web(params, proteins, \
       sys.stderr.write("# BOMP error: Taking too long.")
       return
     go("viewOutput?id=%i" % (job_id))
-    #print show()
+    if __DEBUG__: print show()
       
   bomp_html = show()
-  #print bomp_html
+  if __DEBUG__: print bomp_html
   
   # Results are in the only <table> on this page, formatted like:
   # <tr><th>gi|107836852|gb|ABF84721.1<th>5</tr>
@@ -460,7 +467,7 @@ def bomp_web(params, proteins, \
     fh.write("%s\t%i\n" % (k,v))
   fh.close()
   
-  #print bomp_categories
+  if __DEBUG__: print bomp_categories
   
   # label proteins with bomp classification (int) or False
   for name in proteins:
@@ -471,7 +478,7 @@ def bomp_web(params, proteins, \
       else:
         proteins[name]['bomp'] = False
   
-  #print proteins
+  if __DEBUG__: print proteins
   
   return bomp_categories
   
@@ -520,26 +527,27 @@ def tmbeta_net_web(params, proteins, \
     sys.stderr.write("# -> skipped: %s already exists" % outfile)
     fh = open(outfile, 'r')
     tmbeta_strands = json.loads(fh.read())
-    fh.close()
+    fh.close()    
     for seqid in tmbeta_strands:
       proteins[seqid]['tmbeta_strands'] = tmbeta_strands[seqid]
-
+      
     return tmbeta_strands
 
   # dump extraneous output into this blackhole so we don't see it
-  twill.set_output(StringIO.StringIO())
+  if not __DEBUG__: twill.set_output(StringIO.StringIO())
 
   for seqid in proteins:
     
     # only run on sequences which match the category filter
-    if (category == None) or \
+    if force or \
+       (category == None) or \
        (dict_get(proteins[seqid], 'category') == category):
       pass
     else:
       continue
       
     go(url)
-    #showforms()
+    if __DEBUG__: showforms()
     fv("1","sequence",proteins[seqid]['seq'])
     submit()
     sys.stderr.write("# TMBETA-NET: Predicting strands for %s - %s\n" \
@@ -550,13 +558,16 @@ def tmbeta_net_web(params, proteins, \
     # parse the web page returned, extract strand boundaries
     proteins[seqid]['tmbeta_strands'] = []
     for l in out.split('\n'):
-      #sys.stderr.write("## " + l)
+      if __DEBUG__: print "##", l
+
       if "<BR>Segment " in l:
         i,j = l.split(":")[1].split("to")
         i = int(i.strip()[1:])
         j = int(j.strip()[1:])
         proteins[seqid]['tmbeta_strands'].append([i,j])
-        #sys.stderr.write("# TMBETA-NET(web) segments: %s, %s" % (i, j))
+
+        if __DEBUG__: print "# TMBETA-NET(web) segments: %s, %s" % (i, j)
+
     tmbeta_strands[seqid] = proteins[seqid]['tmbeta_strands']
 
   # we store the parsed strand boundaries in JSON format
@@ -697,7 +708,7 @@ def memsat3(params, proteins):
     })
 
     # write seq to single fasta file
-    single_fasta = seq_id_to_filename(prot_id) + '.fasta'
+    single_fasta = seqid_to_filename(prot_id) + '.fasta'
     if not os.path.isfile(single_fasta):
       open(single_fasta, 'w').write(">%s\n%s\n" % (prot_id, seq))
     memsat_out = single_fasta.replace('fasta', 'memsat')
