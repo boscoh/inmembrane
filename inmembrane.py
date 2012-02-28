@@ -37,30 +37,18 @@ default_params_str = """{
 """
 
 
-output_fname = None
-def print_output(params, s):
-  if not output_fname:
-    print s
-  else:
-    f = open(output_fname, 'a')
-    if s and s[-1] != "\n":
-      s += "\n"
-    f.write(s)
-    f.close()
-
-
 def get_params():
   module_dir = os.path.abspath(os.path.dirname(__file__))
   config = os.path.join(module_dir, 'inmembrane.config')
   if not os.path.isfile(config):
-    print "# Couldn't find inmembrane.config file"
-    print "# So, will generate a default config", os.path.abspath(config)
+    sys.stderr.write("# Couldn't find inmembrane.config file")
+    sys.stderr.write("# So, will generate a default config", os.path.abspath(config))
     abs_hmm_profiles = os.path.join(module_dir, 'hmm_profiles')
     default_str = default_params_str % \
         { 'hmm_profiles': abs_hmm_profiles }
     open('inmembrane.config', 'w').write(default_str)
   else:
-    print "# Loading existing inmembrane.config"
+    sys.stderr.write("# Loading existing inmembrane.config")
   params = eval(open(config).read())
   return params
 
@@ -102,9 +90,9 @@ def run_with_output(cmd):
 
 def run(cmd, out_file=None):
   full_cmd = cmd + " > " + out_file
-  print "#", full_cmd
+  sys.stderr.write("# " + full_cmd)
   if os.path.isfile(out_file) and (out_file != None):
-    print "# -> skipped: %s already exists" % out_file
+    sys.stderr.write("# -> skipped: %s already exists" % out_file)
     return
   if not out_file:
     out_file = "/dev/null"
@@ -115,7 +103,7 @@ def run(cmd, out_file=None):
   if run_with_output('which ' + binary):
     is_binary_there = True
   if not is_binary_there:
-    print "# Error: couldn't find executable " + binary
+    sys.stderr.write("# Error: couldn't find executable " + binary)
     sys.exit(1)
   os.system(full_cmd)
 
@@ -266,14 +254,14 @@ def tmbhunt_web(params, proteins, \
   # TODO: automatically split large sets into multiple jobs
   #       TMB-HUNT will only take 10000 seqs at a time
   if len(proteins) >= 10000:
-    print "# TMB-HUNT(web): error, can't take more than 10,000 sequences."
+    sys.stderr.write("# TMB-HUNT(web): error, can't take more than 10,000 sequences.")
     return
   
   out = 'tmbhunt.out'
-  print "# TMB-HUNT(web) %s > %s" % (params['fasta'], out)
+  sys.stderr.write("# TMB-HUNT(web) %s > %s" % (params['fasta'], out))
   
   if not force and os.path.isfile(out):
-    print "# -> skipped: %s already exists" % out
+    sys.stderr.write("# -> skipped: %s already exists" % out)
     return parse_tmbhunt(proteins, out)
   
   # dump extraneous output into this blackhole so we don't see it
@@ -305,14 +293,14 @@ def tmbhunt_web(params, proteins, \
   # parse the job_id from the url, since due to a bug in
   # TMB-HUNT the link on the results page from large jobs is wrong
   job_id = follow("Full results").split('/')[-1:][0].split('.')[0]
-  print "# TMB-HUNT(web) job_id is: %s <http://www.bioinformatics.leeds.ac.uk/~andy/betaBarrel/AACompPred/tmp/tmp_output%s.html>" % (job_id, job_id)
+  sys.stderr.write("# TMB-HUNT(web) job_id is: %s <http://www.bioinformatics.leeds.ac.uk/~andy/betaBarrel/AACompPred/tmp/tmp_output%s.html>" % (job_id, job_id))
   
   # polling until TMB-HUNT finishes
   # TMB-HUNT advises that 4000 sequences take ~10 mins
   # we poll a little faster than that
   polltime = (len(proteins)*0.1)+2
   while True:
-    print "# TMB-HUNT(web): waiting another %i sec ..." % (polltime)
+    sys.stderr.write("# TMB-HUNT(web): waiting another %i sec ..." % (polltime))
     time.sleep(polltime)
     try:
       go("http://bmbpcu36.leeds.ac.uk/~andy/betaBarrel/AACompPred/tmp/%s.txt" % (job_id))
@@ -342,7 +330,7 @@ def parse_tmbhunt(proteins, out):
   # parse TMB-HUNT text output
   tmbhunt_classes = {}
   for l in open(out, 'r'):
-    #print "# TMB-HUNT raw:", l[:-1]
+    #sys.stderr.write("# TMB-HUNT raw: " + l[:-1])
     if l[0] == ">":
       # TMB-HUNT munges FASTA ids by making them all uppercase,
       # so we find the equivalent any-case id in our proteins list
@@ -375,7 +363,7 @@ def parse_tmbhunt(proteins, out):
         proteins[seqid]['tmbhunt'] = False
         proteins[seqid]['tmbhunt_prob'] = probability
   
-  #print tmbhunt_classes
+  #sys.stderr.write(str(tmbhunt_classes))
   return tmbhunt_classes
 
 
@@ -387,10 +375,10 @@ def bomp_web(params, proteins, \
   """
   
   bomp_out = 'bomp.out'
-  print "# BOMP(web) %s > %s" % (params['fasta'], bomp_out)
+  sys.stderr.write("# BOMP(web) %s > %s" % (params['fasta'], bomp_out))
   
   if not force and os.path.isfile(bomp_out):
-    print "# -> skipped: %s already exists" % bomp_out
+    sys.stderr.write("# -> skipped: %s already exists" % bomp_out)
     bomp_categories = {}
     fh = open(bomp_out, 'r')
     for l in fh:
@@ -419,7 +407,7 @@ def bomp_web(params, proteins, \
       # grab job id from "viewOutput?id=16745338"
       job_id = int(l.url.split("=")[1])
   
-  #print "BOMP job id: ", job_id
+  #sys.stderr.write("BOMP job id: " + job_id)
   
   if not job_id:
     # something went wrong
@@ -525,11 +513,11 @@ def tmbeta_net_web(params, proteins, \
   """
   import json
   outfile = 'tmbeta_net.out'
-  print "# TMBETA-NET(web) %s > %s" % (params['fasta'], outfile)
+  sys.stderr.write("# TMBETA-NET(web) %s > %s" % (params['fasta'], outfile))
   
   tmbeta_strands = {}
   if not force and os.path.isfile(outfile):
-    print "# -> skipped: %s already exists" % outfile
+    sys.stderr.write("# -> skipped: %s already exists" % outfile)
     fh = open(outfile, 'r')
     tmbeta_strands = json.loads(fh.read())
     fh.close()
@@ -562,13 +550,13 @@ def tmbeta_net_web(params, proteins, \
     # parse the web page returned, extract strand boundaries
     proteins[seqid]['tmbeta_strands'] = []
     for l in out.split('\n'):
-      #print "##", l
+      #sys.stderr.write("## " + l)
       if "<BR>Segment " in l:
         i,j = l.split(":")[1].split("to")
         i = int(i.strip()[1:])
         j = int(j.strip()[1:])
         proteins[seqid]['tmbeta_strands'].append([i,j])
-        #print "# TMBETA-NET(web) segments: %s, %s" % (i, j)
+        #sys.stderr.write("# TMBETA-NET(web) segments: %s, %s" % (i, j))
     tmbeta_strands[seqid] = proteins[seqid]['tmbeta_strands']
 
   # we store the parsed strand boundaries in JSON format
@@ -878,7 +866,7 @@ def identify_pse_proteins(params):
   
   for prot_id in prot_ids:
     protein = proteins[prot_id]
-    print "%-15s %-13s %-50s %s" % \
+    print '%-15s ,  %-13s , %-50s , "%s"' % \
         (prot_id, 
          protein['category'], 
          protein['details'],
@@ -923,18 +911,16 @@ def print_summary_table(proteins):
     else:
       counts[category] += 1
       
-  print
-  print "# Number of proteins in each class:"
+  sys.stderr.write("# Number of proteins in each class:")
   for c in counts:
-    print "%-15s %i" % (c, counts[c])
+    sys.stderr.write("%-15s %i" % (c, counts[c]))
 
 
 def dump_results(proteins):
   for i,d in proteins.items():
-    print "# %s - %s" % (i, proteins[i]['name'])
+    sys.stderr.write("# %s - %s" % (i, proteins[i]['name']))
     for x,y in d.items():
-      print `x`+": "+`y`
-    print
+      sys.stderr.write(`x`+": "+`y`)
 
 
 def identify_omps(params, stringent=False):
@@ -1037,7 +1023,7 @@ if __name__ == "__main__":
   (options, args) = parser.parse_args()
   params = get_params()
   if ('fasta' not in params or not params['fasta']) and not args:
-    print description
+    sys.stderr.write(description)
     parser.print_help()
     sys.exit(1)
   if 'fasta' not in params or not params['fasta']:
