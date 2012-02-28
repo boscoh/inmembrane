@@ -12,7 +12,11 @@ class TestTmbetanet(unittest.TestCase):
     self.proteins = create_protein_data_structure(self.parms['fasta'])
     # run TMBETA-NET
     self.output = tmbeta_net_web(self.parms, self.proteins, force=True)
-
+    
+    print "#### TMBETA-NET #####"
+    print self.output
+    print "#####################"
+    
   def test_tmbeta_net_web(self):
     self.assertEqual(self.expected_output, self.output)
 
