@@ -1,0 +1,63 @@
+# hmmsearch :: search profile(s) against a sequence database
+# HMMER 3.0 (March 2010); http://hmmer.org/
+# Copyright (C) 2010 Howard Hughes Medical Institute.
+# Freely distributed under the GNU General Public License (GPLv3).
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+# query HMM file:                  /Users/bosco/Dropbox/inmembrane/hmm_profiles/GW2.hmm
+# target sequence database:        input.fasta
+# sequence reporting threshold:    E-value <= 10
+# sequence search space set to:    2000
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+Query:       0040856  [M=86]
+Accession:   0040856
+Description: GW domain
+Scores for complete sequences (score includes all domains):
+   --- full sequence ---   --- best 1 domain ---    -#dom-
+    E-value  score  bias    E-value  score  bias    exp  N  Sequence Description
+    ------- ------ -----    ------- ------ -----   ---- --  -------- -----------
+    0.00038   17.6   0.2     0.0014   15.8   0.2    2.0  1  SPy_0012 from AE004092
+  ------ inclusion threshold ------
+      0.021   12.0   0.0      0.053   10.8   0.0    1.6  1  SPy_0406 from AE004092
+
+
+Domain annotation for each sequence (and alignments):
+>> SPy_0012  from AE004092
+   #    score  bias  c-Evalue  i-Evalue hmmfrom  hmm to    alifrom  ali to    envfrom  env to     acc
+ ---   ------ ----- --------- --------- ------- -------    ------- -------    ------- -------    ----
+   1 !   15.8   0.2   1.4e-06    0.0014      11      81 ..     120     184 ..     111     188 .. 0.76
+
+  Alignments for each domain:
+  == domain 1    score: 15.8 bits;  conditional E-value: 1.4e-06
+   0040856  11 vnltayvknkegglvysaPyrtkgaklvgslskYngkkvkvlkeakteggtWyqislngkviGWvdaraln 81 
+               v+ + y  ++++  +ysaPy + g++ + + s    +kv++++ a+t++gt+y+i       GW ++++l 
+  SPy_0012 120 VDIDSYFWTQKKLRLYSAPY-VLGTQTI-PSSFLFAQKVHATQMAQTNHGTYYLI----DDKGWASQEDLV 184
+               44555555566667999***.7777775.456677899*****************....7778**999985 PP
+
+>> SPy_0406  from AE004092
+   #    score  bias  c-Evalue  i-Evalue hmmfrom  hmm to    alifrom  ali to    envfrom  env to     acc
+ ---   ------ ----- --------- --------- ------- -------    ------- -------    ------- -------    ----
+   1 ?   10.8   0.0   5.3e-05     0.053      20      62 ..     165     206 ..     153     215 .. 0.84
+
+  Alignments for each domain:
+  == domain 1    score: 10.8 bits;  conditional E-value: 5.3e-05
+   0040856  20 kegglvysaPyrtkgaklvgslskYngkkvkvlkeakteggtW 62 
+               +e++++y  Pyr+k++   ++l+ Y +++v +++e +   + +
+  SPy_0406 165 PETQMFYESPYRIKDTLT-NMLACYGDRQVVLVRELTKLFEEY 206
+               6889*******8888766.****************98766665 PP
+
+
+
+Internal pipeline statistics summary:
+-------------------------------------
+Query model(s):                            1  (86 nodes)
+Target sequences:                       1696  (515585 residues)
+Passed MSV filter:                        54  (0.0318396); expected 33.9 (0.02)
+Passed bias filter:                       54  (0.0318396); expected 33.9 (0.02)
+Passed Vit filter:                        10  (0.00589623); expected 1.7 (0.001)
+Passed Fwd filter:                         2  (0.00117925); expected 0.0 (1e-05)
+Initial search space (Z):               2000  [as set by --Z on cmdline]
+Domain search space  (domZ):               2  [number of targets reported over threshold]
+# CPU time: 0.02u 0.00s 00:00:00.02 Elapsed: 00:00:00.01
+# Mc/sec: 4434.03
+//

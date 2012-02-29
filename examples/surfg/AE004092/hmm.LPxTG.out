@@ -1,0 +1,359 @@
+# hmmsearch :: search profile(s) against a sequence database
+# HMMER 3.0 (March 2010); http://hmmer.org/
+# Copyright (C) 2010 Howard Hughes Medical Institute.
+# Freely distributed under the GNU General Public License (GPLv3).
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+# query HMM file:                  /Users/bosco/Dropbox/inmembrane/hmm_profiles/LPxTG.hmm
+# target sequence database:        input.fasta
+# sequence reporting threshold:    E-value <= 10
+# sequence search space set to:    2000
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+Query:       all_lpxtgs_spp_reducedmanmod  [M=60]
+Scores for complete sequences (score includes all domains):
+   --- full sequence ---   --- best 1 domain ---    -#dom-
+    E-value  score  bias    E-value  score  bias    exp  N  Sequence Description
+    ------- ------ -----    ------- ------ -----   ---- --  -------- -----------
+    4.2e-07   27.1   0.8    4.2e-07   27.1   0.5    1.9  1  SPy_1972 from AE004092
+    1.2e-06   25.7   1.9    6.4e-06   23.3   0.0    2.3  2  SPy_2018 from AE004092
+      5e-06   23.6   0.8    3.3e-05   21.0   0.0    2.5  2  SPy_1983 from AE004092
+    2.2e-05   21.6   0.0    6.4e-05   20.1   0.0    1.9  1  SPy_1054 from AE004092
+    2.9e-05   21.2   0.4    9.9e-05   19.5   0.0    2.0  2  SPy_1357 from AE004092
+    5.6e-05   20.3   0.1    5.6e-05   20.3   0.1    2.0  2  SPy_2009 from AE004092
+    0.00017   18.7   0.1    0.00032   17.9   0.1    1.5  1  SPy_0130 from AE004092
+    0.00018   18.7   0.0    0.00036   17.7   0.0    1.5  1  SPy_0737 from AE004092
+    0.00021   18.5   0.2    0.00056   17.1   0.1    1.8  1  SPy_0872 from AE004092
+    0.00022   18.4   0.0    0.00075   16.7   0.0    1.9  2  SPy_1494 from AE004092
+    0.00099   16.3   0.1     0.0021   15.2   0.1    1.5  1  SPy_0843 from AE004092
+     0.0013   15.9   0.4     0.0013   15.9   0.3    2.3  2  SPy_0416 from AE004092
+     0.0017   15.5   2.2     0.0036   14.5   1.5    1.6  1  SPy_0747 from AE004092
+  ------ inclusion threshold ------
+      0.013   12.7   0.0      0.031   11.5   0.0    1.6  1  SPy_1796 from AE004092
+       0.03   11.5   0.1       0.03   11.5   0.1    1.9  2  SPy_0128 from AE004092
+        0.1    9.9   1.3       0.14    9.4   0.9    1.2  1  SPy_0359 from AE004092
+        1.4    6.2   4.5        2.7    5.3   0.3    2.8  2  SPy_2155 from AE004092
+        4.2    4.7   7.3        1.4    6.2   0.4    2.4  2  SPy_1939 from AE004092
+        5.5    4.3  10.1        5.5    4.3   0.1    3.2  3  SPy_0796 from AE004092
+
+
+Domain annotation for each sequence (and alignments):
+>> SPy_1972  from AE004092
+   #    score  bias  c-Evalue  i-Evalue hmmfrom  hmm to    alifrom  ali to    envfrom  env to     acc
+ ---   ------ ----- --------- --------- ------- -------    ------- -------    ------- -------    ----
+   1 !   27.1   0.5     4e-09   4.2e-07       1      50 [.    1128    1162 ..    1128    1165 .] 0.70
+
+  Alignments for each domain:
+  == domain 1    score: 27.1 bits;  conditional E-value: 4e-09
+  all_lpxtgs_spp_reducedmanmod    1 kkkkkLPkTGdssnsssastavllllgllglGllllllgslvglllllkr 50  
+                                    k+++kLPkTG+ s+         +ll+   +G++llll    ++ ll kr
+                      SPy_1972 1128 KTNQKLPKTGEASS--------KGLLA---AGIALLLL----AISLLMKR 1162
+                                    6899*******995........34554...68888888....66666554 PP
+
+>> SPy_2018  from AE004092
+   #    score  bias  c-Evalue  i-Evalue hmmfrom  hmm to    alifrom  ali to    envfrom  env to     acc
+ ---   ------ ----- --------- --------- ------- -------    ------- -------    ------- -------    ----
+   1 ?    0.2   1.1         1   1.1e+02       8      45 ..      16      32 ..      16      34 .. 0.38
+   2 !   23.3   0.0     6e-08   6.4e-06       2      51 ..     446     481 ..     445     484 .] 0.79
+
+  Alignments for each domain:
+  == domain 1    score: 0.2 bits;  conditional E-value: 1
+  all_lpxtgs_spp_reducedmanmod  8 kTGdssnsssastavllllgllglGllllllgslvgll 45
+                                  kTG+ s           +      +++l++l    g++
+                      SPy_2018 16 KTGTAS-----------V------AVALTVL----GAG 32
+                                  678644...........2......2233333....332 PP
+
+  == domain 2    score: 23.3 bits;  conditional E-value: 6e-08
+  all_lpxtgs_spp_reducedmanmod   2 kkkkLPkTGdssnsssastavllllgllglGllllllgslvglllllkrk 51 
+                                   +k +LP+TG+++         ++++++  ++l ++++   +g++ ++krk
+                      SPy_2018 446 TKRQLPSTGETA---------NPFFTA--AALTVMAT---AGVAAVVKRK 481
+                                   6889******99.........578888..88888887...5888888775 PP
+
+>> SPy_1983  from AE004092
+   #    score  bias  c-Evalue  i-Evalue hmmfrom  hmm to    alifrom  ali to    envfrom  env to     acc
+ ---   ------ ----- --------- --------- ------- -------    ------- -------    ------- -------    ----
+   1 ?   -0.8   0.8       2.1   2.3e+02      31      45 ..      21      31 ..      16      37 .. 0.43
+   2 !   21.0   0.0   3.1e-07   3.3e-05       3      57 ..     311     345 ..     309     348 .] 0.71
+
+  Alignments for each domain:
+  == domain 1    score: -0.8 bits;  conditional E-value: 2.1
+  all_lpxtgs_spp_reducedmanmod 31 lGllllllgslvgll 45
+                                  ++++ll+     g++
+                      SPy_1983 21 AAAVLLAF----GGG 31
+                                  23333333....332 PP
+
+  == domain 2    score: 21.0 bits;  conditional E-value: 3.1e-07
+  all_lpxtgs_spp_reducedmanmod   3 kkkLPkTGdssnsssastavllllgllglGllllllgslvglllllkrkkklfkr 57 
+                                     +LP TG+++         ++++++  ++++++ +    +++l + +     ++
+                      SPy_1983 311 HRRLPATGEQA---------NPFFTA--AAVAVMTT----AGVLAVTK-----RK 345
+                                   568******99.........678888..88888888....55555554.....33 PP
+
+>> SPy_1054  from AE004092
+   #    score  bias  c-Evalue  i-Evalue hmmfrom  hmm to    alifrom  ali to    envfrom  env to     acc
+ ---   ------ ----- --------- --------- ------- -------    ------- -------    ------- -------    ----
+   1 !   20.1   0.0   6.1e-07   6.4e-05       4      56 ..     257     289 ..     254     293 .] 0.72
+
+  Alignments for each domain:
+  == domain 1    score: 20.1 bits;  conditional E-value: 6.1e-07
+  all_lpxtgs_spp_reducedmanmod   4 kkLPkTGdssnsssastavllllgllglGllllllgslvglllllkrkkklfk 56 
+                                    +LP TG+++         ++++++  ++++++ +    ++++ + +     +
+                      SPy_1054 257 RQLPATGETT---------NPFFTA--AAVAIMTT----AGVVAVAK-----R 289
+                                   69******98.........678888..88888888....55555544.....2 PP
+
+>> SPy_1357  from AE004092
+   #    score  bias  c-Evalue  i-Evalue hmmfrom  hmm to    alifrom  ali to    envfrom  env to     acc
+ ---   ------ ----- --------- --------- ------- -------    ------- -------    ------- -------    ----
+   1 ?   -1.2   0.4       2.8   2.9e+02      31      45 ..      16      26 ..      14      32 .. 0.51
+   2 !   19.5   0.0   9.4e-07   9.9e-05       4      50 ..     181     212 ..     178     217 .] 0.69
+
+  Alignments for each domain:
+  == domain 1    score: -1.2 bits;  conditional E-value: 2.8
+  all_lpxtgs_spp_reducedmanmod 31 lGllllllgslvgll 45
+                                  +Gl+++++    ++l
+                      SPy_1357 16 FGLVAVSA----SVL 26
+                                  45555554....332 PP
+
+  == domain 2    score: 19.5 bits;  conditional E-value: 9.4e-07
+  all_lpxtgs_spp_reducedmanmod   4 kkLPkTGdssnsssastavllllgllglGllllllgslvglllllkr 50 
+                                   ++LP TG++s         ++++++  ++l+++++     ++l++  
+                      SPy_1357 181 NTLPTTGEES---------NPFFTA--AALAIMVS----TGVLVVSS 212
+                                   79*******9.........567777..77777776....55555544 PP
+
+>> SPy_2009  from AE004092
+   #    score  bias  c-Evalue  i-Evalue hmmfrom  hmm to    alifrom  ali to    envfrom  env to     acc
+ ---   ------ ----- --------- --------- ------- -------    ------- -------    ------- -------    ----
+   1 ?   -2.3   0.5       6.1   6.4e+02      32      48 ..      20      32 ..      17      34 .. 0.48
+   2 !   20.3   0.1   5.4e-07   5.6e-05       3      56 ..     341     375 ..     339     379 .] 0.67
+
+  Alignments for each domain:
+  == domain 1    score: -2.3 bits;  conditional E-value: 6.1
+  all_lpxtgs_spp_reducedmanmod 32 Gllllllgslvglllll 48
+                                  G+  +++    ++l+l 
+                      SPy_2009 20 GVTSIAI----ASLFLG 32
+                                  5555554....454443 PP
+
+  == domain 2    score: 20.3 bits;  conditional E-value: 5.4e-07
+  all_lpxtgs_spp_reducedmanmod   3 kkkLPkTGdssnsssastavllllgllglGllllllgslvglllllkrkkklfk 56 
+                                   +k LP+TG++++         +l+ +  + + l++l   +g+ll+ kr     k
+                      SPy_2009 341 GKYLPSTGEKAQ---------PLF-I--ATMTLMSL---FGSLLVTKRQ----K 375
+                                   678*******94.........454.4..57888887...5766666554....3 PP
+
+>> SPy_0130  from AE004092
+   #    score  bias  c-Evalue  i-Evalue hmmfrom  hmm to    alifrom  ali to    envfrom  env to     acc
+ ---   ------ ----- --------- --------- ------- -------    ------- -------    ------- -------    ----
+   1 !   17.9   0.1     3e-06   0.00032       2      51 ..     177     210 ..     176     215 .] 0.67
+
+  Alignments for each domain:
+  == domain 1    score: 17.9 bits;  conditional E-value: 3e-06
+  all_lpxtgs_spp_reducedmanmod   2 kkkkLPkTGdssnsssastavllllgllglGllllllgslvglllllkrk 51 
+                                    ++ LP+TG+           + +  +  lG++l+++     +l+ + +k
+                      SPy_0130 177 RNGILPSTGEMV---------SYV-SA--LGIVLVAT----ITLYSIYKK 210
+                                   6889*****965.........445.55..79999998....444444443 PP
+
+>> SPy_0737  from AE004092
+   #    score  bias  c-Evalue  i-Evalue hmmfrom  hmm to    alifrom  ali to    envfrom  env to     acc
+ ---   ------ ----- --------- --------- ------- -------    ------- -------    ------- -------    ----
+   1 !   17.7   0.0   3.5e-06   0.00036       5      51 ..    2010    2041 ..    2006    2044 .. 0.77
+
+  Alignments for each domain:
+  == domain 1    score: 17.7 bits;  conditional E-value: 3.5e-06
+  all_lpxtgs_spp_reducedmanmod    5 kLPkTGdssnsssastavllllgllglGllllllgslvglllllkrk 51  
+                                     LPk Gd +         +++l++  lG++ lll    g++l+ k+k
+                      SPy_0737 2010 HLPKSGDAN---------SIVLVG--LGVMSLLL----GMVLYSKKK 2041
+                                    59*****98.........567777..89999998....888887764 PP
+
+>> SPy_0872  from AE004092
+   #    score  bias  c-Evalue  i-Evalue hmmfrom  hmm to    alifrom  ali to    envfrom  env to     acc
+ ---   ------ ----- --------- --------- ------- -------    ------- -------    ------- -------    ----
+   1 !   17.1   0.1   5.3e-06   0.00056       3      58 ..     634     669 ..     632     670 .] 0.68
+
+  Alignments for each domain:
+  == domain 1    score: 17.1 bits;  conditional E-value: 5.3e-06
+  all_lpxtgs_spp_reducedmanmod   3 kkkLPkTGdssnsssastavllllgllglGllllllgslvglllllkrkkklfkrk 58 
+                                   +++LP TGd+          ++++++    l+l++l    g+l  +++     krk
+                      SPy_0872 634 SSTLPITGDNYKM-------SPIMTI----LALISL----GGLNAFIK-----KRK 669
+                                   689******9963.......677777....456666....66666666.....443 PP
+
+>> SPy_1494  from AE004092
+   #    score  bias  c-Evalue  i-Evalue hmmfrom  hmm to    alifrom  ali to    envfrom  env to     acc
+ ---   ------ ----- --------- --------- ------- -------    ------- -------    ------- -------    ----
+   1 ?   -2.4   0.0       6.4   6.8e+02       6      13 ..      29      36 ..      26      38 .. 0.80
+   2 !   16.7   0.0   7.2e-06   0.00075       2      38 ..     277     302 ..     276     310 .. 0.83
+
+  Alignments for each domain:
+  == domain 1    score: -2.4 bits;  conditional E-value: 6.4
+  all_lpxtgs_spp_reducedmanmod  6 LPkTGdss 13
+                                  L  TGd+ 
+                      SPy_1494 29 LSATGDKF 36
+                                  678***97 PP
+
+  == domain 2    score: 16.7 bits;  conditional E-value: 7.2e-06
+  all_lpxtgs_spp_reducedmanmod   2 kkkkLPkTGdssnsssastavllllgllglGllllll 38 
+                                    k  LP+TG+           + + +l  lGl++l+l
+                      SPy_1494 277 RKIALPQTGERF---------SYYPVL--LGLMILGL 302
+                                   6789******98.........567778..89999988 PP
+
+>> SPy_0843  from AE004092
+   #    score  bias  c-Evalue  i-Evalue hmmfrom  hmm to    alifrom  ali to    envfrom  env to     acc
+ ---   ------ ----- --------- --------- ------- -------    ------- -------    ------- -------    ----
+   1 !   15.2   0.1     2e-05    0.0021       5      51 ..     974    1007 ..     971    1008 .] 0.75
+
+  Alignments for each domain:
+  == domain 1    score: 15.2 bits;  conditional E-value: 2e-05
+  all_lpxtgs_spp_reducedmanmod    5 kLPkTGdssnsssastavllllgllglGllllllgslvglllllkrk 51  
+                                     LP TG++++      +v+++lg     ++ll+l     +  ++k+k
+                      SPy_0843  974 ILPRTGSKGS------FVYGILGY--TSVALLSL-----ITAIKKKK 1007
+                                    6*******96......57999999..99999987.....44444443 PP
+
+>> SPy_0416  from AE004092
+   #    score  bias  c-Evalue  i-Evalue hmmfrom  hmm to    alifrom  ali to    envfrom  env to     acc
+ ---   ------ ----- --------- --------- ------- -------    ------- -------    ------- -------    ----
+   1 ?   -2.8   0.1       8.5   8.9e+02       8      36 ..     613     629 ..     613     630 .. 0.53
+   2 !   15.9   0.3   1.3e-05    0.0013       2      50 ..    1610    1643 ..    1609    1647 .] 0.74
+
+  Alignments for each domain:
+  == domain 1    score: -2.8 bits;  conditional E-value: 8.5
+  all_lpxtgs_spp_reducedmanmod   8 kTGdssnsssastavllllgllglGllll 36 
+                                   +TG+s+         ++ ++    G+ ll
+                      SPy_0416 613 QTGTSMA--------SPQIA----GASLL 629
+                                   8999872........44443....44444 PP
+
+  == domain 2    score: 15.9 bits;  conditional E-value: 1.3e-05
+  all_lpxtgs_spp_reducedmanmod    2 kkkkLPkTGdssnsssastavllllgllglGllllllgslvglllllkr 50  
+                                    ++k LP+TG+++          l l +  +Gl+ll+l      ++ +k+
+                      SPy_0416 1610 TAKALPSTGEKM---------GLKLRI--VGLVLLGL----TCVFSRKK 1643
+                                    6799*******9.........455567..9*****99....66555444 PP
+
+>> SPy_0747  from AE004092
+   #    score  bias  c-Evalue  i-Evalue hmmfrom  hmm to    alifrom  ali to    envfrom  env to     acc
+ ---   ------ ----- --------- --------- ------- -------    ------- -------    ------- -------    ----
+   1 !   14.5   1.5   3.5e-05    0.0036       1      58 [.     872     908 ..     872     910 .] 0.62
+
+  Alignments for each domain:
+  == domain 1    score: 14.5 bits;  conditional E-value: 3.5e-05
+  all_lpxtgs_spp_reducedmanmod   1 kkkkkLPkTGdssnsssastavllllgllglGllllllgslvglllllkrkkklfkrk 58 
+                                   +k+k LPkTGds            +++l  lG++ ll+      +lll +      +k
+                      SPy_0747 872 SKGKLLPKTGDSL---------VYVITL--LGTASLLV-----PILLLTK-----GKK 908
+                                   58999******86.........344555..56555554.....6566555.....443 PP
+
+>> SPy_1796  from AE004092
+   #    score  bias  c-Evalue  i-Evalue hmmfrom  hmm to    alifrom  ali to    envfrom  env to     acc
+ ---   ------ ----- --------- --------- ------- -------    ------- -------    ------- -------    ----
+   1 ?   11.5   0.0   0.00029     0.031      33      59 ..     269     287 ..     258     288 .. 0.72
+
+  Alignments for each domain:
+  == domain 1    score: 11.5 bits;  conditional E-value: 0.00029
+  all_lpxtgs_spp_reducedmanmod  33 llllllgslvglllllkrkkklfkrkk 59 
+                                    +l+l     g+++++++k    ++k+
+                      SPy_1796 269 FFLMLG----GFAVWVWKK----RKKN 287
+                                   356666....9*******6....5554 PP
+
+>> SPy_0128  from AE004092
+   #    score  bias  c-Evalue  i-Evalue hmmfrom  hmm to    alifrom  ali to    envfrom  env to     acc
+ ---   ------ ----- --------- --------- ------- -------    ------- -------    ------- -------    ----
+   1 ?   -2.9   0.5       9.7     1e+03      28      37 ..       8      15 ..       6      20 .. 0.47
+   2 ?   11.5   0.1   0.00029      0.03       9      51 ..     311     338 ..     310     340 .] 0.59
+
+  Alignments for each domain:
+  == domain 1    score: -2.9 bits;  conditional E-value: 9.7
+  all_lpxtgs_spp_reducedmanmod 28 llglGlllll 37
+                                  l   G++l++
+                      SPy_0128  8 L--TGAALTS 15
+                                  3..3444444 PP
+
+  == domain 2    score: 11.5 bits;  conditional E-value: 0.00029
+  all_lpxtgs_spp_reducedmanmod   9 TGdssnsssastavllllgllglGllllllgslvglllllkrk 51 
+                                   TG  +       +v+++++   lG+++++     g+l+++k+k
+                      SPy_0128 311 TGVAM-------TVAPYIA---LGIVAVG-----GALYFVKKK 338
+                                   78776.......3555555...5777776.....565665553 PP
+
+>> SPy_0359  from AE004092
+   #    score  bias  c-Evalue  i-Evalue hmmfrom  hmm to    alifrom  ali to    envfrom  env to     acc
+ ---   ------ ----- --------- --------- ------- -------    ------- -------    ------- -------    ----
+   1 ?    9.4   0.9    0.0014      0.14      23      50 ..       5      27 ..       1      31 [. 0.45
+
+  Alignments for each domain:
+  == domain 1    score: 9.4 bits;  conditional E-value: 0.0014
+  all_lpxtgs_spp_reducedmanmod 23 llllgllglGllllllgslvglllllkr 50
+                                  +++l+l  + +l +++   +g++++ ++
+                      SPy_0359  5 IWILLL--IVALGVGV---FGGIFIARK 27
+                                  333334..44455554...344444443 PP
+
+>> SPy_2155  from AE004092
+   #    score  bias  c-Evalue  i-Evalue hmmfrom  hmm to    alifrom  ali to    envfrom  env to     acc
+ ---   ------ ----- --------- --------- ------- -------    ------- -------    ------- -------    ----
+   1 ?    5.3   0.3     0.025       2.7      24      51 ..     140     161 ..     135     163 .. 0.76
+   2 ?    1.2   0.2      0.49        52      32      48 ..     191     203 ..     177     206 .. 0.63
+
+  Alignments for each domain:
+  == domain 1    score: 5.3 bits;  conditional E-value: 0.025
+  all_lpxtgs_spp_reducedmanmod  24 lllgllglGllllllgslvglllllkrk 51 
+                                   l+ ++  +G+l+++     g++ +lk +
+                      SPy_2155 140 LINAI--FGGLVMGM----GIGTGLKSR 161
+                                   56677..89999999....888888764 PP
+
+  == domain 2    score: 1.2 bits;  conditional E-value: 0.49
+  all_lpxtgs_spp_reducedmanmod  32 Gllllllgslvglllll 48 
+                                   G++l+ +    g+l+++
+                      SPy_2155 191 GAILAFA----GILFGW 203
+                                   6788887....777665 PP
+
+>> SPy_1939  from AE004092
+   #    score  bias  c-Evalue  i-Evalue hmmfrom  hmm to    alifrom  ali to    envfrom  env to     acc
+ ---   ------ ----- --------- --------- ------- -------    ------- -------    ------- -------    ----
+   1 ?    1.6   0.7      0.38        40      25      44 ..      10      19 ..       2      27 .. 0.41
+   2 ?    6.2   0.4     0.013       1.4      26      51 ..     241     260 ..     234     265 .] 0.62
+
+  Alignments for each domain:
+  == domain 1    score: 1.6 bits;  conditional E-value: 0.38
+  all_lpxtgs_spp_reducedmanmod 25 llgllglGllllllgslvgl 44
+                                  ll l   + ll++      l
+                      SPy_1939 10 LLSL---A-LLIG------L 19
+                                  2221...1.1111......1 PP
+
+  == domain 2    score: 6.2 bits;  conditional E-value: 0.013
+  all_lpxtgs_spp_reducedmanmod  26 lgllglGllllllgslvglllllkrk 51 
+                                   ++l  lGl++ l+    ++l++ + k
+                      SPy_1939 241 WVL--LGLVVSLA----AGLFIAIQK 260
+                                   455..78888887....677776666 PP
+
+>> SPy_0796  from AE004092
+   #    score  bias  c-Evalue  i-Evalue hmmfrom  hmm to    alifrom  ali to    envfrom  env to     acc
+ ---   ------ ----- --------- --------- ------- -------    ------- -------    ------- -------    ----
+   1 ?    2.1   0.2      0.26        28      24      50 ..       7      22 ..       1      28 [. 0.37
+   2 ?    2.7   0.8      0.17        17      24      37 ..      35      46 ..      31      51 .. 0.45
+   3 ?    4.3   0.1     0.052       5.5      24      46 ..      68      83 ..      62      88 .. 0.59
+
+  Alignments for each domain:
+  == domain 1    score: 2.1 bits;  conditional E-value: 0.26
+  all_lpxtgs_spp_reducedmanmod 24 lllgllglGllllllgslvglllllkr 50
+                                  l++ +       ++l     ++++l+ 
+                      SPy_0796  7 LFISF-------IVL----TFVFFLIN 22
+                                  33333.......222....33333333 PP
+
+  == domain 2    score: 2.7 bits;  conditional E-value: 0.17
+  all_lpxtgs_spp_reducedmanmod 24 lllgllglGlllll 37
+                                  ll+++  l+ll+ll
+                      SPy_0796 35 LLWFI--LALLILL 46
+                                  33443..3333333 PP
+
+  == domain 3    score: 4.3 bits;  conditional E-value: 0.052
+  all_lpxtgs_spp_reducedmanmod 24 lllgllglGllllllgslvglll 46
+                                   +l++  lG  l l+     +++
+                      SPy_0796 68 NMLFF--LGFCLSLA-----IIF 83
+                                  34455..68777775.....333 PP
+
+
+
+Internal pipeline statistics summary:
+-------------------------------------
+Query model(s):                            1  (60 nodes)
+Target sequences:                       1696  (515585 residues)
+Passed MSV filter:                       288  (0.169811); expected 33.9 (0.02)
+Passed bias filter:                      288  (0.169811); expected 33.9 (0.02)
+Passed Vit filter:                       152  (0.0896226); expected 1.7 (0.001)
+Passed Fwd filter:                        83  (0.0489387); expected 0.0 (1e-05)
+Initial search space (Z):               2000  [as set by --Z on cmdline]
+Domain search space  (domZ):              19  [number of targets reported over threshold]
+# CPU time: 0.19u 0.00s 00:00:00.19 Elapsed: 00:00:00.12
+# Mc/sec: 257.79
+//
