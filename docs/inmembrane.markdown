@@ -23,7 +23,7 @@ Since the core algorithm in _SurfG+_ is relatively straightforward, we decided t
 
 ### Public Open Source Repository
 
-Perhaps the single most important step is to distribute our code on an open-source repository Github. We believe that the use of a dedicated repository provides many advantages over the typical strategy of hosting software on an academic server. Github provides excellent code browsing facility, code history, download links, and robust well-defined URL links. These are generally not provided in typical academic releases of software including the dreaded login and registeration pages. Github provides excellent usage statistics, which provides a great metric to determine the impact of the software.
+Perhaps the single most important step is to distribute our code on an open-source repository Github. We believe that the use of a dedicated repository provides many advantages over the typical strategy of hosting software on an academic server. Github provides excellent code browsing facility, code history, download links, and robust well-defined URL links. These are generally not provided in typical academic releases of software. Github provides excellent usage statistics to measure the impact of the software, which obviates the need for the dreaded login and registration pages.
 
 Most importantly, storing the code in a large, well-supported repository means the source code will remain accessible in the long term, something that historically most academic labs have shown they cannot provide. As well, Github provides excellent facilities to fork a project. That is, if you were to come across an orphaned project that did something useful but had been abandoned a while ago, it is trivial to create a duplicate and make changes.
 
