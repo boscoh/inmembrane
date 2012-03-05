@@ -1,6 +1,7 @@
 import os
 import unittest
-from inmembrane import bomp_web, create_protein_data_structure, get_params
+from plugins.bomp_web import *
+from inmembrane import create_protein_data_structure, get_params
 
 class TestBomp(unittest.TestCase):
   def setUp(self):

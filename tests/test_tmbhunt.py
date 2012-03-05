@@ -1,6 +1,7 @@
 import os
 import unittest
-from inmembrane import tmbhunt_web, create_protein_data_structure, get_params
+from plugins.tmbhunt_web import *
+from inmembrane import create_protein_data_structure, get_params
 
 class TestTmbhunt(unittest.TestCase):
   def setUp(self):

@@ -1,6 +1,7 @@
 import os
 import unittest
-from inmembrane import tmbeta_net_web, create_protein_data_structure, get_params
+from plugins.tmbeta_net_web import *
+from inmembrane import create_protein_data_structure, get_params
 
 class TestTmbetanet(unittest.TestCase):
   def setUp(self):
