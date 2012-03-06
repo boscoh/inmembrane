@@ -92,15 +92,6 @@ def get_params():
   params = eval(open(config).read())
   return params
 
-
-def dict_get(this_dict, prop):
-  if prop not in this_dict:
-    return False
-  return this_dict[prop]
-  
-dict_prop_truthy = dict_get
-
-
 def init_output_dir(params):
   """
   Creates a directory for all output files and makes it the current 

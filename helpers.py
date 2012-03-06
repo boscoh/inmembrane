@@ -3,6 +3,13 @@
 #
 import sys, os, subprocess
 
+def dict_get(this_dict, prop):
+  if prop not in this_dict:
+    return False
+  return this_dict[prop]
+  
+dict_prop_truthy = dict_get
+
 def run(cmd, out_file=None):
   full_cmd = cmd + " > " + out_file
   error_output("# " + full_cmd)

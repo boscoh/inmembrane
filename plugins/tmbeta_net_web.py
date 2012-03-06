@@ -4,7 +4,7 @@ import twill
 from twill.commands import find, formfile, follow, fv, go, show, \
                              showforms, showlinks, submit
                              
-from inmembrane import error_output, parse_fasta_header
+from inmembrane import error_output, parse_fasta_header, dict_get
 
 __DEBUG__ = False
 
