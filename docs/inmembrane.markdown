@@ -3,24 +3,23 @@
 Andrew J. Perry and Bosco K. Ho
 _Department of Biochemistry, Monash University, Melbourne, Australia_
 
-## Abstract 
+# Abstract 
 
-_inmembrane_ is a tool to predict the surface exposed regions of membrane proteins in sets of bacterial protein sequences. It is intended to be a direct replacement for SurfG+, which originally implemented a protocol for predicting extracellular regions of polypeptide in gram positive bacterial proteomes. In addition, we have implemented a protocol for predicting outer membrane proteomes of gram negative bacteria. _inmembrane_ provides an accessible and transparent code base through use of a modern scripting language. This leads to a program that is much more amenable to modification and extensibility, and provides an example of writing such glue programs for bioinformatic analysis. The program is hosted on a public open-source repository http://github.com/boscoh/inmembrane.
+_inmembrane_ is a tool to predict the surface-exposed regions of membrane proteins in sets of bacterial protein sequences. It is intended to be a direct replacement for SurfG+, which implemented such a protocol for Gram+ bacterial proteomes. Through the use of a modern scripting language, _inmembrane_ provides a more accessible code base that is easier to modify, and provides a useful example of writing programs for bioinformatic analysis. The program is hosted on the github repository http://github.com/boscoh/inmembrane.
 
-## Introduction
+# Introduction
 
 A common task in bioinformatics is to integrate the results of protein prediction programs to deduce complex properties of proteins. In studies of membrane proteomes, quick annotation of an experimentally detected set of the proteins can help highlight sequences of unexpected localization, and can alert researchers to possible contamination from other subcellular fractions. Ultimately, a concise summary of the properties of the detected membrane proteins in a particular proteomic dataset allows meaningful comparisons between different bacterial strains, species, and their responses in membrane remodelling to host and enviromental challenges.
 
 In studies of membrane proteomes, quick annotation of an experimentally detected set of the proteins can help detect sequences of unexpected localization, and can alert researchers to possible contamination from other subcellular fractions. Ultimately, a concise summary of the properties of the detected membrane proteins in a particular proteomic set allows meaningful comparisons between different bacterial strains, species, and their responses in membrane remodelling to host and enviromental challenges.
-raw/master/docs/images/membrane_topologies.png
-![Membrane topologies](https://github.com/boscoh/inmembrane/raw/master/docs/images/membrane_topologies.png "Figure - Membrane topologies") - topologies of proteins associated with the Gram-negative inner and outer membranes (a), and the Gram-positive plasma membrane and cell wall (b).
+
+*****
+![Membrane topologies](https://github.com/boscoh/inmembrane/raw/master/docs/images/membrane_topologies.png "Figure - Membrane topologies")
 
 >Topologies represented in Gram-negative bacterial inner membrane include (left to right) polytopic transmembrane proteins, monotopic transmembrane proteins and lipoproteins on the periplasmic side of the membrane which are anchored via a lipid moeity covalently attached to the N-terminal cysteine ("CD", where "D" denotes an Asp outer membrane avoidance signal at position 2 (Masuda et al 2002)). The outer membrane also contains lipoproteins, usually on the inner leaflet exposed to the periplasm, however unlike the inner membrane the outer membrane contains beta-barrel membrane proteins ("beta"), some with large extracellular domains exposed on the surface. Akin to the Gram-negative inner membrane, the Gram-positive inner membrane contains mono and polytopic transmembrane proteins and lipoproteins. Gram-positive bacteria also display surface proteins associated covalently or non-covalently with the cell wall peptidoglycan layer via a number of "surface motifs", such as the LPxTG, LysM. Some proteins are also secreted into the extracellular milieu. A subset of Gram-positive bacteria (the Acinetobacterace) have also been shown to contain beta-barrel membrane proteins in their plasma membrane.
-
+*****
 
 One example of this type of annotation is the program SurfG+, which is designed to predict proteins that are exposed on the surface of Gram+ bacteria. SurfG+ is a Java program that carries out batch processing of several standard bioinformatic tools to specifically identify Gram+ bacterial proteins that may be exposed out of the peptidoglycan layer of the bacterium. These predictions are intended to identify a set of proteins that would be amenable to cell-surface protease shaving experiments. SurfG+ itself does not carry out any extensive analysis, but rather relies on a transmembrane helix predictor (_TMMOD_), a secretion signal predictor (_SignalP_), a lipoprotein signal predictior (_LipoP_) and a sequence alignment for protein profiles (_HMMER_). All these programs function as Linux command tools that take FASTA sequences as input and generates output as formatted text.
-
-Nevertheless, _SurfG+_ suffers several problems that plague much bioinformatic software. The most egregrious being that the program is not generally available anymore. The URL mentioned in the original reference no longer exists, even though the paper was only published in 2009. With some searching, we were able to find a source-code repository however due to limited documentation and dependancies which are no longer readily available, we were unable to run _SurfG+_. While Java typically offers the advantage of producing faster executable bytecode than Python (CPython) for equivalent computations, this difference in efficieny is not a major concern for workflows such as _inmembrane_ and _SurfG+_ where the bulk of the CPU intensive operations are carried out by external programs. More critical is the transparency, clarity and modifiability of the code, such that scientists can verify and understand it's behavioir. In contrast to a typical Python program, _SurfG+_, is written in the enterprise Java style of programming, making it far more difficult to read and debug.
 
 Other programs for global prediction of subcellular localization of bacterial proteins exist. Most notable is PSORTb v3.0 (Yu, et al, 2010).
 
@@ -29,14 +28,6 @@ Nevertheless, _SurfG+_ suffers several problems that plague much bioinformatic s
 Since the core algorithm in _SurfG+_ is relatively straightforward, we decided to write _inmembrane_ to replicate the functionality of _SurfG+_, but in a modern scripting language. This lead to considerable simplifiction and clarification of the code base. Compared with the _SurfG+_ Java source code of 700K, _inmembrane_ is around 32K of Python code, including additional functionality not offered by _SurfG+_. The smaller and cleaner code case is substantially easier to reuse and repurpose for other users, with a terseness that greatly facilitates modifiability. Here, we discuss the issues involved in writing robust and accessible bioinformatic source code.
 
 ## Methodology
-
-### Program Workflow 
-
-The heart of _inmembrane_ is quite simple. It is a wrapper that takes FASTA sequences and sequentially runs a number of sequence analysis programs (HMMER, LipoP, SignalP and TMHMM). These programs share the common feature of taking FASTA sequences as input and generating text output. The bulk of the computation in _inmembrane_ lies in the parsing of the text output. A small amount of analysis is done at the end to integrate the results from the other programs to generate the text output of _inmembrane_. 
-
-As some of the dependent executables of _inmembrane_ are only available on Linux, this unfortunately restricts _inmembrane_ to be fully operational only on the Linux platform. Given the number of dependencies involved, we have provided a comprehensive set of unit tests.
-
-As _inmembrane_ integrates the intermediate output of a large number of programs, there are many potential points of failure. _inmembrane_ saves all intermediate output in a results folder, which allows expert users to diagnose problems at any step in the pipeline and restart the analysis from that point once the problem is resolved.
 
 ### Gram-positive protocol
 
@@ -59,12 +50,19 @@ _inmembrane_ collates the results of each analysis, and using the predicted topo
 ## Discussion
 
 ### Public Open Source Repository
-
 Perhaps the single most important step is to distribute our code on an open-source repository Github. We believe that the use of a dedicated repository provides many advantages over the typical strategy of hosting software on an academic server. Github provides excellent code browsing facility, code history, download links, and robust well-defined URL links. These are generally not provided in typical academic releases of software. Github provides excellent usage statistics to measure the impact of the software, which obviates the need for the dreaded login and registration pages.
 
 Most importantly, storing the code in a large, well-supported repository means the source code will remain accessible in the long term, something that historically most academic labs have shown they cannot provide. As well, Github provides excellent facilities to fork a project. That is, if you were to come across an orphaned project that did something useful but had been abandoned a while ago, it is trivial to create a duplicate and make changes.
 
 The algorithms used here are not difficult, and there is no reason to hide the program behind a hybrid academic/commercial license. We have licensed under the BSD license, which liberally allows reuse of the code in any shape or form.
+
+### Program setup and workflow
+
+The heart of _inmembrane_ is quite simple. It is a wrapper that takes FASTA sequences and sequentially runs a number of sequence analysis programs (HMMER, LipoP, SignalP, TMHMM and optionally MEMSAT3). These programs share the common feature of taking FASTA sequences as input and generating text output. The bulk of the computation in _inmembrane_ lies in the parsing of the text output. A small amount of analysis is done at the end to integrate the results from the other programs to generate the text output of _inmembrane_. 
+
+As some of the dependent executables of _inmembrane_ are only available on Linux, this unfortunately restricts _inmembrane_ to be fully operational only on the Linux platform. Given the number of dependencies involved, we have provided a comprehensive set of unit tests.
+
+As _inmembrane_ integrates the intermediate output of a large number of programs, there are many potential points of failure. _inmembrane_ saves all intermediate output in a results folder, which allows expert users to diagnose problems at any step in the pipeline and restart the analysis from that point once the problem is resolved.
 
 ### Scripting Languages 
 
@@ -72,13 +70,13 @@ The virtues of Python as a language for solving problems in life science researc
 
 Using a modern scripting language results in much cleaner code, where the advantages arise mostly from the use of standard dynamic language features in Python, which otherwise would require the creation of large complicated objects in Java. Another great advantage of scripting languages is portability, where the source code itself is the executable. The source code can be executed directly without any explicit compilation step. Modification of the source-code directly modifies the program. This dramatically simplifies the process of extending _inmembrane_ for other purposes.
 
-### Simple Data Structures 
+## Simple Data Structures 
 
 While object-oriented programming (OOP) provides advantages when architecting large enterprise systems, it's overuse for small projects can be a disadvantage. In the recommended Enterprise Java style of programming, as used in _SurfG+_, objects are created through several layers of abstract classes where each field in an object needs to be explicitly specified. To change a field in a datastructure, there are at least 6 places in 3 different files where the code that needs to be changed, which severely restricts the ease of modification for those unfamiliar with the code base. Whilst this level of hierarchy is useful in programs that have highly interacting data-structures, this is not the case for _inmembrane_ and would otherwise add unneeded levels of complexity.
 
 Python provides an incredibly powerful standard data structure termed a 'dictionary', which is conceptually similar to a 'hash table' or 'hash map' in other languages. Dictionaries consists of a set of key-value pairs, where keys and values can be any type of data structure - strings, integers, floats, or even other dictionaries. In _inmembrane_, the program data is represented with a flat dictionary called `protein`. Let's say our FASTA file contains the mouse hemeglobin gene with the ID  `'MOUSE_HEME'`. The properties of `MOUSE_HEME` would then be found in `protein['MOUSE_HEME']`, which is itself a dictionary. `protein['MOUSE_HEME']` contains any arbitary number of different properties, also accessed as key-value pairs. For instance, the sequence length of the `'MOUSE_HEME'` sequence would be stored in `protein['MOUSE_HEME']['sequence_length']`. This data structure can capture the results of most potential bioinformatic analyses, where new properties are added to `protein` on the fly. The use of a dynamic flat dictionary avoids much of the boilerplate code involved with an OOP style programming.
 
-### Parsing code is particularly simple
+## Parsing code is particularly simple
 
 If we use a dictionary to represent our data structure, then the main work in _inmembrane_ of running other programs and processing their text output can be encapsulated into a simple function. 
 
@@ -88,7 +86,22 @@ We can thus abstract the main program loop as running a series of functions of t
 
 We have exploited other examples of dynamic programming in _inmembrane_ to produce, not only terser code, but clear code. For instance, when using _HMMER_ to match sequence profiles of peptidoglcan binding domains, there is no hard-coding of the sequences in program. Rather, the code dynamically searches the `hmm_profiles` directory for profiles, and iterates the search for each FASTA file across the profiles. This is a particularly robust design, as new profiles can be processed by simply adding them to the directory.
 
-### Web-interface for FASTA file
+## Tests with Gram+ bacteria
+
+The field of bioinformatics changes quickly, and in the few years between the release of SurfG+, some of the software used in SurfG+ is no longer available. As a result we could not use exactly the same versions of the binaries used in SurfG+. For instance TMMOD is no longer released as a binary and SignalP has progressed to Version 4.0. Still to show that _inmembrane_ produces a reasonable copy of the original of the algorithm, we present the Potentially Surface Exposed predictions of the 4 bacterial genomes in the SurfG+ paper to that predicted by _inmembrane_.
+
+<pre>
+             S.pyogenes L.acidophilus L.johnsonii   L. gasseri L.bulgaricus                                                                                                    
+Cytoplasmic  1243 1233   1290 1278     1248 1234    1262 1240   1132 1120                         
+Membrane      236 239     315 333       357 359      298 303     244 263                          
+PSE           140 177     169 187       176 202      157 191     116 134                           
+Secreted       78 47       88 64         40 26        38 21       70 45                      
+Total        1697 1720   1862 1884     1821 1842    1755 1776   1562 1568                              
+</pre>
+
+## Web-interface modules for further analysis
+
+A significant barrier to the automation of protein analysis is that many excellent bioinformatic tools are only provided as web-interfaces. Typically one has to manually submit sequences and extract the results of html. This limits the automation in two ways. It is exceedingly difficult to scale up for either many sequences or many genomes, and it is difficult to generate a clean analysis pipeline due to the intervention of a manual step of converting web-output into data.
 
 From time to time, bioinformatics researchers will provide useful sequence analysis tools with a HTML form based front end designed for web browsers, but no official machine readable web API, and no downloadable standalone version of their software. While researchers may neglect to provide these interfaces for a multitude of reasons, for end-users the lack of a standalone version or a web API makes automated use for large scale analyses, such as that carried out by _inmembrane_, somewhat awkward and inconvenient. Several of the published tools for the detection of outer membrane beta-barrel proteins we wished to use as part of the _inmembrane_ workflow only provide a browser based interface, and some only allow submission of a single protein sequence at one time. To solve this problem we chose to implement automated queries to these web intefaces using the _twill_ library (C. Titus Brown, http://twill.idyll.org/), with subsequent parsing of any HTML output using the _BeautifulSoup_ library (Leonard Richardson, http://www.crummy.com/software/BeautifulSoup/).
 
@@ -98,7 +111,7 @@ When writing a wrapper for a new service, commands to interface with the web for
 
 In it's simplest from, a web service API is essentially an agreement between a service provider and their end-users on a machine readable, predictable and stable interface. Since 'screen scraping' as a method of interfacing with a sequence analysis tool does not use a well defined API with an implicit guarantee of stability, it can be prone to breakage when the format of the HTML form or results page is changed, even slightly. While we believe that the approach taken by _twill_ and the robust parsing provided by _BeautifulSoup_ will prevent many upstream changes breaking these wrappers, inevitably breakage will occur. In this case, the simplicity and ease of modifiability of these wrappers then becomes a key feature that allows expert users to fix them if and when it is required.
 
-### Configuration files and ways of running the program
+## Configuration files and ways of running the program
 
 In many bioinformatic programs written in scripting languages, configuration information is dispersed throughout the program, and users are asked to search through the program and modify the  source code. We believe that this is extremely bad practice as this is highly confusing and encourages a lazy style of programming where the configuration concerns have not been isolated.
 
@@ -106,11 +119,11 @@ Instead, _inmembrane_ reads configuration information from an explicit configura
 
 The structure of the configuration file is itself in a Python dictionary form with explicit key-value pairs. Internally, the file can be directly read using the `eval` function directly as a dictionary and passed into the main function `process` that accepts a dictionary of parameters as input. The advantage of taking this approach is that we can provide of running the program that avoids the command-line altogether. We can write a short python program `run_example.py` that defines a new parameters dictionary including the input FASTA file and the output file, then loads _inmembrane_ as a library, and executes the `process` function with these parameters. For an end user, they can simple duplicate the `run_example.py` file, change the parameters, save the file, and assuming that Python is installed on the system, double-click on `run_example.py` to run the program.
 
-## Conclusion
+# Conclusion
 
 _inmembrane_ provides a clean bioinformatic pipeline to analyze proteomes for proteins that are exposed out of the membrane. It has been written in a  modern style of programming that optimizes readability. It has also been designed to be easily extensible and we sincerely hope that _inmembrane_ will be extended, modified and improved by other researchers. We welcome other researchers to join us on Github.
 
-## References
+# References
 
 Barinov A, Loux V, Hammani A, Nicolas P, Langella P, et al. (2009) Prediction of surface exposed proteins in Streptococcus pyogenes, with a potential application to other Gram-positive bacteria. __Proteomics__ 9: 61-73. <http://dx.doi.org/10.1002/pmic.200800195>
 
@@ -144,5 +157,7 @@ Janecek, S., Svensson, B., Russell, R. R., Location of repeat elements in glucan
 Bateman, A., Bycroft, M., The structure of a LysM domain from E. coli membrane-bound lytic murein transglycosylase D (MltD). __J. Mol. Biol.__ 2000, 299, 1113–1119. <http://dx.doi.org/10.1006/jmbi.2000.3778>
 
 Waligora, A. J., Hennequin, C., Mullany, P., Bourlioux, P. et al., Characterization of a cell surface protein of Clostridium difficile with adhesive properties. __Infect. Immun.__ 2001, 69, 2144–2153. <http://dx.doi.org/10.1128/​IAI.69.4.2144-2153.2001>
+
+N.Y. Yu, J.R. Wagner, M.R. Laird, G. Melli, S. Rey, R. Lo, P. Dao, S.C. Sahinalp, M. Ester, L.J. Foster, F.S.L. Brinkman (2010) PSORTb 3.0: Improved protein subcellular localization prediction with refined localization subcategories and predictive capabilities for all prokaryotes, __Bioinformatics__ 26(13):1608-1615 <http://dx.doi.org/10.1093/bioinformatics/btq249>
 
 Mesnage, S., Fontaine, T., Mignot, T., Delepierre, M. et al., Bacterial SLH domain proteins are noncovalently anchored to the cell surface via a conserved mechanism involving wall polysaccharide pyruvylation. __EMBO J.__ 2000, 19, 4473–4484. <http://dx.doi.org/10.1093/emboj/19.17.4473>
