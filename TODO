@@ -1,4 +1,4 @@
 TODO:
 
-* Change status messages from print to std.err.write
+* can't find inmembrane.config if run from other directory
 
