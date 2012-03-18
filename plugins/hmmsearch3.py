@@ -1,5 +1,6 @@
-import os, glob
-from inmembrane import run, parse_fasta_header
+import os
+import glob
+import helpers
 
 def hmmsearch3(params, proteins):
   file_tag = os.path.join(params['hmm_profiles_dir'], '*.hmm')
@@ -8,13 +9,13 @@ def hmmsearch3(params, proteins):
     hmm_profile = os.path.basename(params['hmm_profile'])
     hmm_name = hmm_profile.replace('.hmm', '')
     hmmsearch3_out = 'hmm.%s.out' % hmm_name
-    run('%(hmmsearch3_bin)s -Z 2000 -E 10 %(hmm_profile)s %(fasta)s' % \
+    helpers.run('%(hmmsearch3_bin)s -Z 2000 -E 10 %(hmm_profile)s %(fasta)s' % \
           params, hmmsearch3_out)
     name = None
     for l in open(hmmsearch3_out):
       words = l.split()
       if l.startswith("git"):
-        name = parse_fasta_header(l[3:])[0]
+        name = helpers.parse_fasta_header(l[3:])[0]
         if 'hmmsearch' not in proteins[name]:
           proteins[name]['hmmsearch'] = []
         continue

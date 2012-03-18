@@ -40,14 +40,13 @@ from twill.commands import find, formfile, follow, fv, go, show, \
                              showforms, showlinks, submit
 
 from helpers import *
-from plugins.signalp4 import *
-from plugins.tmhmm import *
-from plugins.memsat3 import *
-from plugins.lipop1 import *
-from plugins.hmmsearch3 import *
-from plugins.tmbhunt_web import *
-from plugins.bomp_web import *
-from plugins.tmbeta_net_web import *
+
+for plugin in glob.glob('plugins/*.py'):
+  if "__init__" in plugin:
+    continue
+  plugin_name = os.path.basename(plugin)[:-3]
+  exec('from plugins.%s import * ' % plugin_name)
+
 
 # when True, dumps lots of raw info to stdout to help debugging
 __DEBUG__ = False
@@ -114,9 +113,13 @@ def init_output_dir(params):
 
   os.chdir(base_dir)
 
-# TODO: Given that proteins.keys() should be identical to
-#       prot_ids, wouldn't it make sense to only return 'proteins' ?
+
 def create_protein_data_structure(fasta):
+  """
+  From a FASTA file, creates a dictionary using the ID of each sequence
+  in the fasta file. Also returns a list of ID's in the same order as
+  that in the file.
+  """
   prot_ids = []
   prot_id = None
   proteins = {}

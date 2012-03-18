@@ -1,12 +1,12 @@
-from inmembrane import run, parse_fasta_header
+import inmembrane 
 
 def lipop1(params, proteins):
   lipop1_out = 'lipop.out'
-  run('%(lipop1_bin)s %(fasta)s' % params, lipop1_out)
+  inmembrane.run('%(lipop1_bin)s %(fasta)s' % params, lipop1_out)
   for l in open(lipop1_out):
     words = l.split()
     if 'SpII score' in l:
-      name = parse_fasta_header(words[1])[0]
+      name = inmembrane.parse_fasta_header(words[1])[0]
       if 'cleavage' in l:
         pair = words[5].split("=")[1]
         i = int(pair.split('-')[0])

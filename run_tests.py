@@ -1,8 +1,10 @@
 #!/usr/bin/env python
+import os
+import glob
 import unittest
-from tests.test_bomp import *
-from tests.test_tmbhunt import *
-from tests.test_tmbetanet import *
 
-if __name__ == '__main__':
-  unittest.main()
+test_names = [os.path.basename(f)[:-3] 
+    for f in glob.glob('tests/test*.py')]
+for test_name in test_names:
+  exec('from tests.%s import *' % test_name)
+unittest.main()
