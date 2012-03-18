@@ -10,12 +10,14 @@ def hmmsearch3(params, proteins):
     hmm_profile = os.path.basename(params['hmm_profile'])
     hmm_name = hmm_profile.replace('.hmm', '')
     hmmsearch3_out = 'hmm.%s.out' % hmm_name
-    helpers.run('%(hmmsearch3_bin)s -Z 2000 -E 10 %(hmm_profile)s %(fasta)s' % \
-          params, hmmsearch3_out)
+    helpers.run(
+        '%(hmmsearch3_bin)s -Z 2000 -E 10 %(hmm_profile)s %(fasta)s' % \
+        params, hmmsearch3_out)
     name = None
+    print hmmsearch3_out
     for l in open(hmmsearch3_out):
       words = l.split()
-      if l.startswith("git"):
+      if l.startswith(">>"):
         name = helpers.parse_fasta_header(l[3:])[0]
         if 'hmmsearch' not in proteins[name]:
           proteins[name]['hmmsearch'] = []
