@@ -13,9 +13,11 @@ A common task in bioinformatics is to integrate the results of protein predictio
 
 In studies of membrane proteomes, quick annotation of an experimentally detected set of the proteins can help detect sequences of unexpected localization, and can alert researchers to possible contamination from other subcellular fractions. Ultimately, a concise summary of the properties of the detected membrane proteins in a particular proteomic set allows meaningful comparisons between different bacterial strains, species, and their responses in membrane remodelling to host and enviromental challenges.
 
+*****
 ![Membrane topologies](https://github.com/boscoh/inmembrane/raw/master/docs/images/membrane_topologies.png "Figure - Membrane topologies")
 
-> topologies of proteins associated with the Gram-negative inner and outer membranes (a), and the Gram-positive plasma membrane and cell wall (b). Topologies represented in Gram-negative bacterial inner membrane include (left to right) polytopic transmembrane proteins, monotopic transmembrane proteins and lipoproteins which can potentially be displayed on either leaflet and are anchored to the membrane via a lipid moeity covalently attached to the N-terminal cysteine ("C"). The outer membrane also contains lipoproteins, however unlike the inner membrane the outer membrane contains beta-barrel membrane proteins ("beta"), some with large extracellular domains exposed on the surface. Akin to the Gram-negative inner membrane, the Gram-positive inner membrane contains mono and polytopic transmembrane proteins, lipoproteins, proteins associated with the peptidoglycan layer (covalently or non-covalently) and secreted proteins in the extracellular space. A subset of Gram-positive bacteria (the Acinetobacterace) have also been shown to contain beta-barrel membrane proteins in their plasma membrane.
+>Topologies represented in Gram-negative bacterial inner membrane include (left to right) polytopic transmembrane proteins, monotopic transmembrane proteins and lipoproteins on the periplasmic side of the membrane which are anchored via a lipid moeity covalently attached to the N-terminal cysteine ("CD", where "D" denotes an Asp outer membrane avoidance signal at position 2 (Masuda et al 2002)). The outer membrane also contains lipoproteins, usually on the inner leaflet exposed to the periplasm, however unlike the inner membrane the outer membrane contains beta-barrel membrane proteins ("beta"), some with large extracellular domains exposed on the surface. Akin to the Gram-negative inner membrane, the Gram-positive inner membrane contains mono and polytopic transmembrane proteins and lipoproteins. Gram-positive bacteria also display surface proteins associated covalently or non-covalently with the cell wall peptidoglycan layer via a number of "surface motifs", such as the LPxTG, LysM. Some proteins are also secreted into the extracellular milieu. A subset of Gram-positive bacteria (the Acinetobacterace) have also been shown to contain beta-barrel membrane proteins in their plasma membrane.
+*****
 
 One example of this type of annotation is the program SurfG+, which is designed to predict proteins that are exposed on the surface of Gram+ bacteria. SurfG+ is a Java program that carries out batch processing of several standard bioinformatic tools to specifically identify Gram+ bacterial proteins that may be exposed out of the peptidoglycan layer of the bacterium. These predictions are intended to identify a set of proteins that would be amenable to cell-surface protease shaving experiments. SurfG+ itself does not carry out any extensive analysis, but rather relies on a transmembrane helix predictor (_TMMOD_), a secretion signal predictor (_SignalP_), a lipoprotein signal predictior (_LipoP_) and a sequence alignment for protein profiles (_HMMER_). All these programs function as Linux command tools that take FASTA sequences as input and generates output as formatted text.
 
@@ -25,31 +27,52 @@ Nevertheless, _SurfG+_ suffers several problems that plague much bioinformatic s
 
 Since the core algorithm in _SurfG+_ is relatively straightforward, we decided to write _inmembrane_ to replicate the functionality of _SurfG+_, but in a modern scripting language. This lead to considerable simplifiction and clarification of the code base. Compared with the _SurfG+_ Java source code of 700K, _inmembrane_ is around 32K of Python code, including additional functionality not offered by _SurfG+_. The smaller and cleaner code case is substantially easier to reuse and repurpose for other users, with a terseness that greatly facilitates modifiability. Here, we discuss the issues involved in writing robust and accessible bioinformatic source code.
 
-## Public Open Source Repository
+## Methodology
 
+### Gram-positive protocol
+
+HMMER 3.0 (Robert et al 2011) searches using hidden Markov models (HMM) derived from Pfam and Superfam are used to detect known Gram-positive surface sequence motifs. These include 
+LPxTG (Boekhorst et al, 2005) [[PF00746](http://pfam.sanger.ac.uk/family/PF00746) and the HMM used by SurfG+ (Barinov et al 2009)], 
+GW repeat domains (Jonquieres et al, 1999) [Superfam models 0040855, 0040856, 0040857], 
+peptidoglycan (PG) binding domain (Type 1) (Foster, 1991) [[PF01471](http://pfam.sanger.ac.uk/family/PF01471), [PF08823](http://pfam.sanger.ac.uk/family/PF08823), [PF09374](http://pfam.sanger.ac.uk/family/PF09374)]], 
+Choline binding repeats (Janecek et al, 2000), [[PF01473](http://pfam.sanger.ac.uk/family/PF01473)]
+LysM domain (Bateman & Bycroft, 2000) [PF01476](http://pfam.sanger.ac.uk/family/PF01476), Cell wall binding domain (Type 2) (Waligora et al, 2001), [[PF04122](http://pfam.sanger.ac.uk/family/PF04122)]
+and
+S-layer homology domain (Mesnage et al, 2000) [[PF04122](http://pfam.sanger.ac.uk/family/PF04122)]
+motifs.
+
+Lipoprotein signals are detected using LipoP (Agnieszka et al 2003), and signal sequences are detected using SignalP (Jannick et al 2004).
+
+The prescence and topology of transmembrane segments in helical membrane proteins is predicted using TMHMM v2.0 (Robel et al, 2005) and/or MEMSAT3 (Jones, 2007). Since MEMSAT3 executes a PSI-BLAST search to gather homologous sequences it is considerably slower than TMHMM, and as such is turned off by default.
+
+_inmembrane_ collates the results of each analysis, and using the predicted topology of the intergral membrane proteins detected predicts potentially surface exposed loops following the algorithm used by SurfG+. By default, external terminal regions longer than 50 residues and external loops longer than 100 residues are considered to be potentially surface exposed. These values were previously experimentally derived based on membrane shaving experiements with S. pyrogenes and may need modification to suit other species with different cell wall thickness (Barinov et al, 2009).
+
+## Discussion
+
+### Public Open Source Repository
 Perhaps the single most important step is to distribute our code on an open-source repository Github. We believe that the use of a dedicated repository provides many advantages over the typical strategy of hosting software on an academic server. Github provides excellent code browsing facility, code history, download links, and robust well-defined URL links. These are generally not provided in typical academic releases of software. Github provides excellent usage statistics to measure the impact of the software, which obviates the need for the dreaded login and registration pages.
 
 Most importantly, storing the code in a large, well-supported repository means the source code will remain accessible in the long term, something that historically most academic labs have shown they cannot provide. As well, Github provides excellent facilities to fork a project. That is, if you were to come across an orphaned project that did something useful but had been abandoned a while ago, it is trivial to create a duplicate and make changes.
 
 The algorithms used here are not difficult, and there is no reason to hide the program behind a hybrid academic/commercial license. We have licensed under the BSD license, which liberally allows reuse of the code in any shape or form.
 
-## Program Workflow 
+### Program setup and workflow
 
-The heart of _inmembrane_ is quite simple. It is a wrapper that takes FASTA sequences and sequentially runs a number of sequence analysis programs (HMMER, LipoP, SignalP and TMMOD). These programs share the common feature of taking FASTA sequences as input and generating text output. The bulk of the computation in _inmembrane_ lies in the parsing of the text output. A small amount of analysis is done at the end to integrate the results from the other programs to generate the text output of _inmembrane_. 
+The heart of _inmembrane_ is quite simple. It is a wrapper that takes FASTA sequences and sequentially runs a number of sequence analysis programs (HMMER, LipoP, SignalP, TMHMM and optionally MEMSAT3). These programs share the common feature of taking FASTA sequences as input and generating text output. The bulk of the computation in _inmembrane_ lies in the parsing of the text output. A small amount of analysis is done at the end to integrate the results from the other programs to generate the text output of _inmembrane_. 
 
 As some of the dependent executables of _inmembrane_ are only available on Linux, this unfortunately restricts _inmembrane_ to be fully operational only on the Linux platform. Given the number of dependencies involved, we have provided a comprehensive set of unit tests.
 
-As _inmembrane_ integrates the intermediate output of a large number of programs, there are many potential points of failure. _inmembrane_ saves all intermediate output in a results folder, which allows expert users to diagnose problems with the dependencies.
+As _inmembrane_ integrates the intermediate output of a large number of programs, there are many potential points of failure. _inmembrane_ saves all intermediate output in a results folder, which allows expert users to diagnose problems at any step in the pipeline and restart the analysis from that point once the problem is resolved.
 
-## Scripting Languages 
+### Scripting Languages 
 
-The virtues of Python as a language for solving problems in life science research have been previously recognized (Bassi, 2007). One general downside of Python is execution speed. The execution bottleneck of _inmembrane_ lies is in the text processing, where most of the calculations are delegated to the dependent programs that _inmembrane_ forks. As text-processing and system forking are areas in which Python outperforms languages such as Java, there are no performance issues with Python.
+The virtues of Python as a language for solving problems in life science research have been previously recognized (Bassi, 2007). One potential downside of Python is it's slower execution speed for computationally intensive tasks when compared with compiled languages or Java. Since _inmembrane_ delegates most of the computationally intensive tasks to external programs, the wrapping, text parsing and analysis code in Python does not become a bottleneck in the overall processing speed.
 
-Using a modern scripting language results in much cleaner code, where the advantages arise mostly from the use of standard dynamic language features in Python, which otherwise would require the creation of large complicated objects in Java. Another great advantage of scripting languages is portability, where the source code itself is the executable. The source code can be executed directly without any compilation step. Modification of the source-code directly modifies the program. This dramatically simplifies the process of extending _inmembrane_ for other purposes.
+Using a modern scripting language results in much cleaner code, where the advantages arise mostly from the use of standard dynamic language features in Python, which otherwise would require the creation of large complicated objects in Java. Another great advantage of scripting languages is portability, where the source code itself is the executable. The source code can be executed directly without any explicit compilation step. Modification of the source-code directly modifies the program. This dramatically simplifies the process of extending _inmembrane_ for other purposes.
 
 ## Simple Data Structures 
 
-One unfortunate trend in bioinformatics software is the overuse of object-oriented programming (OOP). In the recommended Enterprise Java style of programming, as used in _SurfG+_, objects are created through several layers of abstract classes. Each field in an object needs to be minutely specified. To change a field, there are at least 6 places in 3 different files where the code that needs to be changed, which severely restricts the ease of modification. Whilst this level of hierarchy is useful in programs that have highly interacting data-structures, this is not the case for _inmembrane_ and would otherwise add unneeded levels of complexity. 
+While object-oriented programming (OOP) provides advantages when architecting large enterprise systems, it's overuse for small projects can be a disadvantage. In the recommended Enterprise Java style of programming, as used in _SurfG+_, objects are created through several layers of abstract classes where each field in an object needs to be explicitly specified. To change a field in a datastructure, there are at least 6 places in 3 different files where the code that needs to be changed, which severely restricts the ease of modification for those unfamiliar with the code base. Whilst this level of hierarchy is useful in programs that have highly interacting data-structures, this is not the case for _inmembrane_ and would otherwise add unneeded levels of complexity.
 
 Python provides an incredibly powerful standard data structure termed a 'dictionary', which is conceptually similar to a 'hash table' or 'hash map' in other languages. Dictionaries consists of a set of key-value pairs, where keys and values can be any type of data structure - strings, integers, floats, or even other dictionaries. In _inmembrane_, the program data is represented with a flat dictionary called `protein`. Let's say our FASTA file contains the mouse hemeglobin gene with the ID  `'MOUSE_HEME'`. The properties of `MOUSE_HEME` would then be found in `protein['MOUSE_HEME']`, which is itself a dictionary. `protein['MOUSE_HEME']` contains any arbitary number of different properties, also accessed as key-value pairs. For instance, the sequence length of the `'MOUSE_HEME'` sequence would be stored in `protein['MOUSE_HEME']['sequence_length']`. This data structure can capture the results of most potential bioinformatic analyses, where new properties are added to `protein` on the fly. The use of a dynamic flat dictionary avoids much of the boilerplate code involved with an OOP style programming.
 
@@ -116,5 +139,25 @@ Anders Krogh, Björn Larsson, Gunnar von Heijne and Erik L. L. Sonnhammer (2001)
 
 Robel Y. Kahsay1, Guang Gao1 and Li Liao1. An improved hidden Markov model for transmembrane protein detection and topology prediction and its applications to complete genomes (2005) __Bioinformatics__ 21: 1853-1858.
 
+﻿Jones DT. Improving the accuracy of transmembrane protein topology prediction using evolutionary information. __Bioinformatics (Oxford, England)__ 2007 Mar;23(5):538-44. <http://dx.doi.org/10.1093/bioinformatics/btl677>
+
 N.Y. Yu, J.R. Wagner, M.R. Laird, G. Melli, S. Rey, R. Lo, P. Dao, S.C. Sahinalp, M. Ester, L.J. Foster, F.S.L. Brinkman (2010) PSORTb 3.0: Improved protein subcellular localization prediction with refined localization subcategories and predictive capabilities for all prokaryotes, __Bioinformatics__ 26(13):1608-1615 <http://dx.doi.org/10.1093/bioinformatics/btq249>
 
+﻿Masuda K, Matsuyama S-ichi, Tokuda H. Elucidation of the function of lipoprotein-sorting signals that determine membrane localization. __Proceedings of the National Academy of Sciences of the United States of America__ 2002 May;99(11):7390-5. <http://dx.doi.org/10.1073/pnas.112085599>
+
+Boekhorst, J., de Been, M. W., Kleerebezem, M., Siezen, R. J., Genome-wide detection and analysis of cell wall-bound proteins with LPxTG-like sorting motifs. __J. Bacteriol.__ 2005, 187, 4928–4934. <http://dx.doi.org/10.1128/​JB.187.14.4928-4934.2005>
+
+Jonquieres, R., Bierne, H., Fiedler, F., Gounon, P., Cossart, P., Interaction between the protein InlB of Listeria mono- cytogenes and lipoteichoic acid: A novel mechanism of
+protein association at the surface of Gram-positive bacteria. __Mol.Microbiol.__ 1999, 34, 902–914. <http://dx.doi.org/10.1046/j.1365-2958.1999.01652.x>
+
+Foster, S. J., Cloning, expression, sequence analysis and biochemical characterization of an autolytic amidase of Bacillus subtilis 168 trpC2. __J. Gen. Microbiol.__ 1991, 137, 1987–1998. <http://dx.doi.org/10.1099/00221287-137-8-1987>
+
+Janecek, S., Svensson, B., Russell, R. R., Location of repeat elements in glucansucrases of Leuconostoc and Strepto- coccus species. __FEMS Microbiol. Lett.__ 2000, 192, 53–57. <http://dx.doi.org/10.1111/j.1574-6968.2000.tb09358.x>
+
+Bateman, A., Bycroft, M., The structure of a LysM domain from E. coli membrane-bound lytic murein transglycosylase D (MltD). __J. Mol. Biol.__ 2000, 299, 1113–1119. <http://dx.doi.org/10.1006/jmbi.2000.3778>
+
+Waligora, A. J., Hennequin, C., Mullany, P., Bourlioux, P. et al., Characterization of a cell surface protein of Clostridium difficile with adhesive properties. __Infect. Immun.__ 2001, 69, 2144–2153. <http://dx.doi.org/10.1128/​IAI.69.4.2144-2153.2001>
+
+N.Y. Yu, J.R. Wagner, M.R. Laird, G. Melli, S. Rey, R. Lo, P. Dao, S.C. Sahinalp, M. Ester, L.J. Foster, F.S.L. Brinkman (2010) PSORTb 3.0: Improved protein subcellular localization prediction with refined localization subcategories and predictive capabilities for all prokaryotes, __Bioinformatics__ 26(13):1608-1615 <http://dx.doi.org/10.1093/bioinformatics/btq249>
+
+Mesnage, S., Fontaine, T., Mignot, T., Delepierre, M. et al., Bacterial SLH domain proteins are noncovalently anchored to the cell surface via a conserved mechanism involving wall polysaccharide pyruvylation. __EMBO J.__ 2000, 19, 4473–4484. <http://dx.doi.org/10.1093/emboj/19.17.4473>
