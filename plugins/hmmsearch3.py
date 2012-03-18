@@ -2,6 +2,7 @@ import os
 import glob
 import helpers
 
+
 def hmmsearch3(params, proteins):
   file_tag = os.path.join(params['hmm_profiles_dir'], '*.hmm')
   for hmm_profile in glob.glob(file_tag):
