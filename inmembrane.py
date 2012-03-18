@@ -42,20 +42,24 @@ from twill.commands import find, formfile, follow, fv, go, show, \
 from helpers import *
 
 
+# when True, dumps lots of raw info to stdout to help debugging
+__DEBUG__ = False
+
+module_dir = os.path.abspath(os.path.dirname(__file__))
+
+
 # Load all modules found in plugins dynamically 
 # Each module should have the structure where there is only 
 # one main function with the same name of the function
 # and takes two parameters:
 #   mymodule.mymodule(params, proteins)
-for plugin in glob.glob('plugins/*.py'):
+file_tag = os.path.join(module_dir, 'plugins/*.py')
+for plugin in glob.glob(file_tag):
   if "__init__" in plugin:
     continue
   plugin_name = os.path.basename(plugin)[:-3]
   exec('from plugins.%s import * ' % plugin_name)
 
-
-# when True, dumps lots of raw info to stdout to help debugging
-__DEBUG__ = False
 
 default_params_str = """{
   'fasta': '',
@@ -82,13 +86,8 @@ default_params_str = """{
 """
 
 
-def abs_config_fname():
-  module_dir = os.path.abspath(os.path.dirname(__file__))
-  return os.path.join(module_dir, 'inmembrane.config')
-
-
 def get_params():
-  config = abs_config_fname()
+  config = os.path.join(module_dir, 'inmembrane.config')
   if not os.path.isfile(config):
     error_output("# Couldn't find inmembrane.config file")
     error_output("# So, will generate a default config " \
@@ -120,7 +119,7 @@ def init_output_dir(params):
   shutil.copy(params['fasta'], os.path.join(base_dir, fasta))
   params['fasta'] = fasta
 
-  shutil.copy(abs_config_fname(), os.path.join(base_dir, config_file))
+  shutil.copy(os.path.join(module_dir, 'inmembrane.config'), base_dir)
 
   os.chdir(base_dir)
 
