@@ -30,7 +30,7 @@ def run(cmd, out_file=None):
   if run_with_output('which ' + binary):
     is_binary_there = True
   if not is_binary_there:
-    raise IOError("Couldn't find executable '" + binary + "'")
+    raise IOError("Couldn't find executable binary '" + binary + "'")
   txt = run_with_output(cmd)
   open(out_file, 'w').write(txt)
 
@@ -71,18 +71,3 @@ def seqid_to_filename(seqid):
   """
   return seqid.replace("|", "_")
   
-def get_fasta_seq_by_id(fname, prot_id):
-  f = open(fname)
-  l = f.readline()
-  while l:
-    if l.startswith(">") and (parse_fasta_header(l)[0] == prot_id):
-      seq = ""
-      l = f.readline()
-      while l and not l.startswith(">"):
-        seq += l.strip()
-        l = f.readline()
-      f.close()
-      return seq
-
-    l = f.readline()
-  f.close()
