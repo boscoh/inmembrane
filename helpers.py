@@ -22,8 +22,6 @@ def run(cmd, out_file=None):
   if os.path.isfile(out_file) and (out_file != None):
     error_output("# -> skipped: %s already exists" % out_file)
     return
-  if not out_file:
-    out_file = "/dev/null"
   binary = cmd.split()[0]
   is_binary_there = False
   if os.path.isfile(binary):
@@ -33,7 +31,8 @@ def run(cmd, out_file=None):
   if not is_binary_there:
     raise IOError("Couldn't find executable binary '" + binary + "'")
   txt = run_with_output(cmd)
-  open(out_file, 'w').write(txt)
+  if out_file:
+    open(out_file, 'w').write(txt)
 
 
 def error_output(s):
