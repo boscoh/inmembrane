@@ -24,7 +24,7 @@ class TestBomp(unittest.TestCase):
         u'gi|107836588': 5, 
         u'gi|107836852': 5
     }
-    self.prot_ids, self.proteins = \
+    self.seqids, self.proteins = \
         inmembrane.create_protein_data_structure(self.params['fasta'])
 
     self.output = inmembrane.bomp_web(self.params, self.proteins, force=True)

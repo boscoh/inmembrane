@@ -1,7 +1,11 @@
 #
 # Common helper functions for inmembrane
 #
-import sys, os, subprocess
+
+import os, subprocess
+
+
+__DEBUG__ = False
 
 
 def dict_get(this_dict, prop):
@@ -36,6 +40,8 @@ def run(cmd, out_file=None):
 
 
 def error_output(s):
+  if not __DEBUG__:
+    return
   if s and s[-1] != "\n":
     s += "\n"
   sys.stderr.write(s)
@@ -56,15 +62,15 @@ def parse_fasta_header(header):
   if header.find("|") != -1:
     tokens = header.split('|')
     # "gi|ginumber|gb|accession bla bla" becomes "gi|ginumber"
-    seq_id = "%s|%s" % (tokens[0], tokens[1].split()[0])
+    seqid = "%s|%s" % (tokens[0], tokens[1].split()[0])
     desc = tokens[-1:][0].strip()
   # otherwise just split on spaces & hope for the best
   else:
     tokens = header.split()
-    seq_id = tokens[0]
+    seqid = tokens[0]
     desc = header[0:-1].strip()
   
-  return seq_id, desc
+  return seqid, desc
   
 
 def seqid_to_filename(seqid):

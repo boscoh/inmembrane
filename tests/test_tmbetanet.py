@@ -19,7 +19,7 @@ class TestTmbetanet(unittest.TestCase):
 
     self.params = inmembrane.get_params()
     self.params['fasta'] = "bomps.fasta"
-    self.prot_ids, self.proteins = \
+    self.seqids, self.proteins = \
         inmembrane.create_protein_data_structure(self.params['fasta'])
 
     # run TMBETA-NET

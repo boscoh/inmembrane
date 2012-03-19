@@ -19,7 +19,7 @@ class TestHmmsearch3(unittest.TestCase):
 
     self.params = inmembrane.get_params()
     self.params['fasta'] = "hmmsearch3.fasta"
-    self.prot_ids, self.proteins = \
+    self.seqids, self.proteins = \
         inmembrane.create_protein_data_structure(self.params['fasta'])
     inmembrane.hmmsearch3(self.params, self.proteins)
 

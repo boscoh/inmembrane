@@ -41,7 +41,7 @@ class TestTmbhunt(unittest.TestCase):
             'tmbhunt': False
         }
     }
-    self.prot_ids, \
+    self.seqids, \
     self.proteins = inmembrane.create_protein_data_structure(self.params['fasta'])
 
     # run TMB-HUNT

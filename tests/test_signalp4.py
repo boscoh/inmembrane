@@ -16,11 +16,10 @@ class TestSignalp(unittest.TestCase):
   def test_signalp(self):
     save_dir = os.getcwd()
     os.chdir(self.dir)
-    os.system('rm *out')
 
     self.params = inmembrane.get_params()
     self.params['fasta'] = "signalp4.fasta"
-    self.prot_ids, self.proteins = \
+    self.seqids, self.proteins = \
         inmembrane.create_protein_data_structure(self.params['fasta'])
     inmembrane.signalp4(self.params, self.proteins)
 
@@ -29,9 +28,9 @@ class TestSignalp(unittest.TestCase):
         u'SPy_2077': False, 
         u'SPy_0317': True
     }
-    for prot_id in self.expected_output:
+    for seqid in self.expected_output:
       self.assertEqual(
-          self.expected_output[prot_id], self.proteins[prot_id]['is_signalp'])
+          self.expected_output[seqid], self.proteins[seqid]['is_signalp'])
 
     os.chdir(save_dir)
 

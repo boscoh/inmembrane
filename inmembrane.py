@@ -37,6 +37,16 @@ from optparse import OptionParser
 from helpers import *
 
 
+description = """
+Inmembrane is a proteome annotation pipeline. It takes 
+a FASTA file, then carries out sequential analysis of 
+each sequence with a bunch of third-party programs, and 
+collates the results.
+
+(c) 2011 Bosco Ho and Andrew Perry
+"""
+
+
 # when True, dumps lots of raw info to stdout to help debugging
 __DEBUG__ = False
 
@@ -446,15 +456,6 @@ def process(params):
   else:
     error_output("You must specify 'gram+' or 'gram-' in inmembrane.config\n")
     
-
-description = """
-Inmembrane is a proteome annotation pipeline. It takes 
-a FASTA file, then carries out sequential analysis of 
-each sequence with a bunch of third-party programs, and 
-collates the results.
-
-(c) 2011 Bosco Ho and Andrew Perry
-"""
 
 if __name__ == "__main__":
   parser = OptionParser()
