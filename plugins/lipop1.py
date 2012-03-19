@@ -16,3 +16,4 @@ def lipop1(params, proteins):
         'is_lipop': 'Sp' in words[2],
         'lipop_cleave_position': i,
       })
+  return proteins

@@ -12,4 +12,5 @@ def signalp4(params, proteins):
       'is_signalp': (words[9] == "Y"),
       'signalp_cleave_position': int(words[4]),
     })
+  return proteins
     
