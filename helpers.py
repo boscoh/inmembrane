@@ -10,9 +10,14 @@ def dict_get(this_dict, prop):
   
 dict_prop_truthy = dict_get
 
+def run_with_output(cmd):
+  p = subprocess.Popen(
+      cmd, shell=True, stdout=subprocess.PIPE, 
+      stderr=subprocess.PIPE)
+  return p.stdout.read()
+
 def run(cmd, out_file=None):
-  full_cmd = cmd + " > " + out_file
-  error_output("# " + full_cmd)
+  error_output("# " + cmd + " > " + out_file)
   if os.path.isfile(out_file) and (out_file != None):
     error_output("# -> skipped: %s already exists" % out_file)
     return
@@ -27,13 +32,8 @@ def run(cmd, out_file=None):
   if not is_binary_there:
     error_output("# Error: couldn't find executable " + binary)
     sys.exit(1)
-  os.system(full_cmd)
-
-def run_with_output(cmd):
-  p = subprocess.Popen(
-      cmd, shell=True, stdout=subprocess.PIPE, 
-      stderr=subprocess.PIPE)
-  return p.stdout.read()
+  txt = run_with_output(cmd)
+  open(out_file, 'w').write(txt)
 
 def error_output(s):
   if s and s[-1] != "\n":

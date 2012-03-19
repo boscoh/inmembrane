@@ -7,7 +7,7 @@ class TestBomp(unittest.TestCase):
   def setUp(self):
     self.parms = get_params()
     # TODO: put output file in the right place
-    self.parms['fasta'] = "tests/bomp/bomps.fasta"
+    self.parms['fasta'] = "bomp/bomps.fasta"
     self.expected_output = {u'gi|107837101': 3, \
                             u'gi|107836588': 5, \
                             u'gi|107836852': 5}

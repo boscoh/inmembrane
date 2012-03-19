@@ -36,4 +36,5 @@ def tmhmm(params, proteins):
     if 'TMhelix' in l:
       proteins[name]['tmhmm_helices'].append(
           (int(words[-2]), int(words[-1])))
+  return proteins
 
