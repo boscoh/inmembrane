@@ -26,18 +26,13 @@
 # THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH 
 # DAMAGE.
 
+
 import sys
 import os
-import time
-import StringIO
-import math
 import glob
-import re
 import shutil
 from optparse import OptionParser
-import twill
-from twill.commands import find, formfile, follow, fv, go, show, \
-                             showforms, showlinks, submit
+
 
 from helpers import *
 
@@ -45,6 +40,8 @@ from helpers import *
 # when True, dumps lots of raw info to stdout to help debugging
 __DEBUG__ = False
 
+
+# figure out absoulte directory for inmembrane scripts
 module_dir = os.path.abspath(os.path.dirname(__file__))
 
 
