@@ -30,8 +30,7 @@ def run(cmd, out_file=None):
   if run_with_output('which ' + binary):
     is_binary_there = True
   if not is_binary_there:
-    error_output("# Error: couldn't find executable " + binary)
-    sys.exit(1)
+    raise IOError("Couldn't find executable '" + binary + "'")
   txt = run_with_output(cmd)
   open(out_file, 'w').write(txt)
 
