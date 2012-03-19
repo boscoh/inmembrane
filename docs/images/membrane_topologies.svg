@@ -16,7 +16,10 @@
    id="svg2"
    version="1.1"
    inkscape:version="0.48.2 r9819"
-   sodipodi:docname="membrane_topologies.svg">
+   sodipodi:docname="membrane_topologies.svg"
+   inkscape:export-filename="/home/perry/Dropbox/work/inmembrane/docs/images/membrane_topologies.png"
+   inkscape:export-xdpi="119.9537"
+   inkscape:export-ydpi="119.9537">
   <defs
      id="defs4">
     <pattern
@@ -196,7 +199,7 @@
      inkscape:pageshadow="2"
      inkscape:zoom="1.4"
      inkscape:cx="191.71782"
-     inkscape:cy="616.25561"
+     inkscape:cy="720.6488"
      inkscape:document-units="px"
      inkscape:current-layer="layer1"
      showgrid="false"
@@ -215,7 +218,7 @@
         <dc:format>image/svg+xml</dc:format>
         <dc:type
            rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
-        <dc:title />
+        <dc:title></dc:title>
       </cc:Work>
     </rdf:RDF>
   </metadata>
@@ -384,7 +387,7 @@
        width="39.39595"
        height="39.395947"
        x="490.30203"
-       y="60.664177"
+       y="96.664177"
        rx="7.0270271"
        ry="5.234899" />
     <g
