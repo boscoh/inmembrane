@@ -3,18 +3,19 @@
 #
 import sys, os, subprocess
 
+
 def dict_get(this_dict, prop):
   if prop not in this_dict:
     return False
   return this_dict[prop]
   
-dict_prop_truthy = dict_get
 
 def run_with_output(cmd):
   p = subprocess.Popen(
       cmd, shell=True, stdout=subprocess.PIPE, 
       stderr=subprocess.PIPE)
   return p.stdout.read()
+
 
 def run(cmd, out_file=None):
   error_output("# " + cmd + " > " + out_file)
@@ -34,10 +35,12 @@ def run(cmd, out_file=None):
   txt = run_with_output(cmd)
   open(out_file, 'w').write(txt)
 
+
 def error_output(s):
   if s and s[-1] != "\n":
     s += "\n"
   sys.stderr.write(s)
+
 
 def parse_fasta_header(header):
   """
@@ -64,6 +67,7 @@ def parse_fasta_header(header):
   
   return seq_id, desc
   
+
 def seqid_to_filename(seqid):
   """
   Makes a sequence id filename friendly.
