@@ -109,7 +109,18 @@ Note the the 'runmemsat' script refers to PSIPRED v2, but it means MEMSAT3 - PSI
 
 ## Modification guide
 
-As _inmembrane_ is a glue script that runs a lot of external dependencies, we have tried to make the parsing code for each program as concise as possible. The program is written to use as much of the standard Python library as possible, and specifically uses native data structures which provide an incredible amount of flexibility.
+As _inmembrane_ is a glue script that runs a lot of external dependencies, we have tried to make the parsing code for each program as concise as possible. The program is written to use as much of the standard Python library as possible, and specifically uses native data structures which provide an incredible amount of flexibility. _Plugins_ that wraps an individual external program or web service can be found in the `inmembrane/plugins` directory. _Protocols_ which embody a particular high level workflow are found in `inmembrane/protocols`. 
 
 It is a fact of life for bioinformatics that new versions of basic tools changes output formats and API. We believe that it is an essential skill to rewrite parsers to handle the subtle but significant changes in different versions. Hopefully _inmembrane_ makes this as simple as possible.
 
+### __inmembrane__ development style guide:
+
+Here are some guidelines for understanding and extending the code.
+
+* _Confidence:_ Plugins that wrap an external program should have at least one high level test which is executed by run_tests.py. This allows new users to immediately determine if their dependencies are operating as expected.
+* _Interface:_ A plugin that wraps an external program must receive a _params_ data structure (derived from `inmembrane.config`) and a _proteins_ data structure (which is a dictionary keyed by sequence id). Plugins should return a 'proteins' object.
+* _Flexibility:_ Plugins should have a 'force' boolean argument that will force the analysis to re-run and overwrite output files.
+* _Efficiency:_ All plugins should write an output file which is read upon invocation to avoid the analysis being re-run.
+* _Documentation:_ Plugin must have a Python docstring describing what it does, what parameters is requires in the `params` dictionary and what it adds to the `proteins` data structure. See the code for examples.
+* _Anal:_ Unique sequence ID strings (eg `gi|1234567`) are called 'seqid'. 'name' is ambiguous. 'prot_id' is reasonable, however conceptually a 'protein' is not the same thing as a string that represents it's 'sequence' - hence the preference for 'seqid'.
+* _Anal:_ All file handles should be closed when they are no longer needed.
