@@ -1,18 +1,17 @@
 import os
 import unittest
+import sys
 
 # hack to allow tests to find inmembrane in directory above
-import sys
-sys.path.insert(0, '..')
+module_dir = os.path.abspath(os.path.dirname(__file__))
+sys.path.insert(0, os.path.join(module_dir, '..'))
 
-import inmembrane
+import inmembrane 
 
 
 class TestHmmsearch3(unittest.TestCase):
   def setUp(self):
-    top_tests_dir = os.path.dirname(__file__)
-    test_dir = os.path.join(top_tests_dir, 'hmmsearch3')
-    self.dir = os.path.abspath(test_dir)
+    self.dir = os.path.join(module_dir, 'hmmsearch3')
 
   def test_hmmsearch3(self):
     save_dir = os.getcwd()
@@ -25,9 +24,9 @@ class TestHmmsearch3(unittest.TestCase):
     inmembrane.hmmsearch3(self.params, self.proteins)
 
     self.expected_output = {
-        u'SPy_0128': ['LPxTG'], \
-        u'SPy_0191a': ['SLH_ls'], \
-        }
+        u'SPy_0128': ['LPxTG'], 
+        u'SPy_0191a': ['SLH_ls'], 
+    }
     for seqid in self.expected_output:
       for motif in self.expected_output[seqid]:
         self.assertTrue(motif in self.proteins[seqid]['hmmsearch'])
