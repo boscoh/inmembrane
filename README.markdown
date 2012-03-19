@@ -121,6 +121,6 @@ Here are some guidelines for understanding and extending the code.
 * _Interface:_ A plugin that wraps an external program must receive a _params_ data structure (derived from `inmembrane.config`) and a _proteins_ data structure (which is a dictionary keyed by sequence id). Plugins should return a 'proteins' object.
 * _Flexibility:_ Plugins should have a 'force' boolean argument that will force the analysis to re-run and overwrite output files.
 * _Efficiency:_ All plugins should write an output file which is read upon invocation to avoid the analysis being re-run.
-* _Documentation:_ Plugin must have a Python docstring describing what it does, what parameters is requires in the `params` dictionary and what it adds to the `proteins` data structure. See the code for examples.
+* _Documentation:_ A plugin must have a Python docstring describing what it does, what parameters is requires in the `params` dictionary and what it adds to the `proteins` data structure. See the code for examples.
 * _Anal:_ Unique sequence ID strings (eg `gi|1234567`) are called 'seqid'. 'name' is ambiguous. 'prot_id' is reasonable, however conceptually a 'protein' is not the same thing as a string that represents it's 'sequence' - hence the preference for 'seqid'.
 * _Anal:_ All file handles should be closed when they are no longer needed.
