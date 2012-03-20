@@ -34,9 +34,10 @@ def run(cmd, out_file=None):
     is_binary_there = True
   if not is_binary_there:
     raise IOError("Couldn't find executable binary '" + binary + "'")
-  txt = run_with_output(cmd)
   if out_file:
-    open(out_file, 'w').write(txt)
+    os.system(cmd + " > " + out_file)
+  else:
+    os.system(cmd)
 
 
 def error_output(s):
