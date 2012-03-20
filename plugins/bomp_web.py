@@ -4,9 +4,8 @@ import twill
 from twill.commands import find, formfile, follow, fv, go, show, \
                              showforms, showlinks, submit
                              
-from inmembrane import error_output, parse_fasta_header
+import inmembrane
 
-__DEBUG__ = False
 
 def bomp_web(params, proteins, \
              url="http://services.cbu.uib.no/tools/bomp/", force=False):
@@ -16,29 +15,29 @@ def bomp_web(params, proteins, \
   """
   
   bomp_out = 'bomp.out'
-  error_output("# BOMP(web) %s > %s" % (params['fasta'], bomp_out))
+  inmembrane.log_stderr("# BOMP(web) %s > %s" % (params['fasta'], bomp_out))
   
   if not force and os.path.isfile(bomp_out):
-    error_output("# -> skipped: %s already exists" % bomp_out)
+    inmembrane.log_stderr("# -> skipped: %s already exists" % bomp_out)
     bomp_categories = {}
     fh = open(bomp_out, 'r')
     for l in fh:
       words = l.split()
       bomp_category = int(words[-1:][0])
-      seqid = parse_fasta_header(l)[0]
+      seqid = inmembrane.parse_fasta_header(l)[0]
       proteins[seqid]['bomp'] = bomp_category
       bomp_categories[seqid] = bomp_category
     fh.close()
     return bomp_categories
   
   # dump extraneous output into this blackhole so we don't see it
-  if not __DEBUG__: twill.set_output(StringIO.StringIO())
+  if not inmembrane.LOG_DEBUG: twill.set_output(StringIO.StringIO())
   
   go(url)
-  if __DEBUG__: showforms()
+  if inmembrane.LOG_DEBUG: showforms()
   formfile("1", "queryfile", params["fasta"])
   submit()
-  if __DEBUG__: show()
+  if inmembrane.LOG_DEBUG: show()
   
   # extract the job id from the page
   links = showlinks()
@@ -48,27 +47,27 @@ def bomp_web(params, proteins, \
       # grab job id from "viewOutput?id=16745338"
       job_id = int(l.url.split("=")[1])
   
-  if __DEBUG__: print "BOMP job id: ", job_id
+  if inmembrane.LOG_DEBUG: inmembrane.log_stderr("BOMP job id: %d" % job_id)
   
   if not job_id:
     # something went wrong
-    error_output("# BOMP error: Can't find job id")
+    inmembrane.log_stderr("# BOMP error: Can't find job id")
     return
   
   # parse the HTML table and extract categories
   go("viewOutput?id=%i" % (job_id))
   
   polltime = 10
-  error_output("# Waiting for BOMP to finish .")
+  inmembrane.log_stderr("# Waiting for BOMP to finish .")
   while True:
     try:
       find("Not finished")
-      error_output(".")
+      inmembrane.log_stderr(".")
     except:
       # Finished ! Pull down the result page.
-      error_output(". done!\n")
+      inmembrane.log_stderr(". done!\n")
       go("viewOutput?id=%i" % (job_id))
-      if __DEBUG__: print show()
+      if inmembrane.LOG_DEBUG: inmembrane.log_stderr(show())
       break
       
     # Not finished. We keep polling for a time until
@@ -76,13 +75,13 @@ def bomp_web(params, proteins, \
     time.sleep(polltime)
     polltime = polltime * 2
     if polltime >= 7200: # 2 hours
-      error_output("# BOMP error: Taking too long.")
+      inmembrane.log_stderr("# BOMP error: Taking too long.")
       return
     go("viewOutput?id=%i" % (job_id))
-    if __DEBUG__: print show()
+    if inmembrane.LOG_DEBUG: inmembrane.log_stderr(show())
       
   bomp_html = show()
-  if __DEBUG__: print bomp_html
+  if inmembrane.LOG_DEBUG: inmembrane.log_stderr(bomp_html)
   
   # Results are in the only <table> on this page, formatted like:
   # <tr><th>gi|107836852|gb|ABF84721.1<th>5</tr>
@@ -91,7 +90,7 @@ def bomp_web(params, proteins, \
   bomp_categories = {} # dictionary of {name, category} pairs
   for tr in soup.findAll('tr')[1:]:
     n, c = tr.findAll('th')
-    name = parse_fasta_header(n.text.strip())[0]
+    name = inmembrane.parse_fasta_header(n.text.strip())[0]
     category = int(c.text)
     bomp_categories[name] = category
   
@@ -101,7 +100,7 @@ def bomp_web(params, proteins, \
     fh.write("%s\t%i\n" % (k,v))
   fh.close()
   
-  if __DEBUG__: print bomp_categories
+  if inmembrane.LOG_DEBUG: inmembrane.log_stderr(str(bomp_categories))
   
   # label proteins with bomp classification (int) or False
   for name in proteins:
@@ -112,7 +111,7 @@ def bomp_web(params, proteins, \
       else:
         proteins[name]['bomp'] = False
   
-  if __DEBUG__: print proteins
+  if inmembrane.LOG_DEBUG: inmembrane.log_stderr(str(proteins))
   
   return bomp_categories
   

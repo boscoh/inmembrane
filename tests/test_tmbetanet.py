@@ -17,6 +17,8 @@ class TestTmbetanet(unittest.TestCase):
     save_dir = os.getcwd()
     os.chdir(self.dir)
 
+    inmembrane.silence_log(True)
+    
     self.params = inmembrane.get_params()
     self.params['fasta'] = "bomps.fasta"
     self.seqids, self.proteins = \
