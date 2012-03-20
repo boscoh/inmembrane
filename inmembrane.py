@@ -70,6 +70,7 @@ for plugin in glob.glob(file_tag):
 
 default_params_str = """{
   'fasta': '',
+  'csv': '',
   'output': '',
   'out_dir': '',
   'organism': 'gram+',
@@ -121,6 +122,11 @@ def init_output_dir(params):
     params['out_dir'] = base_dir
   if not os.path.isdir(base_dir):
     os.makedirs(base_dir)
+
+  if not dict_get(params, 'csv'):
+    basename = '.'.join(os.path.splitext(params['fasta'])[:-1])
+    csv = basename + '.csv'
+    params['csv'] = csv
 
   fasta = "input.fasta"
   shutil.copy(params['fasta'], os.path.join(base_dir, fasta))
@@ -312,13 +318,20 @@ def identify_pse_proteins(params):
     proteins[prot_id]['details'] = details
     proteins[prot_id]['category'] = category
   
+  f = open(params['csv'], 'w')
   for prot_id in prot_ids:
     protein = proteins[prot_id]
-    log_stdout('%-15s ,  %-13s , %-50s , "%s"' % \
+    log_stdout('%-15s   %-13s  %-50s  %s' % \
         (prot_id, 
          protein['category'], 
          protein['details'],
          protein['name'][:60]))
+    f.write('%-15s,%-13s,%-50s,"%s"' % \
+        (prot_id, 
+         protein['category'], 
+         protein['details'],
+         protein['name'][:60]))
+  f.close()
 
   return prot_ids, proteins
 
