@@ -55,6 +55,8 @@ def log_stderr(s):
 
 
 def log_stdout(s):
+  if LOG_SILENT:
+    return
   print s
 
 

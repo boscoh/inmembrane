@@ -126,7 +126,7 @@ def init_output_dir(params):
   if not dict_get(params, 'csv'):
     basename = '.'.join(os.path.splitext(params['fasta'])[:-1])
     csv = basename + '.csv'
-    params['csv'] = csv
+    params['csv'] = os.path.abspath(csv)
 
   fasta = "input.fasta"
   shutil.copy(params['fasta'], os.path.join(base_dir, fasta))
@@ -319,6 +319,7 @@ def identify_pse_proteins(params):
     proteins[prot_id]['category'] = category
   
   f = open(params['csv'], 'w')
+  print params['csv']
   for prot_id in prot_ids:
     protein = proteins[prot_id]
     log_stdout('%-15s   %-13s  %-50s  %s' % \
@@ -326,7 +327,7 @@ def identify_pse_proteins(params):
          protein['category'], 
          protein['details'],
          protein['name'][:60]))
-    f.write('%-15s,%-13s,%-50s,"%s"' % \
+    f.write('%s,%s,%s,"%s"\n' % \
         (prot_id, 
          protein['category'], 
          protein['details'],
@@ -451,8 +452,8 @@ class Logger(object):
 
 
 def process(params):
-  if dict_get(params, 'output'):
-    sys.stdout = Logger(params['output'])
+#   if dict_get(params, 'output'):
+#     sys.stdout = Logger(params['output'])
   init_output_dir(params)
   if params['organism'] == 'gram+':
     seqids, proteins = identify_pse_proteins(params)
