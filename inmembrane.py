@@ -143,23 +143,23 @@ def create_protein_data_structure(fasta):
   in the fasta file. Also returns a list of ID's in the same order as
   that in the file.
   """
-  prot_ids = []
-  prot_id = None
+  seqids = []
+  seqid = None
   proteins = {}
   for l in open(fasta):
     if l.startswith(">"):
-      prot_id, name = parse_fasta_header(l)
-      prot_ids.append(prot_id)
-      proteins[prot_id] = {
+      seqid, name = parse_fasta_header(l)
+      seqids.append(seqid)
+      proteins[seqid] = {
         'seq':"",
         'name':name,
       }
       continue
-    if prot_id is not None:
+    if seqid is not None:
       words = l.split()
       if words:
-        proteins[prot_id]['seq'] += words[0]
-  return prot_ids, proteins
+        proteins[seqid]['seq'] += words[0]
+  return seqids, proteins
 
 
 def chop_nterminal_peptide(protein, i_cut):
@@ -292,7 +292,7 @@ def predict_surface_exposure(params, protein):
 
 
 def identify_pse_proteins(params):
-  prot_ids, proteins = create_protein_data_structure(params['fasta'])
+  seqids, proteins = create_protein_data_structure(params['fasta'])
 
   features = [signalp4, lipop1, hmmsearch3]
   if dict_get(params, 'helix_programs'):
@@ -308,33 +308,35 @@ def identify_pse_proteins(params):
   for extract_protein_feature in features:
     extract_protein_feature(params, proteins)
 
-  for prot_id in prot_ids:
+  for seqid in seqids:
     details, category = \
-        predict_surface_exposure(params, proteins[prot_id])
+        predict_surface_exposure(params, proteins[seqid])
     if details.endswith(';'):
       details = details[:-1]
     if details is '':
       details = "."
-    proteins[prot_id]['details'] = details
-    proteins[prot_id]['category'] = category
+    proteins[seqid]['details'] = details
+    proteins[seqid]['category'] = category
   
-  f = open(params['csv'], 'w')
-  print params['csv']
-  for prot_id in prot_ids:
-    protein = proteins[prot_id]
+  for seqid in seqids:
+    protein = proteins[seqid]
     log_stdout('%-15s   %-13s  %-50s  %s' % \
-        (prot_id, 
+        (seqid, 
          protein['category'], 
          protein['details'],
          protein['name'][:60]))
+
+  f = open(params['csv'], 'w')
+  for seqid in seqids:
+    protein = proteins[seqid]
     f.write('%s,%s,%s,"%s"\n' % \
-        (prot_id, 
+        (seqid, 
          protein['category'], 
          protein['details'],
          protein['name'][:60]))
   f.close()
 
-  return prot_ids, proteins
+  return seqids, proteins
 
 
 def predict_surface_exposure_barrel(params, protein):

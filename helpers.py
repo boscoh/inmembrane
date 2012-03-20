@@ -51,7 +51,9 @@ def log_stderr(s):
     return
   if s and s[-1] != "\n":
     s += "\n"
-  sys.stderr.write(str(LOG_SILENT)+ " " + s)
+  if not s.startswith("#"):
+    s = "#" + s
+  sys.stderr.write(s)
 
 
 def log_stdout(s):
