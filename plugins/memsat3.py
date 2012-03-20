@@ -1,6 +1,7 @@
 import os
 from inmembrane import run, parse_fasta_header, seqid_to_filename
 
+
 def parse_memsat(protein, memsat_out):
     # parse tm spanning residues and confidence scores
     f = open(memsat_out)
@@ -51,11 +52,13 @@ def parse_memsat(protein, memsat_out):
 
     f.close()
 
+
 def has_transmembrane_in_globmem(globmem_out):
   for l in open(globmem_out):
     if "Your protein is probably not a transmembrane protein" in l:
       return False
   return True
+
         
 def memsat3(params, proteins):
   """

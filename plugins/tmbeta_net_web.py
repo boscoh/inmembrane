@@ -4,9 +4,9 @@ import twill
 from twill.commands import find, formfile, follow, fv, go, show, \
                              showforms, showlinks, submit
                              
-from inmembrane import error_output, parse_fasta_header, dict_get
+import inmembrane
 
-__DEBUG__ = False
+
 
 def tmbeta_net_web(params, proteins, \
                    url="http://psfs.cbrc.jp/tmbeta-net/", \
@@ -27,11 +27,11 @@ def tmbeta_net_web(params, proteins, \
   """
   import json
   outfile = 'tmbeta_net.out'
-  error_output("# TMBETA-NET(web) %s > %s" % (params['fasta'], outfile))
+  inmembrane.log_stderr("# TMBETA-NET(web) %s > %s" % (params['fasta'], outfile))
   
   tmbeta_strands = {}
   if not force and os.path.isfile(outfile):
-    error_output("# -> skipped: %s already exists" % outfile)
+    inmembrane.log_stderr("# -> skipped: %s already exists" % outfile)
     fh = open(outfile, 'r')
     tmbeta_strands = json.loads(fh.read())
     fh.close()    
@@ -41,23 +41,23 @@ def tmbeta_net_web(params, proteins, \
     return tmbeta_strands
 
   # dump extraneous output into this blackhole so we don't see it
-  if not __DEBUG__: twill.set_output(StringIO.StringIO())
+  if not inmembrane.LOG_DEBUG: twill.set_output(StringIO.StringIO())
 
   for seqid in proteins:
     
     # only run on sequences which match the category filter
     if force or \
        (category == None) or \
-       (dict_get(proteins[seqid], 'category') == category):
+       (inmembrane.dict_get(proteins[seqid], 'category') == category):
       pass
     else:
       continue
       
     go(url)
-    if __DEBUG__: showforms()
+    if inmembrane.LOG_DEBUG: showforms()
     fv("1","sequence",proteins[seqid]['seq'])
     submit()
-    error_output("# TMBETA-NET: Predicting strands for %s - %s\n" \
+    inmembrane.log_stderr("# TMBETA-NET: Predicting strands for %s - %s\n" \
                       % (seqid, proteins[seqid]['name']))
     out = show()
     time.sleep(1)
@@ -65,7 +65,7 @@ def tmbeta_net_web(params, proteins, \
     # parse the web page returned, extract strand boundaries
     proteins[seqid]['tmbeta_strands'] = []
     for l in out.split('\n'):
-      if __DEBUG__: print "##", l
+      if inmembrane.LOG_DEBUG: inmembrane.log_stderr("## " + l)
 
       if "<BR>Segment " in l:
         i,j = l.split(":")[1].split("to")
@@ -73,7 +73,7 @@ def tmbeta_net_web(params, proteins, \
         j = int(j.strip()[1:])
         proteins[seqid]['tmbeta_strands'].append([i,j])
 
-        if __DEBUG__: print "# TMBETA-NET(web) segments: %s, %s" % (i, j)
+        if inmembrane.LOG_DEBUG: inmembrane.log_stderr("# TMBETA-NET(web) segments: %s, %s" % (i, j))
 
     tmbeta_strands[seqid] = proteins[seqid]['tmbeta_strands']
 

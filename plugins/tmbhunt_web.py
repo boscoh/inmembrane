@@ -4,9 +4,8 @@ import twill
 from twill.commands import find, formfile, follow, fv, go, show, \
                              showforms, showlinks, submit
                              
-from inmembrane import error_output, parse_fasta_header
+import inmembrane
 
-__DEBUG__ = False
 
 def tmbhunt_web(params, proteins, \
              force=False):
@@ -22,21 +21,21 @@ def tmbhunt_web(params, proteins, \
   # TODO: automatically split large sets into multiple jobs
   #       TMB-HUNT will only take 10000 seqs at a time
   if len(proteins) >= 10000:
-    error_output("# TMB-HUNT(web): error, can't take more than 10,000 sequences.")
+    inmembrane.log_stderr("# TMB-HUNT(web): error, can't take more than 10,000 sequences.")
     return
   
   out = 'tmbhunt.out'
-  error_output("# TMB-HUNT(web) %s > %s" % (params['fasta'], out))
+  inmembrane.log_stderr("# TMB-HUNT(web) %s > %s" % (params['fasta'], out))
   
   if not force and os.path.isfile(out):
-    error_output("# -> skipped: %s already exists" % out)
+    inmembrane.log_stderr("# -> skipped: %s already exists" % out)
     return parse_tmbhunt(proteins, out)
   
   # dump extraneous output into this blackhole so we don't see it
-  if not __DEBUG__: twill.set_output(StringIO.StringIO())
+  if not inmembrane.LOG_DEBUG: twill.set_output(StringIO.StringIO())
   
   go("http://bmbpcu36.leeds.ac.uk/~andy/betaBarrel/AACompPred/aaTMB_Hunt.cgi")
-  if __DEBUG__: showforms()
+  if inmembrane.LOG_DEBUG: showforms()
 
   # read up the FASTA format seqs
   fh = open(params['fasta'], 'r')
@@ -47,7 +46,7 @@ def tmbhunt_web(params, proteins, \
   fv("1", "sequences", fasta_seqs)
 
   submit()
-  if __DEBUG__: showlinks()
+  if inmembrane.LOG_DEBUG: showlinks()
 
   # small jobs will lead us straight to the results, big jobs
   # go via a 'waiting' page which we skip past if we get it
@@ -61,14 +60,14 @@ def tmbhunt_web(params, proteins, \
   # parse the job_id from the url, since due to a bug in
   # TMB-HUNT the link on the results page from large jobs is wrong
   job_id = follow("Full results").split('/')[-1:][0].split('.')[0]
-  error_output("# TMB-HUNT(web) job_id is: %s <http://www.bioinformatics.leeds.ac.uk/~andy/betaBarrel/AACompPred/tmp/tmp_output%s.html>" % (job_id, job_id))
+  inmembrane.log_stderr("# TMB-HUNT(web) job_id is: %s <http://www.bioinformatics.leeds.ac.uk/~andy/betaBarrel/AACompPred/tmp/tmp_output%s.html>" % (job_id, job_id))
   
   # polling until TMB-HUNT finishes
   # TMB-HUNT advises that 4000 sequences take ~10 mins
   # we poll a little faster than that
   polltime = (len(proteins)*0.1)+2
   while True:
-    error_output("# TMB-HUNT(web): waiting another %i sec ..." % (polltime))
+    inmembrane.log_stderr("# TMB-HUNT(web): waiting another %i sec ..." % (polltime))
     time.sleep(polltime)
     try:
       go("http://bmbpcu36.leeds.ac.uk/~andy/betaBarrel/AACompPred/tmp/%s.txt" % (job_id))
@@ -77,7 +76,7 @@ def tmbhunt_web(params, proteins, \
       polltime = polltime * 2
       
     if polltime >= 7200: # 2 hours
-      error_output("# TMB-HUNT error: Taking too long.")
+      inmembrane.log_stderr("# TMB-HUNT error: Taking too long.")
       return
     
   txt_out = show()
@@ -98,12 +97,12 @@ def parse_tmbhunt(proteins, out):
   # parse TMB-HUNT text output
   tmbhunt_classes = {}
   for l in open(out, 'r'):
-    #error_output("# TMB-HUNT raw: " + l[:-1])
+    #inmembrane.log_stderr("# TMB-HUNT raw: " + l[:-1])
     if l[0] == ">":
       # TMB-HUNT munges FASTA ids by making them all uppercase,
       # so we find the equivalent any-case id in our proteins list
       # and use that. ugly but necessary.
-      seqid, desc = parse_fasta_header(l)
+      seqid, desc = inmembrane.parse_fasta_header(l)
       for i in proteins.keys():
         if seqid.upper() == i.upper():
           seqid = i
@@ -131,5 +130,5 @@ def parse_tmbhunt(proteins, out):
         proteins[seqid]['tmbhunt'] = False
         proteins[seqid]['tmbhunt_prob'] = probability
   
-  #error_output(str(tmbhunt_classes))
+  #inmembrane.log_stderr(str(tmbhunt_classes))
   return tmbhunt_classes

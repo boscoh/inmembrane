@@ -47,9 +47,9 @@ collates the results.
 """
 
 
-# when True, dumps lots of raw info to stdout to help debugging
-__DEBUG__ = False
-
+# # when True, dumps lots of raw info to stdout to help debugging
+# LOG_DEBUG = False
+# LOG_SILENT = False
 
 # figure out absoulte directory for inmembrane scripts
 module_dir = os.path.abspath(os.path.dirname(__file__))
@@ -70,6 +70,7 @@ for plugin in glob.glob(file_tag):
 
 default_params_str = """{
   'fasta': '',
+  'csv': '',
   'output': '',
   'out_dir': '',
   'organism': 'gram+',
@@ -96,15 +97,15 @@ default_params_str = """{
 def get_params():
   config = os.path.join(module_dir, 'inmembrane.config')
   if not os.path.isfile(config):
-    error_output("# Couldn't find inmembrane.config file")
-    error_output("# So, will generate a default config " \
+    log_stderr("# Couldn't find inmembrane.config file")
+    log_stderr("# So, will generate a default config " \
                   + os.path.abspath(config))
     abs_hmm_profiles = os.path.join(module_dir, 'hmm_profiles')
     default_str = default_params_str % \
         { 'hmm_profiles': abs_hmm_profiles }
     open('inmembrane.config', 'w').write(default_str)
   else:
-    error_output("# Loading existing inmembrane.config")
+    log_stderr("# Loading existing inmembrane.config")
   params = eval(open(config).read())
   return params
 
@@ -122,6 +123,11 @@ def init_output_dir(params):
   if not os.path.isdir(base_dir):
     os.makedirs(base_dir)
 
+  if not dict_get(params, 'csv'):
+    basename = '.'.join(os.path.splitext(params['fasta'])[:-1])
+    csv = basename + '.csv'
+    params['csv'] = os.path.abspath(csv)
+
   fasta = "input.fasta"
   shutil.copy(params['fasta'], os.path.join(base_dir, fasta))
   params['fasta'] = fasta
@@ -137,23 +143,23 @@ def create_protein_data_structure(fasta):
   in the fasta file. Also returns a list of ID's in the same order as
   that in the file.
   """
-  prot_ids = []
-  prot_id = None
+  seqids = []
+  seqid = None
   proteins = {}
   for l in open(fasta):
     if l.startswith(">"):
-      prot_id, name = parse_fasta_header(l)
-      prot_ids.append(prot_id)
-      proteins[prot_id] = {
+      seqid, name = parse_fasta_header(l)
+      seqids.append(seqid)
+      proteins[seqid] = {
         'seq':"",
         'name':name,
       }
       continue
-    if prot_id is not None:
+    if seqid is not None:
       words = l.split()
       if words:
-        proteins[prot_id]['seq'] += words[0]
-  return prot_ids, proteins
+        proteins[seqid]['seq'] += words[0]
+  return seqids, proteins
 
 
 def chop_nterminal_peptide(protein, i_cut):
@@ -286,7 +292,7 @@ def predict_surface_exposure(params, protein):
 
 
 def identify_pse_proteins(params):
-  prot_ids, proteins = create_protein_data_structure(params['fasta'])
+  seqids, proteins = create_protein_data_structure(params['fasta'])
 
   features = [signalp4, lipop1, hmmsearch3]
   if dict_get(params, 'helix_programs'):
@@ -302,25 +308,35 @@ def identify_pse_proteins(params):
   for extract_protein_feature in features:
     extract_protein_feature(params, proteins)
 
-  for prot_id in prot_ids:
+  for seqid in seqids:
     details, category = \
-        predict_surface_exposure(params, proteins[prot_id])
+        predict_surface_exposure(params, proteins[seqid])
     if details.endswith(';'):
       details = details[:-1]
     if details is '':
       details = "."
-    proteins[prot_id]['details'] = details
-    proteins[prot_id]['category'] = category
+    proteins[seqid]['details'] = details
+    proteins[seqid]['category'] = category
   
-  for prot_id in prot_ids:
-    protein = proteins[prot_id]
-    print '%-15s ,  %-13s , %-50s , "%s"' % \
-        (prot_id, 
+  for seqid in seqids:
+    protein = proteins[seqid]
+    log_stdout('%-15s   %-13s  %-50s  %s' % \
+        (seqid, 
          protein['category'], 
          protein['details'],
-         protein['name'][:60])
+         protein['name'][:60]))
 
-  return prot_ids, proteins
+  f = open(params['csv'], 'w')
+  for seqid in seqids:
+    protein = proteins[seqid]
+    f.write('%s,%s,%s,"%s"\n' % \
+        (seqid, 
+         protein['category'], 
+         protein['details'],
+         protein['name'][:60]))
+  f.close()
+
+  return seqids, proteins
 
 
 def predict_surface_exposure_barrel(params, protein):
@@ -359,16 +375,9 @@ def print_summary_table(proteins):
     else:
       counts[category] += 1
       
-  error_output("# Number of proteins in each class:")
+  log_stderr("# Number of proteins in each class:")
   for c in counts:
-    error_output("%-15s %i" % (c, counts[c]))
-
-
-def dump_results(proteins):
-  for i,d in proteins.items():
-    error_output("# %s - %s" % (i, proteins[i]['name']))
-    for x,y in d.items():
-      error_output(`x`+": "+`y`)
+    log_stderr("%-15s %i" % (c, counts[c]))
 
 
 def identify_omps(params, stringent=False):
@@ -430,7 +439,6 @@ def identify_omps(params, stringent=False):
     proteins[seqid]['details'] = details
     
   print_summary_table(proteins)
-  #dump_results(proteins)
 
   return seqids, proteins
   
@@ -446,15 +454,15 @@ class Logger(object):
 
 
 def process(params):
-  if dict_get(params, 'output'):
-    sys.stdout = Logger(params['output'])
+#   if dict_get(params, 'output'):
+#     sys.stdout = Logger(params['output'])
   init_output_dir(params)
   if params['organism'] == 'gram+':
     seqids, proteins = identify_pse_proteins(params)
   elif params['organism'] == 'gram-':
     seqids, proteins = identify_omps(params, stringent=False)
   else:
-    error_output("You must specify 'gram+' or 'gram-' in inmembrane.config\n")
+    log_stderr("You must specify 'gram+' or 'gram-' in inmembrane.config\n")
     
 
 if __name__ == "__main__":
@@ -462,7 +470,7 @@ if __name__ == "__main__":
   (options, args) = parser.parse_args()
   params = get_params()
   if ('fasta' not in params or not params['fasta']) and not args:
-    error_output(description)
+    print description
     parser.print_help()
     sys.exit(1)
   if 'fasta' not in params or not params['fasta']:
