@@ -26,25 +26,32 @@
 # THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH 
 # DAMAGE.
 
+
 import sys
 import os
-import time
-import StringIO
-import math
 import glob
-import re
 import shutil
 from optparse import OptionParser
-import twill
-from twill.commands import find, formfile, follow, fv, go, show, \
-                             showforms, showlinks, submit
+
 
 from helpers import *
+
+
+description = """
+Inmembrane is a proteome annotation pipeline. It takes 
+a FASTA file, then carries out sequential analysis of 
+each sequence with a bunch of third-party programs, and 
+collates the results.
+
+(c) 2011 Bosco Ho and Andrew Perry
+"""
 
 
 # when True, dumps lots of raw info to stdout to help debugging
 __DEBUG__ = False
 
+
+# figure out absoulte directory for inmembrane scripts
 module_dir = os.path.abspath(os.path.dirname(__file__))
 
 
@@ -449,15 +456,6 @@ def process(params):
   else:
     error_output("You must specify 'gram+' or 'gram-' in inmembrane.config\n")
     
-
-description = """
-Inmembrane is a proteome annotation pipeline. It takes 
-a FASTA file, then carries out sequential analysis of 
-each sequence with a bunch of third-party programs, and 
-collates the results.
-
-(c) 2011 Bosco Ho and Andrew Perry
-"""
 
 if __name__ == "__main__":
   parser = OptionParser()

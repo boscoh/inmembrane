@@ -9,27 +9,29 @@ sys.path.insert(0, os.path.join(module_dir, '..'))
 import inmembrane 
 
 
-class TestHmmsearch3(unittest.TestCase):
+class TestLipoP(unittest.TestCase):
   def setUp(self):
-    self.dir = os.path.join(module_dir, 'hmmsearch3')
+    self.dir = os.path.join(module_dir, 'lipop1')
 
-  def test_hmmsearch3(self):
+  def test_lipop(self):
     save_dir = os.getcwd()
     os.chdir(self.dir)
 
     self.params = inmembrane.get_params()
-    self.params['fasta'] = "hmmsearch3.fasta"
+    self.params['fasta'] = "input.fasta"
     self.seqids, self.proteins = \
         inmembrane.create_protein_data_structure(self.params['fasta'])
-    inmembrane.hmmsearch3(self.params, self.proteins)
+
+    inmembrane.lipop1(self.params, self.proteins)
 
     self.expected_output = {
-        u'SPy_0128': ['LPxTG'], 
-        u'SPy_0191a': ['SLH_ls'], 
+        u'SPy_0252': True,
+        u'SPy_2077': False, 
+        u'SPy_0317': True
     }
     for seqid in self.expected_output:
-      for motif in self.expected_output[seqid]:
-        self.assertTrue(motif in self.proteins[seqid]['hmmsearch'])
+      self.assertEqual(
+          self.expected_output[seqid], self.proteins[seqid]['is_lipop'])
 
     os.chdir(save_dir)
 

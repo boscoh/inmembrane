@@ -1,18 +1,17 @@
 import os
 import unittest
+import sys
 
 # hack to allow tests to find inmembrane in directory above
-import sys
-sys.path.insert(0, '..')
+module_dir = os.path.abspath(os.path.dirname(__file__))
+sys.path.insert(0, os.path.join(module_dir, '..'))
 
-import inmembrane
+import inmembrane 
 
 
 class TestTmbhunt(unittest.TestCase):
   def setUp(self):
-    top_tests_dir = os.path.dirname(__file__)
-    test_dir = os.path.join(top_tests_dir, 'tmbhunt')
-    self.dir = os.path.abspath(test_dir)
+    self.dir = os.path.join(module_dir, 'tmbhunt')
 
   def test_tmbhunt(self):
     save_dir = os.getcwd()
@@ -20,8 +19,29 @@ class TestTmbhunt(unittest.TestCase):
 
     self.params = inmembrane.get_params()
     self.params['fasta'] = "bomps.fasta"
-    self.expected_output = {'gi|107836852': {'tmbhunt_prob': 0.955956, 'tmbhunt': True}, 'gi|107837106': {'tmbhunt_prob': 0.23573599999999995, 'tmbhunt': False}, 'gi|107837101': {'tmbhunt_prob': 0.955956, 'tmbhunt': True}, 'gi|107836588': {'tmbhunt_prob': 0.903904, 'tmbhunt': True}, 'gi|107837107': {'tmbhunt_prob': 0.011001000000000039, 'tmbhunt': False}}
-    self.prot_ids, \
+    self.expected_output = {
+        'gi|107836852': {
+            'tmbhunt_prob': 0.955956, 
+            'tmbhunt': True
+        }, 
+        'gi|107837106': {
+            'tmbhunt_prob': 0.23573599999999995, 
+            'tmbhunt': False
+        }, 
+        'gi|107837101': {
+            'tmbhunt_prob': 0.955956, 
+            'tmbhunt': True
+        }, 
+        'gi|107836588': {
+            'tmbhunt_prob': 0.903904, 
+            'tmbhunt': True
+        }, 
+        'gi|107837107': {
+            'tmbhunt_prob': 0.011001000000000039, 
+            'tmbhunt': False
+        }
+    }
+    self.seqids, \
     self.proteins = inmembrane.create_protein_data_structure(self.params['fasta'])
 
     # run TMB-HUNT

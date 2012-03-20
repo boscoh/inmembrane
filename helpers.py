@@ -1,14 +1,18 @@
 #
 # Common helper functions for inmembrane
 #
-import sys, os, subprocess
+
+import os, subprocess
+
+
+__DEBUG__ = False
+
 
 def dict_get(this_dict, prop):
   if prop not in this_dict:
     return False
   return this_dict[prop]
   
-dict_prop_truthy = dict_get
 
 def run_with_output(cmd):
   p = subprocess.Popen(
@@ -16,13 +20,12 @@ def run_with_output(cmd):
       stderr=subprocess.PIPE)
   return p.stdout.read()
 
+
 def run(cmd, out_file=None):
   error_output("# " + cmd + " > " + out_file)
   if os.path.isfile(out_file) and (out_file != None):
     error_output("# -> skipped: %s already exists" % out_file)
     return
-  if not out_file:
-    out_file = "/dev/null"
   binary = cmd.split()[0]
   is_binary_there = False
   if os.path.isfile(binary):
@@ -30,15 +33,19 @@ def run(cmd, out_file=None):
   if run_with_output('which ' + binary):
     is_binary_there = True
   if not is_binary_there:
-    error_output("# Error: couldn't find executable " + binary)
-    sys.exit(1)
+    raise IOError("Couldn't find executable binary '" + binary + "'")
   txt = run_with_output(cmd)
-  open(out_file, 'w').write(txt)
+  if out_file:
+    open(out_file, 'w').write(txt)
+
 
 def error_output(s):
+  if not __DEBUG__:
+    return
   if s and s[-1] != "\n":
     s += "\n"
   sys.stderr.write(s)
+
 
 def parse_fasta_header(header):
   """
@@ -55,16 +62,17 @@ def parse_fasta_header(header):
   if header.find("|") != -1:
     tokens = header.split('|')
     # "gi|ginumber|gb|accession bla bla" becomes "gi|ginumber"
-    seq_id = "%s|%s" % (tokens[0], tokens[1].split()[0])
+    seqid = "%s|%s" % (tokens[0], tokens[1].split()[0])
     desc = tokens[-1:][0].strip()
   # otherwise just split on spaces & hope for the best
   else:
     tokens = header.split()
-    seq_id = tokens[0]
+    seqid = tokens[0]
     desc = header[0:-1].strip()
   
-  return seq_id, desc
+  return seqid, desc
   
+
 def seqid_to_filename(seqid):
   """
   Makes a sequence id filename friendly.
@@ -72,18 +80,3 @@ def seqid_to_filename(seqid):
   """
   return seqid.replace("|", "_")
   
-def get_fasta_seq_by_id(fname, prot_id):
-  f = open(fname)
-  l = f.readline()
-  while l:
-    if l.startswith(">") and (parse_fasta_header(l)[0] == prot_id):
-      seq = ""
-      l = f.readline()
-      while l and not l.startswith(">"):
-        seq += l.strip()
-        l = f.readline()
-      f.close()
-      return seq
-
-    l = f.readline()
-  f.close()

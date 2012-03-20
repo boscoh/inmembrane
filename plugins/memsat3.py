@@ -100,3 +100,7 @@ def memsat3(params, proteins):
     globmem_out = single_fasta.replace('fasta', 'globmem')
     if has_transmembrane_in_globmem(globmem_out):
       parse_memsat(protein, memsat_out)
+
+
+
+      
