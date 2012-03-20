@@ -23,6 +23,8 @@ class TestTmhmm(unittest.TestCase):
         inmembrane.create_protein_data_structure(self.params['fasta'])
     inmembrane.tmhmm(self.params, self.proteins)
 
+    print self.proteins
+    
     self.expected_output = {
         u'SPy_0252': True, 
         u'SPy_2077': False, 
