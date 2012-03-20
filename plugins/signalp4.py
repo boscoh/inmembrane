@@ -6,7 +6,9 @@ def signalp4(params, proteins):
     proteins[seqid]['signalp_cleave_position'] = None
 
   signalp4_out = 'signalp.out'
-  helpers.run('%(signalp4_bin)s -t %(organism)s  %(fasta)s' % params, signalp4_out)
+  cmd = '%(signalp4_bin)s -t %(signalp4_organism)s  %(fasta)s' % \
+             params
+  helpers.run(cmd, signalp4_out)
 
   for l in open(signalp4_out):
     if l.startswith("#"):
