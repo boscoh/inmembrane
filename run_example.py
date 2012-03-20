@@ -2,10 +2,11 @@
 
 params = {
   'fasta': 'examples/surfg/AE004092.fasta',
-  'output': 'examples/surfg/AE004092.csv',
   'out_dir': '',
-  'organism': 'gram+',
+  'csv': 'examples/surfg/AE004092.csv',
+  'protocol': 'gram_neg',
   'signalp4_bin': 'signalp',
+  'signalp4_organism': 'gram+',
   'lipop1_bin': 'LipoP',
   'tmhmm_bin': 'tmhmm',
   'helix_programs': ['tmhmm'],
