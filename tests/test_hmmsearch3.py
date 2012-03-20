@@ -17,6 +17,8 @@ class TestHmmsearch3(unittest.TestCase):
     save_dir = os.getcwd()
     os.chdir(self.dir)
 
+    inmembrane.silence_log(True)
+    
     self.params = inmembrane.get_params()
     self.params['fasta'] = "hmmsearch3.fasta"
     self.seqids, self.proteins = \

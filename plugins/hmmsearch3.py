@@ -5,7 +5,7 @@ import helpers
 
 def hmmsearch3(params, proteins):
   file_tag = os.path.join(params['hmm_profiles_dir'], '*.hmm')
-  helpers.error_output("# Searching for HMMER profiles in " + params['hmm_profiles_dir'])
+  helpers.log_stderr("# Searching for HMMER profiles in " + params['hmm_profiles_dir'])
   for hmm_profile in glob.glob(file_tag):
     params['hmm_profile'] = hmm_profile
     hmm_profile = os.path.basename(params['hmm_profile'])

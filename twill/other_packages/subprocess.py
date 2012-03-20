@@ -353,7 +353,7 @@ if mswindows:
     if 0: # <-- change this to use pywin32 instead of the _subprocess driver
         import pywintypes
         from win32api import GetStdHandle, STD_INPUT_HANDLE, \
-                             STD_OUTPUT_HANDLE, STD_ERROR_HANDLE
+                             log_stdoutPUT_HANDLE, STD_ERROR_HANDLE
         from win32api import GetCurrentProcess, DuplicateHandle, \
                              GetModuleFileName, GetVersion
         from win32con import DUPLICATE_SAME_ACCESS, SW_HIDE
@@ -594,7 +594,7 @@ class Popen(object):
             p2cread = self._make_inheritable(p2cread)
 
             if stdout == None:
-                c2pwrite = GetStdHandle(STD_OUTPUT_HANDLE)
+                c2pwrite = GetStdHandle(log_stdoutPUT_HANDLE)
             elif stdout == PIPE:
                 c2pread, c2pwrite = CreatePipe(None, 0)
                 # Detach and turn into fd

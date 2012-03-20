@@ -47,9 +47,9 @@ collates the results.
 """
 
 
-# when True, dumps lots of raw info to stdout to help debugging
-__DEBUG__ = False
-
+# # when True, dumps lots of raw info to stdout to help debugging
+# LOG_DEBUG = False
+# LOG_SILENT = False
 
 # figure out absoulte directory for inmembrane scripts
 module_dir = os.path.abspath(os.path.dirname(__file__))
@@ -70,6 +70,7 @@ for plugin in glob.glob(file_tag):
 
 default_params_str = """{
   'fasta': '',
+  'csv': '',
   'output': '',
   'out_dir': '',
   'organism': 'gram+',
@@ -96,15 +97,15 @@ default_params_str = """{
 def get_params():
   config = os.path.join(module_dir, 'inmembrane.config')
   if not os.path.isfile(config):
-    error_output("# Couldn't find inmembrane.config file")
-    error_output("# So, will generate a default config " \
+    log_stderr("# Couldn't find inmembrane.config file")
+    log_stderr("# So, will generate a default config " \
                   + os.path.abspath(config))
     abs_hmm_profiles = os.path.join(module_dir, 'hmm_profiles')
     default_str = default_params_str % \
         { 'hmm_profiles': abs_hmm_profiles }
     open('inmembrane.config', 'w').write(default_str)
   else:
-    error_output("# Loading existing inmembrane.config")
+    log_stderr("# Loading existing inmembrane.config")
   params = eval(open(config).read())
   return params
 
@@ -121,6 +122,11 @@ def init_output_dir(params):
     params['out_dir'] = base_dir
   if not os.path.isdir(base_dir):
     os.makedirs(base_dir)
+
+  if not dict_get(params, 'csv'):
+    basename = '.'.join(os.path.splitext(params['fasta'])[:-1])
+    csv = basename + '.csv'
+    params['csv'] = csv
 
   fasta = "input.fasta"
   shutil.copy(params['fasta'], os.path.join(base_dir, fasta))
@@ -312,13 +318,20 @@ def identify_pse_proteins(params):
     proteins[prot_id]['details'] = details
     proteins[prot_id]['category'] = category
   
+  f = open(params['csv'], 'w')
   for prot_id in prot_ids:
     protein = proteins[prot_id]
-    print '%-15s ,  %-13s , %-50s , "%s"' % \
+    log_stdout('%-15s   %-13s  %-50s  %s' % \
         (prot_id, 
          protein['category'], 
          protein['details'],
-         protein['name'][:60])
+         protein['name'][:60]))
+    f.write('%-15s,%-13s,%-50s,"%s"' % \
+        (prot_id, 
+         protein['category'], 
+         protein['details'],
+         protein['name'][:60]))
+  f.close()
 
   return prot_ids, proteins
 
@@ -359,16 +372,9 @@ def print_summary_table(proteins):
     else:
       counts[category] += 1
       
-  error_output("# Number of proteins in each class:")
+  log_stderr("# Number of proteins in each class:")
   for c in counts:
-    error_output("%-15s %i" % (c, counts[c]))
-
-
-def dump_results(proteins):
-  for i,d in proteins.items():
-    error_output("# %s - %s" % (i, proteins[i]['name']))
-    for x,y in d.items():
-      error_output(`x`+": "+`y`)
+    log_stderr("%-15s %i" % (c, counts[c]))
 
 
 def identify_omps(params, stringent=False):
@@ -430,7 +436,6 @@ def identify_omps(params, stringent=False):
     proteins[seqid]['details'] = details
     
   print_summary_table(proteins)
-  #dump_results(proteins)
 
   return seqids, proteins
   
@@ -454,7 +459,7 @@ def process(params):
   elif params['organism'] == 'gram-':
     seqids, proteins = identify_omps(params, stringent=False)
   else:
-    error_output("You must specify 'gram+' or 'gram-' in inmembrane.config\n")
+    log_stderr("You must specify 'gram+' or 'gram-' in inmembrane.config\n")
     
 
 if __name__ == "__main__":
@@ -462,7 +467,7 @@ if __name__ == "__main__":
   (options, args) = parser.parse_args()
   params = get_params()
   if ('fasta' not in params or not params['fasta']) and not args:
-    error_output(description)
+    print description
     parser.print_help()
     sys.exit(1)
   if 'fasta' not in params or not params['fasta']:
