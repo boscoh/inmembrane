@@ -4,7 +4,7 @@ params = {
   'fasta': 'examples/surfg/AE004092.fasta',
   'out_dir': '',
   'csv': 'examples/surfg/AE004092.csv',
-  'protocol': 'gram_neg',
+  'protocol': 'gram_pos',
   'signalp4_bin': 'signalp',
   'signalp4_organism': 'gram+',
   'lipop1_bin': 'LipoP',

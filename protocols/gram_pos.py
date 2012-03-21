@@ -59,7 +59,7 @@ def eval_surface_exposed_loop(
   return False
 
 
-def feature_list(params):
+def features(params):
   features = ['signalp4', 'lipop1', 'hmmsearch3']
   if dict_get(params, 'helix_programs'):
     if 'tmhmm' in params['helix_programs']:
@@ -71,6 +71,8 @@ def feature_list(params):
       features.append('tmbhunt_web')
     if 'bomp' in params['barrel_programs']:
       features.append('bomp_web')
+  module_dir = os.path.dirname(__file__)
+  params['hmm_profiles'] = os.path.join(module_dir, 'gram_pos_profiles')
   return features
 
 
