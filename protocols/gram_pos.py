@@ -51,6 +51,8 @@ def post_process_protein(params, protein):
   if is_signalp:
     i_signalp_cut = protein['signalp_cleave_position']
 
+  # TODO: make details a plain list.
+  #       leave the insertion of ';' to output time
   details = ""
   if is_hmm_profile_match:
     details += "hmm(%s);" % protein['hmmsearch'][0]
@@ -97,7 +99,10 @@ def post_process_protein(params, protein):
 
   return details, category
 
-
+# TODO: Shouldn't these be shared functions that every
+#       protocol uses by default (probably in inmembrane.py) ? 
+#       The processing in the
+#       protocol should be decoupled from the output.
 def protein_output_line(seqid, proteins):
   return '%-15s   %-13s  %-50s  %s' % \
       (seqid, 

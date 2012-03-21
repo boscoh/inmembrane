@@ -158,6 +158,12 @@ def process(params):
   init_output_dir(params)
   seqids, proteins = create_proteins_dict(params['fasta'])
 
+  # TODO: ideally this loop needs to be run within the protocol,
+  #       since for some protocols not all plugins
+  #       will be run for every sequence, conditional
+  #       on the outcome of a previous analysis
+  #       eg. protocol.run(params, proteins)
+
   # annotates with external binaries as found in plugins
   for annotation in protocol.get_annotations(params):
     annotate_fn = eval(annotation)

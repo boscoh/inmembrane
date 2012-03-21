@@ -7,7 +7,7 @@ _Department of Biochemistry, Monash University, Melbourne, Australia_
 
 _inmembrane_ is a tool to predict the surface-exposed regions of membrane proteins in sets of bacterial protein sequences. It is intended to be a direct replacement for SurfG+, which implemented such a protocol for Gram+ bacterial proteomes. Through the use of a modern scripting language, _inmembrane_ provides a more accessible code base that is easier to modify, and provides a useful example of writing programs for bioinformatic analysis. The program is hosted on the github repository http://github.com/boscoh/inmembrane.
 
-# Introduction
+# Background
 
 A common task in bioinformatics is to integrate the results of protein prediction programs to deduce complex properties of proteins. In studies of membrane proteomes, quick annotation of an experimentally detected set of the proteins can help highlight sequences of unexpected localization, and can alert researchers to possible contamination from other subcellular fractions. Ultimately, a concise summary of the properties of the detected membrane proteins in a particular proteomic dataset allows meaningful comparisons between different bacterial strains, species, and their responses in membrane remodelling to host and enviromental challenges.
 
@@ -29,7 +29,7 @@ Nevertheless, _SurfG+_ suffers several problems that plague much bioinformatic s
 
 Since the core algorithm in _SurfG+_ is relatively straightforward, we decided to write _inmembrane_ to replicate the functionality of _SurfG+_, but in a modern scripting language. This lead to considerable simplifiction and clarification of the code base. Compared with the _SurfG+_ Java source code of 700K, _inmembrane_ is around 32K of Python code, including additional functionality not offered by _SurfG+_. The smaller and cleaner code case is substantially easier to reuse and repurpose for other users, with a terseness that greatly facilitates modifiability. Here, we discuss the issues involved in writing robust and accessible bioinformatic source code.
 
-## Methodology
+## Methods and Implementation
 
 ### Gram-positive protocol
 
@@ -98,16 +98,20 @@ We have exploited other examples of dynamic programming in _inmembrane_ to produ
 
 ## Tests with Gram+ bacteria
 
-The field of bioinformatics changes quickly, and in the few years between the release of SurfG+, some of the software used in SurfG+ is no longer available. As a result we could not use exactly the same versions of the binaries used in SurfG+. For instance TMMOD is no longer released as a binary and SignalP has progressed to Version 4.0. Still to show that _inmembrane_ produces a reasonable copy of the original of the algorithm, we present the Potentially Surface Exposed predictions of the 4 bacterial genomes in the SurfG+ paper to that predicted by _inmembrane_.
+The field of bioinformatics changes quickly, and in the few years between the release of SurfG+, some of the software used in SurfG+ is no longer available. As a result we could not use exactly the same versions of the binaries used in SurfG+. For instance TMMOD is no longer released as a binary and SignalP has progressed to Version 4.0. Still to show that _inmembrane_ produces comparable results the original of the algorithm, we present the Potentially Surface Exposed predictions of the 4 bacterial genomes in the SurfG+ paper to that predicted by _inmembrane_.
 
 <pre>
-             S.pyogenes L.acidophilus L.johnsonii   L. gasseri L.bulgaricus                                                                                                    
+             S.pyogenes L.acidophilus L.johnsonii   L. gasseri L.bulgaricus
+Accession    AE004092   CP000033      A017198       CP000413   CR954253
+Program       i    S       i   S         i   S        i   S       i   S
 Cytoplasmic  1243 1233   1290 1278     1248 1234    1262 1240   1132 1120                         
 Membrane      236 239     315 333       357 359      298 303     244 263                          
 PSE           140 177     169 187       176 202      157 191     116 134                           
-Secreted       78 47       88 64         40 26        38 21       70 45                      
-Total        1697 1720   1862 1884     1821 1842    1755 1776   1562 1568                              
+Secreted       78 47       88 64         40 26        38 21       70 45                    
+Total        1697 1720   1862 1884     1821 1842    1755 1776   1562 1568
 </pre>
+
+Columns labelled 'S' are _SurfG+_ results and 'i' are _inmembrane_ results.
 
 ## Web-interface modules for further analysis
 
@@ -132,6 +136,23 @@ The structure of the configuration file is itself in a Python dictionary form wi
 # Conclusion
 
 _inmembrane_ provides a clean bioinformatic pipeline to analyze proteomes for proteins that are exposed out of the membrane. It has been written in a  modern style of programming that optimizes readability. It has also been designed to be easily extensible and we sincerely hope that _inmembrane_ will be extended, modified and improved by other researchers. We welcome other researchers to join us on Github.
+
+# Availability and requirements
+
+__Project name:__ inmembrane
+
+__Project home page:__ http://github.com/boscoho/inmembrane
+
+__Operating systems:__ Linux
+
+__Programming language:__ Python
+
+__Other requirements:__ HMMER, SignalP, LipoP, TMHMM or MEMSAT3. An Internet connection is required for web services such as BOMP and TMBETA-NET.
+
+__Licence:__ BSD Licence (2-clause)
+
+Any restrictions to use by non-academics: Use of _inmembrane_ itself is unrestricted, however many of the dependencies require special licencing for non-academic use.
+
 
 # References
 
