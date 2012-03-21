@@ -9,11 +9,11 @@ sys.path.insert(0, os.path.join(module_dir, '..'))
 import inmembrane 
 
 
-class TestTmhmm(unittest.TestCase):
+class TestMemsat3(unittest.TestCase):
   def setUp(self):
     self.dir = os.path.join(module_dir, 'memsat3')
 
-  def test_tmhmm(self):
+  def test_annotate(self):
     save_dir = os.getcwd()
     os.chdir(self.dir)
 
