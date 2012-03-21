@@ -1,0 +1,253 @@
+BLASTP 2.2.25 [Feb-01-2011]
+
+
+Reference: Altschul, Stephen F., Thomas L. Madden, Alejandro A. Schaffer, 
+Jinghui Zhang, Zheng Zhang, Webb Miller, and David J. Lipman (1997), 
+"Gapped BLAST and PSI-BLAST: a new generation of protein database search
+programs",  Nucleic Acids Res. 25:3389-3402.
+
+
+Reference for compositional score matrix adjustment: Altschul, Stephen F., 
+John C. Wootton, E. Michael Gertz, Richa Agarwala, Aleksandr Morgulis,
+Alejandro A. Schaffer, and Yi-Kuo Yu (2005) "Protein database searches
+using compositionally adjusted substitution matrices", FEBS J. 272:5101-5109.
+
+
+Reference for composition-based statistics starting in round 2:
+Schaffer, Alejandro A., L. Aravind, Thomas L. Madden,
+Sergei Shavirin, John L. Spouge, Yuri I. Wolf,  
+Eugene V. Koonin, and Stephen F. Altschul (2001), 
+"Improving the accuracy of PSI-BLAST protein database searches with 
+composition-based statistics and other refinements",  Nucleic Acids Res. 29:2994-3005.
+
+Query= SPy_1379
+         (437 letters)
+
+Database: swissprot 
+           449,080 sequences; 167,292,368 total letters
+
+Searching..................................................done
+
+
+Results from round 1
+
+
+                                                                 Score    E
+Sequences producing significant alignments:                      (bits) Value
+
+sp|A8AGW0.1|CLCB_CITK8 RecName: Full=Voltage-gated ClC-type chlo...    94   1e-18
+sp|Q8ZEB3.2|CLCB_YERPE RecName: Full=Voltage-gated ClC-type chlo...    91   2e-17
+sp|Q9AGD5.3|CLCB_YERPS RecName: Full=Voltage-gated ClC-type chlo...    90   3e-17
+sp|Q8XTT4.2|CLCL_RALSO RecName: Full=Putative chloride channel p...    73   5e-12
+sp|Q57753.1|Y305_METJA RecName: Full=Uncharacterized protein MJ0305    62   7e-09
+sp|A8ALD3.1|CLCA_CITK8 RecName: Full=H(+)/Cl(-) exchange transpo...    60   3e-08
+sp|B7NB42.1|CLCB_ECOLU RecName: Full=Voltage-gated ClC-type chlo...    60   4e-08
+sp|A8A0D3.1|CLCB_ECOHS RecName: Full=Voltage-gated ClC-type chlo...    59   5e-08
+sp|Q8FHC1.2|CLCB_ECOL6 RecName: Full=Voltage-gated ClC-type chlo...    59   5e-08
+sp|A7ZM51.1|CLCB_ECO24 RecName: Full=Voltage-gated ClC-type chlo...    59   6e-08
+sp|B7URT1.1|CLCB_ECO27 RecName: Full=Voltage-gated ClC-type chlo...    59   7e-08
+sp|Q8X794.2|CLCB_ECO57 RecName: Full=Voltage-gated ClC-type chlo...    59   8e-08
+sp|P76175.2|CLCB_ECOLI RecName: Full=Voltage-gated ClC-type chlo...    59   8e-08
+sp|B1LEU5.1|CLCB_ECOSM RecName: Full=Voltage-gated ClC-type chlo...    59   9e-08
+sp|B5F8R6.1|CLCA_SALA4 RecName: Full=H(+)/Cl(-) exchange transpo...    58   1e-07
+sp|B5RHE1.1|CLCA_SALG2 RecName: Full=H(+)/Cl(-) exchange transpo...    58   1e-07
+sp|Q57T52.1|CLCA_SALCH RecName: Full=H(+)/Cl(-) exchange transpo...    57   3e-07
+sp|B7NUP7.1|CLCB_ECO7I RecName: Full=Voltage-gated ClC-type chlo...    57   3e-07
+sp|B4TXQ7.1|CLCA_SALSV RecName: Full=H(+)/Cl(-) exchange transpo...    57   3e-07
+sp|Q8ZPK5.2|CLCB_SALTY RecName: Full=Voltage-gated ClC-type chlo...    56   4e-07
+sp|A9N0Q1.1|CLCA_SALPB RecName: Full=H(+)/Cl(-) exchange transpo...    55   7e-07
+sp|B2U1Q2.1|CLCB_SHIB3 RecName: Full=Voltage-gated ClC-type chlo...    55   7e-07
+sp|B5FHR3.1|CLCB_SALDC RecName: Full=Voltage-gated ClC-type chlo...    55   7e-07
+sp|Q8Z6Y0.2|CLCB_SALTI RecName: Full=Voltage-gated ClC-type chlo...    55   7e-07
+sp|P59638.1|CLCB_SHIFL RecName: Full=Voltage-gated ClC-type chlo...    55   9e-07
+sp|A9MPK6.1|CLCA_SALAR RecName: Full=H(+)/Cl(-) exchange transpo...    54   1e-06
+sp|Q8ZRP8.1|CLCA_SALTY RecName: Full=H(+)/Cl(-) exchange transpo...    54   2e-06
+sp|Q8GX93.2|CLCE_ARATH RecName: Full=Chloride channel protein CL...    53   4e-06
+sp|A5F0D5.1|CLCA_VIBC3 RecName: Full=H(+)/Cl(-) exchange transpo...    53   4e-06
+sp|Q9KM62.1|CLCA_VIBCH RecName: Full=H(+)/Cl(-) exchange transpo...    53   4e-06
+sp|Q5PD50.1|CLCA_SALPA RecName: Full=H(+)/Cl(-) exchange transpo...    53   5e-06
+sp|Q8Z9B3.1|CLCA_SALTI RecName: Full=H(+)/Cl(-) exchange transpo...    52   6e-06
+sp|B5Y1L4.1|CLCA_KLEP3 RecName: Full=H(+)/Cl(-) exchange transpo...    48   1e-04
+sp|Q87GZ9.1|CLCA_VIBPA RecName: Full=H(+)/Cl(-) exchange transpo...    47   2e-04
+sp|A6T4V9.1|CLCA_KLEP7 RecName: Full=H(+)/Cl(-) exchange transpo...    45   8e-04
+
+Searching..................................................done
+
+
+Results from round 2
+
+
+                                                                 Score    E
+Sequences producing significant alignments:                      (bits) Value
+Sequences used in model and found again:
+
+sp|A8AGW0.1|CLCB_CITK8 RecName: Full=Voltage-gated ClC-type chlo...   356   2e-97
+sp|B7URT1.1|CLCB_ECO27 RecName: Full=Voltage-gated ClC-type chlo...   342   3e-93
+sp|A7ZM51.1|CLCB_ECO24 RecName: Full=Voltage-gated ClC-type chlo...   342   3e-93
+sp|Q8X794.2|CLCB_ECO57 RecName: Full=Voltage-gated ClC-type chlo...   342   4e-93
+sp|B2U1Q2.1|CLCB_SHIB3 RecName: Full=Voltage-gated ClC-type chlo...   342   4e-93
+sp|B7NB42.1|CLCB_ECOLU RecName: Full=Voltage-gated ClC-type chlo...   341   6e-93
+sp|B1LEU5.1|CLCB_ECOSM RecName: Full=Voltage-gated ClC-type chlo...   340   1e-92
+sp|P76175.2|CLCB_ECOLI RecName: Full=Voltage-gated ClC-type chlo...   340   1e-92
+sp|Q8FHC1.2|CLCB_ECOL6 RecName: Full=Voltage-gated ClC-type chlo...   340   2e-92
+sp|A8A0D3.1|CLCB_ECOHS RecName: Full=Voltage-gated ClC-type chlo...   339   2e-92
+sp|P59638.1|CLCB_SHIFL RecName: Full=Voltage-gated ClC-type chlo...   338   4e-92
+sp|B7NUP7.1|CLCB_ECO7I RecName: Full=Voltage-gated ClC-type chlo...   338   4e-92
+sp|A8ALD3.1|CLCA_CITK8 RecName: Full=H(+)/Cl(-) exchange transpo...   337   1e-91
+sp|B4TXQ7.1|CLCA_SALSV RecName: Full=H(+)/Cl(-) exchange transpo...   337   1e-91
+sp|Q8ZRP8.1|CLCA_SALTY RecName: Full=H(+)/Cl(-) exchange transpo...   337   1e-91
+sp|B5F8R6.1|CLCA_SALA4 RecName: Full=H(+)/Cl(-) exchange transpo...   336   2e-91
+sp|Q57T52.1|CLCA_SALCH RecName: Full=H(+)/Cl(-) exchange transpo...   335   3e-91
+sp|B5RHE1.1|CLCA_SALG2 RecName: Full=H(+)/Cl(-) exchange transpo...   335   4e-91
+sp|A9N0Q1.1|CLCA_SALPB RecName: Full=H(+)/Cl(-) exchange transpo...   334   8e-91
+sp|A9MPK6.1|CLCA_SALAR RecName: Full=H(+)/Cl(-) exchange transpo...   333   1e-90
+sp|Q5PD50.1|CLCA_SALPA RecName: Full=H(+)/Cl(-) exchange transpo...   333   1e-90
+sp|B5Y1L4.1|CLCA_KLEP3 RecName: Full=H(+)/Cl(-) exchange transpo...   333   1e-90
+sp|Q8Z9B3.1|CLCA_SALTI RecName: Full=H(+)/Cl(-) exchange transpo...   333   2e-90
+sp|A6T4V9.1|CLCA_KLEP7 RecName: Full=H(+)/Cl(-) exchange transpo...   327   9e-89
+sp|Q8ZPK5.2|CLCB_SALTY RecName: Full=Voltage-gated ClC-type chlo...   320   1e-86
+sp|B5FHR3.1|CLCB_SALDC RecName: Full=Voltage-gated ClC-type chlo...   319   3e-86
+sp|Q8Z6Y0.2|CLCB_SALTI RecName: Full=Voltage-gated ClC-type chlo...   316   2e-85
+sp|A5F0D5.1|CLCA_VIBC3 RecName: Full=H(+)/Cl(-) exchange transpo...   292   4e-78
+sp|Q9KM62.1|CLCA_VIBCH RecName: Full=H(+)/Cl(-) exchange transpo...   291   7e-78
+sp|Q9AGD5.3|CLCB_YERPS RecName: Full=Voltage-gated ClC-type chlo...   288   7e-77
+sp|Q8ZEB3.2|CLCB_YERPE RecName: Full=Voltage-gated ClC-type chlo...   287   9e-77
+sp|Q87GZ9.1|CLCA_VIBPA RecName: Full=H(+)/Cl(-) exchange transpo...   283   1e-75
+sp|Q8XTT4.2|CLCL_RALSO RecName: Full=Putative chloride channel p...   272   4e-72
+sp|Q57753.1|Y305_METJA RecName: Full=Uncharacterized protein MJ0305   245   5e-64
+sp|Q8GX93.2|CLCE_ARATH RecName: Full=Chloride channel protein CL...   228   7e-59
+
+Sequences not found previously or not previously below threshold:
+
+sp|A7MGR4.1|CLCA_ENTS8 RecName: Full=H(+)/Cl(-) exchange transpo...   282   3e-75
+sp|B2K549.1|CLCA_YERPB RecName: Full=H(+)/Cl(-) exchange transpo...   281   8e-75
+sp|A7FM08.1|CLCA_YERP3 RecName: Full=H(+)/Cl(-) exchange transpo...   281   9e-75
+sp|Q8ZBM0.1|CLCA_YERPE RecName: Full=H(+)/Cl(-) exchange transpo...   280   1e-74
+sp|B7LWB6.1|CLCA_ESCF3 RecName: Full=H(+)/Cl(-) exchange transpo...   271   7e-72
+sp|Q8FL15.1|CLCA_ECOL6 RecName: Full=H(+)/Cl(-) exchange transpo...   271   8e-72
+sp|P58244.1|CLCA_ECO57 RecName: Full=H(+)/Cl(-) exchange transpo...   270   1e-71
+sp|P37019.2|CLCA_ECOLI RecName: Full=H(+)/Cl(-) exchange transpo...   270   1e-71
+sp|Q325Y4.1|CLCA_SHIBS RecName: Full=H(+)/Cl(-) exchange transpo...   269   2e-71
+sp|A7ZWA3.1|CLCA_ECOHS RecName: Full=H(+)/Cl(-) exchange transpo...   269   2e-71
+sp|B2U300.1|CLCA_SHIB3 RecName: Full=H(+)/Cl(-) exchange transpo...   268   4e-71
+sp|Q8D6J0.1|CLCA_VIBVU RecName: Full=H(+)/Cl(-) exchange transpo...   268   4e-71
+sp|P59639.1|CLCA_SHIFL RecName: Full=H(+)/Cl(-) exchange transpo...   260   1e-68
+sp|A7N6K9.1|CLCA_VIBHB RecName: Full=H(+)/Cl(-) exchange transpo...   256   2e-67
+sp|Q8RXR2.2|CLCF_ARATH RecName: Full=Chloride channel protein CL...   179   3e-44
+sp|P51793.2|CLCN4_HUMAN RecName: Full=H(+)/Cl(-) exchange transp...   108   6e-23
+sp|P51794.1|CLCN4_RAT RecName: Full=H(+)/Cl(-) exchange transpor...   108   9e-23
+sp|P51792.2|CLCN3_RAT RecName: Full=H(+)/Cl(-) exchange transpor...   108   9e-23
+sp|P51791.2|CLCN3_MOUSE RecName: Full=H(+)/Cl(-) exchange transp...   108   1e-22
+sp|P51790.2|CLCN3_HUMAN RecName: Full=H(+)/Cl(-) exchange transp...   108   1e-22
+sp|Q99P66.1|CLCN5_CAVPO RecName: Full=H(+)/Cl(-) exchange transp...   107   1e-22
+sp|Q61418.2|CLCN4_MOUSE RecName: Full=H(+)/Cl(-) exchange transp...   107   1e-22
+sp|Q9TTU3.1|CLCN5_RABIT RecName: Full=H(+)/Cl(-) exchange transp...   107   2e-22
+sp|Q9GKE7.1|CLCN5_PIG RecName: Full=H(+)/Cl(-) exchange transpor...   107   2e-22
+sp|P51795.1|CLCN5_HUMAN RecName: Full=H(+)/Cl(-) exchange transp...   106   2e-22
+sp|Q9WVD4.1|CLCN5_MOUSE RecName: Full=H(+)/Cl(-) exchange transp...   106   3e-22
+sp|Q9R279.1|CLCN3_CAVPO RecName: Full=H(+)/Cl(-) exchange transp...   106   3e-22
+sp|P51796.1|CLCN5_RAT RecName: Full=H(+)/Cl(-) exchange transpor...   105   5e-22
+sp|P92942.1|CLCB_ARATH RecName: Full=Chloride channel protein CL...   100   2e-20
+sp|O94287.1|YOO2_SCHPO RecName: Full=Uncharacterized chloride ch...    99   4e-20
+sp|Q5RDJ7.1|CLCN3_PONAB RecName: Full=H(+)/Cl(-) exchange transp...    99   8e-20
+sp|Q9VGH7.3|CLCN2_DROME RecName: Full=Chloride channel protein 2...    97   2e-19
+sp|Q54C67.1|CLCF_DICDI RecName: Full=Chloride channel protein F        97   2e-19
+sp|P35524.1|CLCN1_RAT RecName: Full=Chloride channel protein 1; ...    95   8e-19
+sp|P92941.2|CLCA_ARATH RecName: Full=Chloride channel protein CL...    95   8e-19
+sp|Q64347.3|CLCN1_MOUSE RecName: Full=Chloride channel protein 1...    94   2e-18
+sp|P0C197.1|CLCNX_USTMA RecName: Full=Probable chloride channel ...    94   3e-18
+sp|P35523.3|CLCN1_HUMAN RecName: Full=Chloride channel protein 1...    92   6e-18
+sp|Q86AZ6.1|CLCB_DICDI RecName: Full=Chloride channel protein B        88   1e-16
+sp|Q9WU45.1|CLCN2_CAVPO RecName: Full=Chloride channel protein 2...    88   1e-16
+sp|P37020.2|GEF1_YEAST RecName: Full=Protein GEF1; AltName: Full...    88   1e-16
+sp|P35525.1|CLCN2_RAT RecName: Full=Chloride channel protein 2; ...    86   4e-16
+sp|P51788.2|CLCN2_HUMAN RecName: Full=Chloride channel protein 2...    86   4e-16
+sp|Q9MZT1.1|CLCN1_CANFA RecName: Full=Chloride channel protein 1...    86   5e-16
+sp|Q9R0A1.2|CLCN2_MOUSE RecName: Full=Chloride channel protein 2...    86   5e-16
+sp|P35522.3|CICH_TORCA RecName: Full=Chloride channel protein; A...    84   2e-15
+sp|P51789.1|CLCN2_RABIT RecName: Full=Chloride channel protein 2...    84   2e-15
+sp|P21564.1|CICH_TORMA RecName: Full=Chloride channel protein; A...    83   3e-15
+sp|Q96282.1|CLCC_ARATH RecName: Full=Chloride channel protein CL...    82   5e-15
+sp|Q9W701.1|CLCKB_XENLA RecName: Full=Chloride channel protein C...    82   7e-15
+sp|O60159.1|YHYB_SCHPO RecName: Full=Uncharacterized chloride ch...    80   2e-14
+sp|Q54LQ4.1|CLCE_DICDI RecName: Full=Chloride channel protein E        77   3e-13
+sp|P60300.2|CLCG_ARATH RecName: Full=Putative chloride channel-l...    74   2e-12
+sp|P92943.2|CLCD_ARATH RecName: Full=Chloride channel protein CL...    73   3e-12
+sp|Q75JF3.1|CLCC_DICDI RecName: Full=Chloride channel protein C        72   6e-12
+sp|Q9TT16.1|CLCN6_RABIT RecName: Full=Chloride transport protein...    71   1e-11
+sp|P51804.1|CLCKB_RABIT RecName: Full=Chloride channel protein C...    68   2e-10
+sp|P51803.1|CLCKA_RABIT RecName: Full=Chloride channel protein C...    67   2e-10
+sp|P51799.1|CLCN7_RAT RecName: Full=H(+)/Cl(-) exchange transpor...    65   1e-09
+sp|O70496.1|CLCN7_MOUSE RecName: Full=H(+)/Cl(-) exchange transp...    64   1e-09
+sp|Q1ZXJ0.1|CLCD_DICDI RecName: Full=Chloride channel protein D        63   3e-09
+sp|Q54AX6.1|CLCA_DICDI RecName: Full=Chloride channel protein A        62   6e-09
+sp|Q8Z4X8.1|YFEO_SALTI RecName: Full=Putative ion-transport prot...    59   7e-08
+sp|Q93IM6.1|YFEO_SALTY RecName: Full=Putative ion-transport prot...    59   7e-08
+sp|B4TQD9.1|YFEO_SALSV RecName: Full=Putative ion-transport prot...    59   8e-08
+sp|Q5PNE6.1|YFEO_SALPA RecName: Full=Putative ion-transport prot...    59   8e-08
+sp|Q57LU9.1|YFEO_SALCH RecName: Full=Putative ion-transport prot...    59   1e-07
+sp|P51798.2|CLCN7_HUMAN RecName: Full=H(+)/Cl(-) exchange transp...    57   3e-07
+sp|Q4PKH3.1|CLCN7_BOVIN RecName: Full=H(+)/Cl(-) exchange transp...    56   5e-07
+sp|O35454.1|CLCN6_MOUSE RecName: Full=Chloride transport protein...    56   5e-07
+sp|P51797.2|CLCN6_HUMAN RecName: Full=Chloride transport protein...    56   5e-07
+sp|P51802.1|CLCKB_RAT RecName: Full=Chloride channel protein ClC...    55   9e-07
+sp|Q8FFD3.1|YFEO_ECOL6 RecName: Full=Putative ion-transport prot...    55   1e-06
+sp|B7N5Z0.1|YFEO_ECOLU RecName: Full=Putative ion-transport prot...    54   2e-06
+sp|B7NPS5.1|YFEO_ECO7I RecName: Full=Putative ion-transport prot...    54   2e-06
+sp|Q31Y82.1|YFEO_SHIBS RecName: Full=Putative ion-transport prot...    54   2e-06
+sp|P51800.1|CLCKA_HUMAN RecName: Full=Chloride channel protein C...    54   2e-06
+sp|B1LMI7.1|YFEO_ECOSM RecName: Full=Putative ion-transport prot...    54   2e-06
+sp|P51801.3|CLCKB_HUMAN RecName: Full=Chloride channel protein C...    54   2e-06
+sp|Q3YZE3.1|YFEO_SHISS RecName: Full=Putative ion-transport prot...    54   2e-06
+sp|B7LCE1.1|YFEO_ECO55 RecName: Full=Putative ion-transport prot...    54   2e-06
+sp|Q0T2B0.1|YFEO_SHIF8 RecName: Full=Putative ion-transport prot...    54   2e-06
+sp|P59585.1|YFEO_SHIFL RecName: Full=Putative ion-transport prot...    54   3e-06
+sp|A8A2P3.1|YFEO_ECOHS RecName: Full=Putative ion-transport prot...    54   3e-06
+sp|B7LL87.1|YFEO_ESCF3 RecName: Full=Putative ion-transport prot...    54   3e-06
+sp|A7ZPJ9.1|YFEO_ECO24 RecName: Full=Putative ion-transport prot...    54   3e-06
+sp|P67730.1|YFEO_ECO57 RecName: Full=Putative ion-transport prot...    54   3e-06
+sp|B7M6Q9.1|YFEO_ECO8A RecName: Full=Putative ion-transport prot...    53   3e-06
+sp|Q9WUB6.2|CLCKB_MOUSE RecName: Full=Chloride channel protein C...    52   6e-06
+sp|B7UG98.1|YFEO_ECO27 RecName: Full=Putative ion-transport prot...    52   1e-05
+sp|Q06393.3|CLCKA_RAT RecName: Full=Chloride channel protein ClC...    50   3e-05
+sp|Q0TF71.1|YFEO_ECOL5 RecName: Full=Putative ion-transport prot...    50   4e-05
+sp|Q9WUB7.2|CLCKA_MOUSE RecName: Full=Chloride channel protein C...    49   8e-05
+sp|Q1R8X7.1|YFEO_ECOUT RecName: Full=Putative ion-transport prot...    48   1e-04
+
+  Database: swissprot
+    Posted date:  Jan 13, 2012  5:27 PM
+  Number of letters in database: 167,292,368
+  Number of sequences in database:  449,080
+  
+Lambda     K      H
+   0.320    0.135    0.344 
+
+Lambda     K      H
+   0.267   0.0416    0.140 
+
+
+Matrix: BLOSUM62
+Gap Penalties: Existence: 11, Extension: 1
+Number of Hits to DB: 237,303,039
+Number of Sequences: 449080
+Number of extensions: 8897296
+Number of successful extensions: 46493
+Number of sequences better than 1.0e-03: 138
+Number of HSP's better than  0.0 without gapping: 92
+Number of HSP's successfully gapped in prelim test: 106
+Number of HSP's that attempted gapping in prelim test: 45366
+Number of HSP's gapped (non-prelim): 381
+length of query: 437
+length of database: 167,292,368
+effective HSP length: 120
+effective length of query: 317
+effective length of database: 113,402,768
+effective search space: 35948677456
+effective search space used: 35948677456
+T: 11
+A: 40
+X1: 16 ( 7.4 bits)
+X2: 38 (14.6 bits)
+X3: 64 (24.7 bits)
+S1: 40 (21.3 bits)
+S2: 105 (45.0 bits)
