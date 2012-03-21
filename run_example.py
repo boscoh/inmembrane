@@ -12,7 +12,7 @@ params = {
   'helix_programs': ['tmhmm'],
   'memsat3_bin': 'runmemsat',
   'hmmsearch3_bin': 'hmmsearch',
-  'hmm_profiles_dir': '/Users/bosco/Dropbox/inmembrane/hmm_profiles',
+  'hmm_profiles_dir': 'protocols/gram_pos_profiles',
   'hmm_evalue_max': 0.1,
   'hmm_score_min': 10,
   'terminal_exposed_loop_min': 50,
