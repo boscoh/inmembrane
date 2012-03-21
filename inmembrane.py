@@ -134,31 +134,6 @@ def init_output_dir(params):
   os.chdir(base_dir)
 
 
-def create_proteins_dict(fasta):
-  """
-  From a FASTA file, creates a dictionary using the ID of each sequence
-  in the fasta file. Also returns a list of ID's in the same order as
-  that in the file.
-  """
-  seqids = []
-  seqid = None
-  proteins = {}
-  for l in open(fasta):
-    if l.startswith(">"):
-      seqid, name = parse_fasta_header(l)
-      seqids.append(seqid)
-      proteins[seqid] = {
-        'seq':"",
-        'name':name,
-      }
-      continue
-    if seqid is not None:
-      words = l.split()
-      if words:
-        proteins[seqid]['seq'] += words[0]
-  return seqids, proteins
-
-  
 def import_protocol_python(params):
   """
   Some python magic that loads the desired protocol file
@@ -192,8 +167,7 @@ def process(params):
   # do protocol analysis on the results of the annotations
   for seqid in seqids:
     protein = proteins[seqid]
-    details, category = \
-        protocol.post_process_protein(params, protein)
+    protocol.post_process_protein(params, protein)
     log_stdout(protocol.protein_output_line(seqid, proteins))
 
   # always write to biologist-friendly csv file
