@@ -1,4 +1,5 @@
 import os
+import re
 from inmembrane import run, parse_fasta_header, seqid_to_filename
 
 

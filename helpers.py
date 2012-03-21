@@ -94,4 +94,15 @@ def seqid_to_filename(seqid):
   (eg, replaces '|' with '_')
   """
   return seqid.replace("|", "_")
+
+
+def print_proteins(proteins):
+  print "{"
+  for seqid in proteins:
+    print "  '%s': {" % seqid
+    for key, value in proteins[seqid].items():
+      print "    '%s': %s, " % (key, repr(value))
+    print "  },"
+  print "}"
+
   
