@@ -134,7 +134,7 @@ def init_output_dir(params):
   os.chdir(base_dir)
 
 
-def create_protein_data_structure(fasta):
+def create_proteins_dict(fasta):
   """
   From a FASTA file, creates a dictionary using the ID of each sequence
   in the fasta file. Also returns a list of ID's in the same order as
@@ -172,7 +172,7 @@ def write_to_csv(csv, seqids, proteins):
 
 
 def import_protocol_python(params):
-  protocol_py = 'protocols/' + params['protocol'] + '.py'
+  protocol_py = os.path.join('protocols', params['protocol']+'.py')
   if not os.path.isfile(protocol_py):
     raise IOError("Couldn't find protcols/" + protocol_py)
   return 'import protocols.%s as protocol' % (params['protocol'])
@@ -183,11 +183,11 @@ def process(params):
 
   init_output_dir(params)
 
-  seqids, proteins = create_protein_data_structure(params['fasta'])
+  seqids, proteins = create_proteins_dict(params['fasta'])
 
-  for feature in protocol.features(params):
-    feature_fn = eval(feature)
-    feature_fn(params, proteins)
+  for annotation in protocol.get_annotations(params):
+    annotate_fn = eval(annotation)
+    annotate_fn(params, proteins)
 
   for seqid in seqids:
     protein = proteins[seqid]

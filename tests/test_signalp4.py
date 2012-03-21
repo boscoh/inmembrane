@@ -23,8 +23,8 @@ class TestSignalp(unittest.TestCase):
     self.params = inmembrane.get_params()
     self.params['fasta'] = "input.fasta"
     self.seqids, self.proteins = \
-        inmembrane.create_protein_data_structure(self.params['fasta'])
-    inmembrane.signalp4(self.params, self.proteins)
+        inmembrane.create_proteins_dict(self.params['fasta'])
+    inmembrane.annotate_signalp4(self.params, self.proteins)
 
     self.expected_output = {
         u'SPy_0252': True, 

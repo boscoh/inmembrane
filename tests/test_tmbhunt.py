@@ -45,10 +45,10 @@ class TestTmbhunt(unittest.TestCase):
         }
     }
     self.seqids, \
-    self.proteins = inmembrane.create_protein_data_structure(self.params['fasta'])
+    self.proteins = inmembrane.create_proteins_dict(self.params['fasta'])
 
     # run TMB-HUNT
-    self.output = inmembrane.tmbhunt_web(self.params, self.proteins, force=True)
+    self.output = inmembrane.annotate_tmbhunt_web(self.params, self.proteins, force=True)
     
     self.assertEqual(self.expected_output, self.output)
 

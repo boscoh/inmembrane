@@ -7,7 +7,7 @@ from twill.commands import find, formfile, follow, fv, go, show, \
 import inmembrane
 
 
-def tmbhunt_web(params, proteins, \
+def annotate_tmbhunt_web(params, proteins, \
              force=False):
   """
   Uses the TMB-HUNT web service 

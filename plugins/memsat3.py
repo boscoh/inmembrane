@@ -61,7 +61,7 @@ def has_transmembrane_in_globmem(globmem_out):
   return True
 
         
-def memsat3(params, proteins):
+def annotate_memsat3(params, proteins):
   """
   Runs MEMSAT3 and parses the output files. Takes a standard 'inmembrane'
   params dictionary and a global proteins dictionary which it populates with

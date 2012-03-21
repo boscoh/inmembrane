@@ -1,6 +1,6 @@
 import inmembrane 
 
-def lipop1(params, proteins):
+def annotate_lipop1(params, proteins):
   lipop1_out = 'lipop.out'
   inmembrane.run('%(lipop1_bin)s %(fasta)s' % params, lipop1_out)
   for seqid in proteins:

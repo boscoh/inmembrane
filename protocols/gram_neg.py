@@ -51,7 +51,7 @@ def identify_omps(params, stringent=False):
   have a predicted signal sequence to be categorized as BARREL.
   """
   
-  seqids, proteins = create_protein_data_structure(params['fasta'])
+  seqids, proteins = create_proteins_dict(params['fasta'])
 
   features = [signalp4, lipop1, hmmsearch3]
   if dict_get(params, 'helix_programs'):
@@ -61,9 +61,9 @@ def identify_omps(params, stringent=False):
       features.append(memsat3)
   if dict_get(params, 'barrel_programs'):
     if 'tmbhunt' in params['barrel_programs']:
-      features.append(tmbhunt_web)
+      features.append(annotate_tmbhunt_web)
     if 'bomp' in params['barrel_programs']:
-      features.append(bomp_web)
+      features.append(annotate_bomp_web)
   for extract_protein_feature in features:
     extract_protein_feature(params, proteins)
   
@@ -88,7 +88,7 @@ def identify_omps(params, stringent=False):
     
   # TMBETA-NET knows to only run on predicted barrels
   if 'tmbeta' in params['barrel_programs']:
-    tmbeta_net_web(params, proteins, category='BARREL')
+    annotate_tmbeta_net_web((params, proteins, category='BARREL')
 
   for seqid in proteins:
     details = proteins[seqid]['details']
