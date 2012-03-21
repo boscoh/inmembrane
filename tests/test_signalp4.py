@@ -18,9 +18,10 @@ class TestSignalp(unittest.TestCase):
     os.chdir(self.dir)
 
     inmembrane.silence_log(True)
+    inmembrane.clean_directory('.', ['input.fasta'])
     
     self.params = inmembrane.get_params()
-    self.params['fasta'] = "signalp4.fasta"
+    self.params['fasta'] = "input.fasta"
     self.seqids, self.proteins = \
         inmembrane.create_protein_data_structure(self.params['fasta'])
     inmembrane.signalp4(self.params, self.proteins)
