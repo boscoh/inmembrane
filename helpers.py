@@ -190,6 +190,10 @@ def eval_surface_exposed_loop(
 
 
 def clean_directory(top, excluded_files):
+  """
+  Deletes an entire directory tree, equivalent to rm -rf <top>, 
+  with an excluded file list.
+  """
   for root, dirs, files in os.walk(top, topdown=False):
     for name in files:
       if name not in excluded_files:

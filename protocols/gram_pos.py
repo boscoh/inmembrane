@@ -99,7 +99,10 @@ def post_process_protein(params, protein):
 
   return details, category
 
-
+# TODO: Shouldn't these be shared functions that every
+#       protocol uses by default (probably in inmembrane.py) ? 
+#       The processing in the
+#       protocol should be decoupled from the output.
 def protein_output_line(seqid, proteins):
   return '%-15s   %-13s  %-50s  %s' % \
       (seqid, 
