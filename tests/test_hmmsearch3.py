@@ -21,7 +21,7 @@ class TestHmmsearch3(unittest.TestCase):
     
     self.params = inmembrane.get_params()
     self.params['fasta'] = "hmmsearch3.fasta"
-    self.params['hmm_profiles_dir'] = "../../protocols/gram_neg_profiles"
+    self.params['hmm_profiles_dir'] = "../../protocols/gram_pos_profiles"
     self.seqids, self.proteins = \
         inmembrane.create_protein_data_structure(self.params['fasta'])
     inmembrane.hmmsearch3(self.params, self.proteins)
