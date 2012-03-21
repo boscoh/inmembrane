@@ -42,7 +42,14 @@ def print_summary_table(proteins):
   for c in counts:
     log_stderr("%-15s %i" % (c, counts[c]))
 
-
+# TODO: Workflow:
+#       * If is_lipop, 
+#         check retention signal annotation (+2Asp) -> periplasmic inner or outer
+#       * If is_signalp (or TAT) and no other TM and not is_lipop -> periplasmic
+#       * If is_signalp, run OMPBB (BOMP) check. If OMPBB -> outer membrane bb
+#       * If is_signalp, and has after the signal tranmembranes -> inner membrane
+#       * If inner membrane, check for long cyto or peri loops: inner[+cyto][+peri]
+#       * If not is_signalp and not is_lipop (and not TAT): -> cytoplasmic
 def identify_omps(params, stringent=False):
   """
   Identifies outer membrane proteins from gram-negative bacteria.

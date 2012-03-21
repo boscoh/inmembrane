@@ -167,7 +167,7 @@ def write_to_csv(csv, seqids, proteins):
         (seqid, 
          protein['category'], 
          protein['details'],
-         protein['name'][:60]))
+         protein['name']))
   f.close()
 
 
@@ -182,6 +182,11 @@ def process(params):
 
   seqids, proteins = create_protein_data_structure(params['fasta'])
 
+  # TODO: this loop needs to be run within the protocol,
+  #       since for some protocols not all plugins
+  #       will be run for every sequence, dependent
+  #       on the outcome of a previous analysis
+  #       eg. protocol.run(params, proteins)
   for feature in params['features']:
     exec('%s(params, proteins)' % feature)
 

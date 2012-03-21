@@ -107,6 +107,8 @@ def post_process_protein(params, protein):
   if is_signalp:
     i_signalp_cut = protein['signalp_cleave_position']
 
+  # TODO: make details a plain list.
+  #       leave the insertion of ';' to output time
   details = ""
   if is_hmm_profile_match:
     details += "hmm(%s);" % protein['hmmsearch'][0]
