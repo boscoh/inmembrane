@@ -69,7 +69,7 @@ default_params_str = """{
   'csv': '',
   'output': '',
   'out_dir': '',
-  'protocol': 'gram_neg', # 'gram_pos'
+  'protocol': 'gram_pos', # 'gram_neg'
   'signalp4_organism': 'gram+',
   'signalp4_bin': 'signalp',
   'lipop1_bin': 'LipoP',
@@ -171,19 +171,23 @@ def write_to_csv(csv, seqids, proteins):
   f.close()
 
 
-def process(params):
+def import_protocol_python(params):
   protocol_py = 'protocols/' + params['protocol'] + '.py'
   if not os.path.isfile(protocol_py):
     raise IOError("Couldn't find protcols/" + protocol_py)
-  exec('import protocols.%s as protocol' % (params['protocol']))
-  protocol.init(params)
+  return 'import protocols.%s as protocol' % (params['protocol'])
+
+
+def process(params):
+  exec(import_protocol_python(params))
 
   init_output_dir(params)
 
   seqids, proteins = create_protein_data_structure(params['fasta'])
 
-  for feature in params['features']:
-    exec('%s(params, proteins)' % feature)
+  for feature in protocol.features(params):
+    feature_fn = eval(feature)
+    feature_fn(params, proteins)
 
   for seqid in seqids:
     protein = proteins[seqid]

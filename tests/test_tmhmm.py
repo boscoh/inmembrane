@@ -25,7 +25,11 @@ class TestTmhmm(unittest.TestCase):
         inmembrane.create_protein_data_structure(self.params['fasta'])
     inmembrane.tmhmm(self.params, self.proteins)
 
-    print self.proteins
+    for seqid in self.proteins:
+      print seqid
+      for key, value in self.proteins[seqid].items():
+        if 'seq' not in key:
+          print "%s:%s" % key, value
     
     self.expected_output = {
         u'SPy_0252': True, 
