@@ -18,7 +18,8 @@ class TestTmhmm(unittest.TestCase):
     os.chdir(self.dir)
 
     inmembrane.silence_log(True)
-    
+    inmembrane.clean_directory('.', ['input.fasta'])
+     
     self.params = inmembrane.get_params()
     self.params['fasta'] = "input.fasta"
     self.seqids, self.proteins = \

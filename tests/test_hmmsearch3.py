@@ -18,9 +18,10 @@ class TestHmmsearch3(unittest.TestCase):
     os.chdir(self.dir)
 
     inmembrane.silence_log(True)
+    inmembrane.clean_directory('.', ['input.fasta'])
     
     self.params = inmembrane.get_params()
-    self.params['fasta'] = "hmmsearch3.fasta"
+    self.params['fasta'] = "input.fasta"
     self.params['hmm_profiles_dir'] = "../../protocols/gram_pos_profiles"
     self.seqids, self.proteins = \
         inmembrane.create_protein_data_structure(self.params['fasta'])

@@ -1,4 +1,5 @@
 import os
+import glob
 import unittest
 import sys
 
@@ -19,8 +20,10 @@ class TestBomp(unittest.TestCase):
 
     inmembrane.silence_log(True)
 
+    inmembrane.clean_directory('.', ['input.fasta'])
+
     self.params = inmembrane.get_params()
-    self.params['fasta'] = "bomps.fasta"
+    self.params['fasta'] = "input.fasta"
     self.expected_output = {
         u'gi|107837101': 3, 
         u'gi|107836588': 5, 
