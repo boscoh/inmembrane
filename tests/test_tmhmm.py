@@ -23,8 +23,8 @@ class TestTmhmm(unittest.TestCase):
     self.params = inmembrane.get_params()
     self.params['fasta'] = "input.fasta"
     self.seqids, self.proteins = \
-        inmembrane.create_protein_data_structure(self.params['fasta'])
-    inmembrane.tmhmm(self.params, self.proteins)
+        inmembrane.create_proteins_dict(self.params['fasta'])
+    inmembrane.annotate_tmhmm(self.params, self.proteins)
 
     # inmembrane.print_proteins(self.proteins)
     

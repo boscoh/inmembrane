@@ -3,7 +3,7 @@ import glob
 import helpers
 
 
-def hmmsearch3(params, proteins):
+def annotate_hmmsearch3(params, proteins):
   file_tag = os.path.join(params['hmm_profiles_dir'], '*.hmm')
   helpers.log_stderr("# Searching for HMMER profiles in " + params['hmm_profiles_dir'])
   for hmm_profile in glob.glob(file_tag):

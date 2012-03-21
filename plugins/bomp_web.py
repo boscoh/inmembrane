@@ -7,7 +7,7 @@ from twill.commands import find, formfile, follow, fv, go, show, \
 import inmembrane
 
 
-def bomp_web(params, proteins, \
+def annotate_bomp_web(params, proteins, \
              url="http://services.cbu.uib.no/tools/bomp/", force=False):
   """
   Uses the BOMP web service (http://services.cbu.uib.no/tools/bomp/) to

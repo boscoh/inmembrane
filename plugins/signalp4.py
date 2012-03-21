@@ -1,6 +1,6 @@
 import helpers
 
-def signalp4(params, proteins):
+def annotate_signalp4(params, proteins):
   for seqid in proteins:
     proteins[seqid]['is_signalp'] = False
     proteins[seqid]['signalp_cleave_position'] = None

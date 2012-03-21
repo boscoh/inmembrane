@@ -59,21 +59,21 @@ def eval_surface_exposed_loop(
   return False
 
 
-def features(params):
-  features = ['signalp4', 'lipop1', 'hmmsearch3']
+def get_annotations(params):
+  annotations = ['annotate_signalp4', 'annotate_lipop1', 'annotate_hmmsearch3']
   if dict_get(params, 'helix_programs'):
-    if 'tmhmm' in params['helix_programs']:
-      features.append('tmhmm')
-    if 'memsat3' in params['helix_programs']:
-      features.append('memsat3')
+    if 'annotate_tmhmm' in params['helix_programs']:
+      annotations.append('annotate_tmhmm')
+    if 'annotate_memsat3' in params['helix_programs']:
+      annotations.append('annotate_memsat3')
   if dict_get(params, 'barrel_programs'):
-    if 'tmbhunt' in params['barrel_programs']:
-      features.append('tmbhunt_web')
-    if 'bomp' in params['barrel_programs']:
-      features.append('bomp_web')
+    if 'annotate_tmbhunt' in params['barrel_programs']:
+      annotations.append('annotate_tmbhunt_web')
+    if 'annotate_bomp' in params['barrel_programs']:
+      annotations.append('annotate_bomp_web')
   module_dir = os.path.dirname(__file__)
   params['hmm_profiles'] = os.path.join(module_dir, 'gram_pos_profiles')
-  return features
+  return annotations
 
 
 def post_process_protein(params, protein):

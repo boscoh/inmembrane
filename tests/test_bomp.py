@@ -30,9 +30,9 @@ class TestBomp(unittest.TestCase):
         u'gi|107836852': 5
     }
     self.seqids, self.proteins = \
-        inmembrane.create_protein_data_structure(self.params['fasta'])
+        inmembrane.create_proteins_dict(self.params['fasta'])
 
-    self.output = inmembrane.bomp_web(self.params, self.proteins, force=True)
+    self.output = inmembrane.annotate_bomp_web(self.params, self.proteins, force=True)
 
 
     self.assertEqual(self.expected_output, self.output)

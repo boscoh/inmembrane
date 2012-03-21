@@ -1,7 +1,7 @@
 from inmembrane import run, parse_fasta_header
 
 
-def tmhmm(params, proteins):
+def annotate_tmhmm(params, proteins):
   tmhmm_out = 'tmhmm.out'
   run('%(tmhmm_bin)s %(fasta)s' % params, tmhmm_out)
   name = None
