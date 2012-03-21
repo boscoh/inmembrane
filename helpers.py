@@ -96,7 +96,6 @@ def seqid_to_filename(seqid):
   return seqid.replace("|", "_")
 
 
-
 def create_proteins_dict(fasta):
   """
   The main data-structure used in inmembrane is the proteins dictionary,

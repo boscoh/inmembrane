@@ -67,7 +67,6 @@ for plugin in glob.glob(file_tag):
 default_params_str = """{
   'fasta': '',
   'csv': '',
-  'output': '',
   'out_dir': '',
   'protocol': 'gram_pos', # 'gram_neg'
   'signalp4_organism': 'gram+',
