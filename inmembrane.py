@@ -160,6 +160,13 @@ def create_proteins_dict(fasta):
 
   
 def import_protocol_python(params):
+  """
+  Some python magic that loads the desired protocol file
+  encoded in the string 'params['protocol'] as a python file
+  with the internal variable name 'protocol'. An appropriate
+  python command is generated that is to be processed by
+  the 'exec' function.
+  """
   protocol_py = os.path.join('protocols', params['protocol']+'.py')
   if not os.path.isfile(protocol_py):
     raise IOError("Couldn't find protcols/" + protocol_py)
@@ -167,10 +174,17 @@ def import_protocol_python(params):
 
 
 def process(params):
+  """
+  Main program loop. Triggers the 'protocol' found in the params
+  to annotate all proteins give the list of annotations needed by
+  'protocol'. Then outputs to screen and a .csv file.
+  """
+  # initializations
   exec(import_protocol_python(params))
   init_output_dir(params)
   seqids, proteins = create_proteins_dict(params['fasta'])
 
+  # annotates with external binaries as found in plugins
   for annotation in protocol.get_annotations(params):
     annotate_fn = eval(annotation)
     annotate_fn(params, proteins)

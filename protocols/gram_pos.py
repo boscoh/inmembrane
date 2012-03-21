@@ -1,63 +1,6 @@
 from helpers import *
 
 
-def chop_nterminal_peptide(protein, i_cut):
-  protein['sequence_length'] -= i_cut
-  for prop in protein:
-    if '_loops' in prop or '_helices' in prop:
-      loops = protein[prop]
-      for i in range(len(loops)):
-        j, k = loops[i]
-        loops[i] = (j - i_cut, k - i_cut)
-  for prop in protein:
-    if '_loops' in prop or '_helices' in prop:
-      loops = protein[prop]
-      for i in reversed(range(len(loops))):
-        j, k = loops[i]
-        # tests if this loop has been cut out
-        if j<=0 and k<=0:
-          del loops[i]
-        # otherewise, neg value means loop is at the new N-terminal
-        elif j<=0 and k>0:
-          loops[i] = (1, k)
-
-
-def eval_surface_exposed_loop(
-    sequence_length, n_transmembrane_region, outer_loops, 
-    terminal_exposed_loop_min, internal_exposed_loop_min):
-    
-  if n_transmembrane_region == 0:
-    # treat protein as one entire exposed loop
-    return sequence_length >= terminal_exposed_loop_min
-
-  if not outer_loops:
-    return False
-
-  loop_len = lambda loop: abs(loop[1]-loop[0]) + 1
-
-  # if the N-terminal loop sticks outside
-  if outer_loops[0][0] == 1:
-    nterminal_loop = outer_loops[0]
-    del outer_loops[0]
-    if loop_len(nterminal_loop) >= terminal_exposed_loop_min:
-      return True
-
-  # if the C-terminal loop sticks outside
-  if outer_loops:
-    if outer_loops[-1][-1] == sequence_length:
-      cterminal_loop = outer_loops[-1]
-      del outer_loops[-1]
-      if loop_len(cterminal_loop) >= terminal_exposed_loop_min:
-        return True
-
-  # test remaining outer loops for length
-  for loop in outer_loops:
-    if loop_len(loop) >= internal_exposed_loop_min:
-      return True
-
-  return False
-
-
 def get_annotations(params):
   annotations = [ \
       'annotate_signalp4', 'annotate_lipop1', 
