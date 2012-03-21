@@ -159,18 +159,6 @@ def create_proteins_dict(fasta):
   return seqids, proteins
 
   
-def write_to_csv(csv, seqids, proteins):
-  f = open(csv, 'w')
-  for seqid in seqids:
-    protein = proteins[seqid]
-    f.write('%s,%s,%s,"%s"\n' % \
-        (seqid, 
-         protein['category'], 
-         protein['details'],
-         protein['name'][:60]))
-  f.close()
-
-
 def import_protocol_python(params):
   protocol_py = os.path.join('protocols', params['protocol']+'.py')
   if not os.path.isfile(protocol_py):
@@ -180,28 +168,27 @@ def import_protocol_python(params):
 
 def process(params):
   exec(import_protocol_python(params))
-
   init_output_dir(params)
-
   seqids, proteins = create_proteins_dict(params['fasta'])
 
   for annotation in protocol.get_annotations(params):
     annotate_fn = eval(annotation)
     annotate_fn(params, proteins)
 
+  # do protocol analysis on the results of the annotations
   for seqid in seqids:
     protein = proteins[seqid]
     details, category = \
         protocol.post_process_protein(params, protein)
+    log_stdout(protocol.protein_output_line(seqid, proteins))
 
-    log_stdout('%-15s   %-13s  %-50s  %s' % \
-        (seqid, 
-         protein['category'], 
-         protein['details'],
-         protein['name'][:60]))
+  # always write to biologist-friendly csv file
+  f = open(params['csv'], 'w')
+  for seqid in seqids:
+    f.write(protocol.protein_csv_line(seqid, proteins))
+  f.close()
 
-  write_to_csv(params['csv'], seqids, proteins)
-    
+
 
 if __name__ == "__main__":
   parser = OptionParser()
