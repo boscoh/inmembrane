@@ -18,13 +18,14 @@ class TestLipoP(unittest.TestCase):
     os.chdir(self.dir)
 
     inmembrane.silence_log(True)
+    inmembrane.clean_directory('.', ['input.fasta'])
    
     self.params = inmembrane.get_params()
     self.params['fasta'] = "input.fasta"
     self.seqids, self.proteins = \
-        inmembrane.create_protein_data_structure(self.params['fasta'])
+        inmembrane.create_proteins_dict(self.params['fasta'])
 
-    inmembrane.lipop1(self.params, self.proteins)
+    inmembrane.annotate_lipop1(self.params, self.proteins)
 
     self.expected_output = {
         u'SPy_0252': True,

@@ -69,7 +69,7 @@ default_params_str = """{
   'csv': '',
   'output': '',
   'out_dir': '',
-  'protocol': 'gram_neg', # 'gram_pos'
+  'protocol': 'gram_pos', # 'gram_neg'
   'signalp4_organism': 'gram+',
   'signalp4_bin': 'signalp',
   'lipop1_bin': 'LipoP',
@@ -134,80 +134,55 @@ def init_output_dir(params):
   os.chdir(base_dir)
 
 
-def create_protein_data_structure(fasta):
+def import_protocol_python(params):
   """
-  From a FASTA file, creates a dictionary using the ID of each sequence
-  in the fasta file. Also returns a list of ID's in the same order as
-  that in the file.
+  Some python magic that loads the desired protocol file
+  encoded in the string 'params['protocol'] as a python file
+  with the internal variable name 'protocol'. An appropriate
+  python command is generated that is to be processed by
+  the 'exec' function.
   """
-  seqids = []
-  seqid = None
-  proteins = {}
-  for l in open(fasta):
-    if l.startswith(">"):
-      seqid, name = parse_fasta_header(l)
-      seqids.append(seqid)
-      proteins[seqid] = {
-        'seq':"",
-        'name':name,
-      }
-      continue
-    if seqid is not None:
-      words = l.split()
-      if words:
-        proteins[seqid]['seq'] += words[0]
-  return seqids, proteins
-
-  
-def write_to_csv(csv, seqids, proteins):
-  f = open(csv, 'w')
-  for seqid in seqids:
-    protein = proteins[seqid]
-    f.write('%s,%s,%s,"%s"\n' % \
-        (seqid, 
-         protein['category'], 
-         protein['details'],
-         protein['name']))
-  f.close()
+  protocol_py = os.path.join('protocols', params['protocol']+'.py')
+  if not os.path.isfile(protocol_py):
+    raise IOError("Couldn't find protcols/" + protocol_py)
+  return 'import protocols.%s as protocol' % (params['protocol'])
 
 
 def process(params):
-  protocol_py = 'protocols/' + params['protocol'] + '.py'
-  if not os.path.isfile(protocol_py):
-    raise IOError("Couldn't find protcols/" + protocol_py)
-  exec('import protocols.%s as protocol' % (params['protocol']))
-  protocol.init(params)
-
+  """
+  Main program loop. Triggers the 'protocol' found in the params
+  to annotate all proteins give the list of annotations needed by
+  'protocol'. Then outputs to screen and a .csv file.
+  """
+  # initializations
+  exec(import_protocol_python(params))
   init_output_dir(params)
-
-  seqids, proteins = create_protein_data_structure(params['fasta'])
+  seqids, proteins = create_proteins_dict(params['fasta'])
 
   # TODO: this loop needs to be run within the protocol,
   #       since for some protocols not all plugins
-  #       will be run for every sequence, dependent
+  #       will be run for every sequence, conditional
   #       on the outcome of a previous analysis
   #       eg. protocol.run(params, proteins)
-  for feature in params['features']:
-    exec('%s(params, proteins)' % feature)
 
+  # annotates with external binaries as found in plugins
+  for annotation in protocol.get_annotations(params):
+    annotate_fn = eval(annotation)
+    annotate_fn(params, proteins)
+
+  # do protocol analysis on the results of the annotations
   for seqid in seqids:
     protein = proteins[seqid]
-    details, category = \
-        protocol.post_process_protein(params, protein)
-    if details.endswith(';'):
-      details = details[:-1]
-    if details is '':
-      details = "."
-    protein['details'] = details
-    protein['category'] = category
-    log_stdout('%-15s   %-13s  %-50s  %s' % \
-        (seqid, 
-         protein['category'], 
-         protein['details'],
-         protein['name'][:60]))
+    protocol.post_process_protein(params, protein)
+    log_stdout(protocol.protein_output_line(seqid, proteins))
 
-  write_to_csv(params['csv'], seqids, proteins)
-    
+  # always write to biologist-friendly csv file
+  f = open(params['csv'], 'w')
+  for seqid in seqids:
+    f.write(protocol.protein_csv_line(seqid, proteins))
+  f.close()
+
+
 
 if __name__ == "__main__":
   parser = OptionParser()

@@ -1,77 +1,21 @@
 from helpers import *
 
 
+def get_annotations(params):
+  annotations = [ \
+      'annotate_signalp4', 'annotate_lipop1', 
+      'annotate_hmmsearch3']
 
-def chop_nterminal_peptide(protein, i_cut):
-  protein['sequence_length'] -= i_cut
-  for prop in protein:
-    if '_loops' in prop or '_helices' in prop:
-      loops = protein[prop]
-      for i in range(len(loops)):
-        j, k = loops[i]
-        loops[i] = (j - i_cut, k - i_cut)
-  for prop in protein:
-    if '_loops' in prop or '_helices' in prop:
-      loops = protein[prop]
-      for i in reversed(range(len(loops))):
-        j, k = loops[i]
-        # tests if this loop has been cut out
-        if j<=0 and k<=0:
-          del loops[i]
-        # otherewise, neg value means loop is at the new N-terminal
-        elif j<=0 and k>0:
-          loops[i] = (1, k)
-
-
-def eval_surface_exposed_loop(
-    sequence_length, n_transmembrane_region, outer_loops, 
-    terminal_exposed_loop_min, internal_exposed_loop_min):
-    
-  if n_transmembrane_region == 0:
-    # treat protein as one entire exposed loop
-    return sequence_length >= terminal_exposed_loop_min
-
-  if not outer_loops:
-    return False
-
-  loop_len = lambda loop: abs(loop[1]-loop[0]) + 1
-
-  # if the N-terminal loop sticks outside
-  if outer_loops[0][0] == 1:
-    nterminal_loop = outer_loops[0]
-    del outer_loops[0]
-    if loop_len(nterminal_loop) >= terminal_exposed_loop_min:
-      return True
-
-  # if the C-terminal loop sticks outside
-  if outer_loops:
-    if outer_loops[-1][-1] == sequence_length:
-      cterminal_loop = outer_loops[-1]
-      del outer_loops[-1]
-      if loop_len(cterminal_loop) >= terminal_exposed_loop_min:
-        return True
-
-  # test remaining outer loops for length
-  for loop in outer_loops:
-    if loop_len(loop) >= internal_exposed_loop_min:
-      return True
-
-  return False
-
-
-def feature_list(params):
-  features = ['signalp4', 'lipop1', 'hmmsearch3']
   if dict_get(params, 'helix_programs'):
     if 'tmhmm' in params['helix_programs']:
-      features.append('tmhmm')
+      annotations.append('annotate_tmhmm')
     if 'memsat3' in params['helix_programs']:
-      features.append('memsat3')
-  if dict_get(params, 'barrel_programs'):
-    if 'tmbhunt' in params['barrel_programs']:
-      features.append('tmbhunt_web')
-    if 'bomp' in params['barrel_programs']:
-      features.append('bomp_web')
-  return features
+      annotations.append('annotate_memsat3')
+
+  params['hmm_profiles_dir'] = os.path.join(
+      os.path.dirname(__file__), 'gram_pos_profiles')
+
+  return annotations
 
 
 def post_process_protein(params, protein):
@@ -145,7 +89,33 @@ def post_process_protein(params, protein):
     else:
       category = "CYTOPLASM"
 
+  if details.endswith(';'):
+    details = details[:-1]
+  if details is '':
+    details = "."
+
+  protein['details'] = details
+  protein['category'] = category
+
   return details, category
+
+
+def protein_output_line(seqid, proteins):
+  return '%-15s   %-13s  %-50s  %s' % \
+      (seqid, 
+      proteins[seqid]['category'], 
+      proteins[seqid]['details'],
+      proteins[seqid]['name'][:60])
+
+
+def protein_csv_line(seqid, proteins):
+  return '%s,%s,%s,"%s"\n' % \
+      (seqid, 
+       proteins[seqid]['category'], 
+       proteins[seqid]['details'],
+       proteins[seqid]['name'][:60])
+
+
 
 
 

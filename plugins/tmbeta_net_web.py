@@ -8,7 +8,7 @@ import inmembrane
 
 
 
-def tmbeta_net_web(params, proteins, \
+def annotate_tmbeta_net_web(params, proteins, \
                    url="http://psfs.cbrc.jp/tmbeta-net/", \
                    category='BARREL',
                    force=False):

@@ -18,14 +18,15 @@ class TestTmbetanet(unittest.TestCase):
     os.chdir(self.dir)
 
     inmembrane.silence_log(True)
-    
+    inmembrane.clean_directory('.', ['input.fasta'])
+     
     self.params = inmembrane.get_params()
-    self.params['fasta'] = "bomps.fasta"
+    self.params['fasta'] = "input.fasta"
     self.seqids, self.proteins = \
-        inmembrane.create_protein_data_structure(self.params['fasta'])
+        inmembrane.create_proteins_dict(self.params['fasta'])
 
     # run TMBETA-NET
-    self.output = inmembrane.tmbeta_net_web(self.params, self.proteins, force=True)
+    self.output = inmembrane.annotate_tmbeta_net_web(self.params, self.proteins, force=True)
     
     self.expected_output = {
         'gi|107836852': 

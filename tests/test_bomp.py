@@ -1,4 +1,5 @@
 import os
+import glob
 import unittest
 import sys
 
@@ -19,17 +20,19 @@ class TestBomp(unittest.TestCase):
 
     inmembrane.silence_log(True)
 
+    inmembrane.clean_directory('.', ['input.fasta'])
+
     self.params = inmembrane.get_params()
-    self.params['fasta'] = "bomps.fasta"
+    self.params['fasta'] = "input.fasta"
     self.expected_output = {
         u'gi|107837101': 3, 
         u'gi|107836588': 5, 
         u'gi|107836852': 5
     }
     self.seqids, self.proteins = \
-        inmembrane.create_protein_data_structure(self.params['fasta'])
+        inmembrane.create_proteins_dict(self.params['fasta'])
 
-    self.output = inmembrane.bomp_web(self.params, self.proteins, force=True)
+    self.output = inmembrane.annotate_bomp_web(self.params, self.proteins, force=True)
 
 
     self.assertEqual(self.expected_output, self.output)
