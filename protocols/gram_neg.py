@@ -1,157 +1,106 @@
 
-
 from helpers import *
 
 
-def init(params):
-  features = ['signalp4', 'lipop1', 'hmmsearch3']
+def predict_surface_exposure_barrel(params, protein):
+  # TODO: This is a placeholder for a function which will do something
+  #       similar to predict_surface_exposure, but focussed on inferring 
+  #       outer membrane beta barrel topology.
+  #       Essentially, we should:
+  #        * Move through the strand list in reverse.
+  #        * Strand annotation alternates 'up' strand and 'down' strand
+  #        * Loop annotation (starting with the C-terminal residue) alternates
+  #          'inside' and 'outside'.
+  #        * If everything is sane, we should finish on a down strand. If not,
+  #          consider a rule to make an 'N-terminal up strand' become 
+  #          an 'inside loop'
+  #        * Sanity check on loop lengths ? 'Outside' loops should be on average
+  #          longer than non-terminal 'inside' loops.
+  #        * For alternative strand predictors (eg transFold, ProfTMB), which
+  #          may specifically label inner and outer loops, we should obviously
+  #          use those annotations directly.
+  pass
+
+
+def print_summary_table(proteins):
+  counts = {}
+  counts["BARREL"] = 0
+  for seqid in proteins:
+    category = proteins[seqid]['category']
+    
+    # WIP: greedy barrel annotation
+    if (dict_get(proteins[seqid], 'tmbhunt_prob') >= params['tmbhunt_cutoff']) or \
+       (dict_get(proteins[seqid], 'bomp') >= params['bomp_cutoff']):
+       counts["BARREL"] += 1
+    
+    if category not in counts:
+      counts[category] = 0
+    else:
+      counts[category] += 1
+      
+  log_stderr("# Number of proteins in each class:")
+  for c in counts:
+    log_stderr("%-15s %i" % (c, counts[c]))
+
+
+def identify_omps(params, stringent=False):
+  """
+  Identifies outer membrane proteins from gram-negative bacteria.
+  
+  If stringent=True, all predicted outer membrane barrels must also
+  have a predicted signal sequence to be categorized as BARREL.
+  """
+  
+  seqids, proteins = create_protein_data_structure(params['fasta'])
+
+  features = [signalp4, lipop1, hmmsearch3]
   if dict_get(params, 'helix_programs'):
     if 'tmhmm' in params['helix_programs']:
-      features.append('tmhmm')
+      features.append(tmhmm)
     if 'memsat3' in params['helix_programs']:
-      features.append('memsat3')
+      features.append(memsat3)
   if dict_get(params, 'barrel_programs'):
     if 'tmbhunt' in params['barrel_programs']:
-      features.append('tmbhunt_web')
+      features.append(tmbhunt_web)
     if 'bomp' in params['barrel_programs']:
-      features.append('bomp_web')
-  params['features'] = features
-
-  module_dir = os.path.abspath(os.path.dirname(__file__))
-  params['hmm_profiles_dir'] = os.path.join(
-      module_dir, 'gram_neg_profiles')
-
-
-
-def chop_nterminal_peptide(protein, i_cut):
-  protein['sequence_length'] -= i_cut
-  for prop in protein:
-    if '_loops' in prop or '_helices' in prop:
-      loops = protein[prop]
-      for i in range(len(loops)):
-        j, k = loops[i]
-        loops[i] = (j - i_cut, k - i_cut)
-  for prop in protein:
-    if '_loops' in prop or '_helices' in prop:
-      loops = protein[prop]
-      for i in reversed(range(len(loops))):
-        j, k = loops[i]
-        # tests if this loop has been cut out
-        if j<=0 and k<=0:
-          del loops[i]
-        # otherewise, neg value means loop is at the new N-terminal
-        elif j<=0 and k>0:
-          loops[i] = (1, k)
-
-
-def eval_surface_exposed_loop(
-    sequence_length, n_transmembrane_region, outer_loops, 
-    terminal_exposed_loop_min, internal_exposed_loop_min):
+      features.append(bomp_web)
+  for extract_protein_feature in features:
+    extract_protein_feature(params, proteins)
+  
+  for seqid, protein in proteins.items():
+    # TODO: this is used for setting 'category', however
+    #       we may need to make a gram- OM specific version
+    #       (eg, run after strand prediction so we can look at
+    #            strand topology, detect long extracellular loops etc) 
+    details, category = predict_surface_exposure(params, protein)
+    proteins[seqid]['category'] = category
+    proteins[seqid]['details'] = details
     
-  if n_transmembrane_region == 0:
-    # treat protein as one entire exposed loop
-    return sequence_length >= terminal_exposed_loop_min
-
-  if not outer_loops:
-    return False
-
-  loop_len = lambda loop: abs(loop[1]-loop[0]) + 1
-
-  # if the N-terminal loop sticks outside
-  if outer_loops[0][0] == 1:
-    nterminal_loop = outer_loops[0]
-    del outer_loops[0]
-    if loop_len(nterminal_loop) >= terminal_exposed_loop_min:
-      return True
-
-  # if the C-terminal loop sticks outside
-  if outer_loops:
-    if outer_loops[-1][-1] == sequence_length:
-      cterminal_loop = outer_loops[-1]
-      del outer_loops[-1]
-      if loop_len(cterminal_loop) >= terminal_exposed_loop_min:
-        return True
-
-  # test remaining outer loops for length
-  for loop in outer_loops:
-    if loop_len(loop) >= internal_exposed_loop_min:
-      return True
-
-  return False
-
-
-def post_process_protein(params, protein):
-
-  def sequence_length(protein):
-    return protein['sequence_length']
+    if stringent:
+      if dict_get(protein, 'is_signalp') and \
+       ( dict_get(protein, 'bomp') or \
+         dict_get(protein, 'tmbhunt') ):
+       proteins[seqid]['category'] = 'BARREL'
+    else:
+      if dict_get(protein, 'bomp') or \
+         dict_get(protein, 'tmbhunt'):
+         proteins[seqid]['category'] = 'BARREL'
     
-  def has_tm_helix(protein):
-    for program in params['helix_programs']:
-      if dict_get(protein, '%s_helices' % program):
-        return True
-    return False
+  # TMBETA-NET knows to only run on predicted barrels
+  if 'tmbeta' in params['barrel_programs']:
+    tmbeta_net_web(params, proteins, category='BARREL')
 
-  def has_surface_exposed_loop(protein):
-    for program in params['helix_programs']:
-      if eval_surface_exposed_loop(
-          protein['sequence_length'], 
-          len(protein['%s_helices' % (program)]), 
-          protein['%s_outer_loops' % (program)], 
-          params['terminal_exposed_loop_min'], 
-          params['internal_exposed_loop_min']):
-        return True
-    return False
+  for seqid in proteins:
+    details = proteins[seqid]['details']
+    if dict_get(proteins[seqid], 'tmbeta_strands'):
+      num_strands = len(proteins[seqid]['tmbeta_strands'])
+      details += 'tmbeta(%i)' % (num_strands)
+    if details.endswith(';'):
+      details = details[:-1]
+    if details is '':
+      details = "."
+    proteins[seqid]['details'] = details
+    
+  print_summary_table(proteins)
 
-  terminal_exposed_loop_min = \
-      params['terminal_exposed_loop_min']
-
-  is_hmm_profile_match = dict_get(protein, 'hmmsearch')
-  is_lipop = dict_get(protein, 'is_lipop')
-  if is_lipop:
-    i_lipop_cut = protein['lipop_cleave_position']
-  is_signalp = dict_get(protein, 'is_signalp')
-  if is_signalp:
-    i_signalp_cut = protein['signalp_cleave_position']
-
-  details = ""
-  if is_hmm_profile_match:
-    details += "hmm(%s);" % protein['hmmsearch'][0]
-  if is_lipop: 
-    details += "lipop;"
-  if is_signalp:
-    details += "signalp;"
-  for program in params['helix_programs']:
-    if has_tm_helix(protein):
-      n = len(protein['%s_helices' % program])
-      details += program + "(%d);" % n
-
-  if is_lipop: 
-    chop_nterminal_peptide(protein, i_lipop_cut)
-  elif is_signalp:
-    chop_nterminal_peptide(protein, i_signalp_cut)
-
-  if is_hmm_profile_match:
-    category =  "PSE"
-  elif has_tm_helix(protein):
-    if has_surface_exposed_loop(protein):
-      category = "PSE"
-    else:
-      category = "MEMBRANE"
-  else:
-    if is_lipop:
-      # whole protein considered outer terminal loop
-      if sequence_length(protein) < terminal_exposed_loop_min:
-        category = "MEMBRANE"
-      else:
-        category = "PSE"
-    elif is_signalp:
-      category = "SECRETED"
-    else:
-      category = "CYTOPLASM"
-
-  return details, category
-
-
-
-
-
+  return seqids, proteins
