@@ -193,12 +193,7 @@ def process(params):
     protein = proteins[seqid]
     details, category = \
         protocol.post_process_protein(params, protein)
-    if details.endswith(';'):
-      details = details[:-1]
-    if details is '':
-      details = "."
-    protein['details'] = details
-    protein['category'] = category
+
     log_stdout('%-15s   %-13s  %-50s  %s' % \
         (seqid, 
          protein['category'], 

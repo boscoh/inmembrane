@@ -1,7 +1,6 @@
 from helpers import *
 
 
-
 def chop_nterminal_peptide(protein, i_cut):
   protein['sequence_length'] -= i_cut
   for prop in protein:
@@ -60,19 +59,19 @@ def eval_surface_exposed_loop(
 
 
 def get_annotations(params):
-  annotations = ['annotate_signalp4', 'annotate_lipop1', 'annotate_hmmsearch3']
+  annotations = [ \
+      'annotate_signalp4', 'annotate_lipop1', 
+      'annotate_hmmsearch3']
+
   if dict_get(params, 'helix_programs'):
     if 'tmhmm' in params['helix_programs']:
       annotations.append('annotate_tmhmm')
     if 'memsat3' in params['helix_programs']:
       annotations.append('annotate_memsat3')
-  if dict_get(params, 'barrel_programs'):
-    if 'tmbhunt' in params['barrel_programs']:
-      annotations.append('annotate_tmbhunt_web')
-    if 'bomp' in params['barrel_programs']:
-      annotations.append('annotate_bomp_web')
-  module_dir = os.path.dirname(__file__)
-  params['hmm_profiles_dir'] = os.path.join(module_dir, 'gram_pos_profiles')
+
+  params['hmm_profiles_dir'] = os.path.join(
+      os.path.dirname(__file__), 'gram_pos_profiles')
+
   return annotations
 
 
@@ -144,6 +143,14 @@ def post_process_protein(params, protein):
       category = "SECRETED"
     else:
       category = "CYTOPLASM"
+
+  if details.endswith(';'):
+    details = details[:-1]
+  if details is '':
+    details = "."
+
+  protein['details'] = details
+  protein['category'] = category
 
   return details, category
 
