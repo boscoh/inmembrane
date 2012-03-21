@@ -43,6 +43,11 @@ def print_summary_table(proteins):
     log_stderr("%-15s %i" % (c, counts[c]))
 
 # TODO: Workflow:
+#       These rules can be approached in two ways. Run every annotation plugin
+#       on every sequence, then post-hoc apply these rules (potentially inefficient
+#       and rude to web services). Alternatively the protocol can control the
+#       annotation loop and only run certain analyses (eg BOMP) if a certain 
+#       condition is met (eg is_signalp). 
 #       * If is_lipop, 
 #         check retention signal annotation (+2Asp) -> periplasmic inner or outer
 #       * If is_signalp (or TAT) and no other TM and not is_lipop -> periplasmic
