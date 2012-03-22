@@ -201,4 +201,16 @@ def clean_directory(top, excluded_files):
     for name in dirs:
       os.rmdir(os.path.join(root, name))
 
+def protein_output_line(seqid, proteins):
+  return '%-15s   %-13s  %-50s  %s' % \
+      (seqid, 
+      proteins[seqid]['category'], 
+      proteins[seqid]['details'],
+      proteins[seqid]['name'][:60])
 
+def protein_csv_line(seqid, proteins):
+  return '%s,%s,%s,"%s"\n' % \
+      (seqid, 
+       proteins[seqid]['category'], 
+       proteins[seqid]['details'],
+       proteins[seqid]['name'])

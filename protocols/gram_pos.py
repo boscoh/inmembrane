@@ -1,5 +1,13 @@
-from helpers import *
-
+#from helpers import *
+import os
+import helpers
+from helpers import dict_get, eval_surface_exposed_loop, \
+                    chop_nterminal_peptide
+                    
+# the formatting of the annotations printed to stdout and written
+# to csv file can be changed by overriding these functions if desired
+protein_output_line = helpers.protein_output_line
+protein_csv_line = helpers.protein_csv_line
 
 def get_annotations(params):
   annotations = [ \
@@ -98,26 +106,6 @@ def post_process_protein(params, protein):
   protein['category'] = category
 
   return details, category
-
-# TODO: Shouldn't these be shared functions that every
-#       protocol uses by default (probably in inmembrane.py) ? 
-#       The processing in the
-#       protocol should be decoupled from the output.
-def protein_output_line(seqid, proteins):
-  return '%-15s   %-13s  %-50s  %s' % \
-      (seqid, 
-      proteins[seqid]['category'], 
-      proteins[seqid]['details'],
-      proteins[seqid]['name'][:60])
-
-
-def protein_csv_line(seqid, proteins):
-  return '%s,%s,%s,"%s"\n' % \
-      (seqid, 
-       proteins[seqid]['category'], 
-       proteins[seqid]['details'],
-       proteins[seqid]['name'][:60])
-
 
 
 

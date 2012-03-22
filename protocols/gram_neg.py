@@ -1,6 +1,12 @@
+import os
+import helpers
+from helpers import dict_get, eval_surface_exposed_loop, \
+                    chop_nterminal_peptide, log_stderr
 
-from helpers import *
-
+# the formatting of the annotations printed to stdout and written
+# to csv file can be changed by overriding these functions if desired
+protein_output_line = helpers.protein_output_line
+protein_csv_line = helpers.protein_csv_line
 
 def predict_surface_exposure_barrel(params, protein):
   # TODO: This is a placeholder for a function which will do something
@@ -22,7 +28,7 @@ def predict_surface_exposure_barrel(params, protein):
   pass
 
 
-def print_summary_table(proteins):
+def print_summary_table(params, proteins):
   counts = {}
   counts["BARREL"] = 0
   for seqid in proteins:
@@ -55,64 +61,83 @@ def print_summary_table(proteins):
 #       * If is_signalp, and has after the signal tranmembranes -> inner membrane
 #       * If inner membrane, check for long cyto or peri loops: inner[+cyto][+peri]
 #       * If not is_signalp and not is_lipop (and not TAT): -> cytoplasmic
-def identify_omps(params, stringent=False):
-  """
-  Identifies outer membrane proteins from gram-negative bacteria.
-  
-  If stringent=True, all predicted outer membrane barrels must also
-  have a predicted signal sequence to be categorized as BARREL.
-  """
-  
-  seqids, proteins = create_proteins_dict(params['fasta'])
+def get_annotations(params):
+  annotations = ['annotate_signalp4', 'annotate_lipop1']
+  #annotations += ['annotate_tatp']
+  annotations += ['annotate_bomp']
 
-  features = [signalp4, lipop1, hmmsearch3]
   if dict_get(params, 'helix_programs'):
     if 'tmhmm' in params['helix_programs']:
-      features.append(tmhmm)
+      annotations.append('annotate_tmhmm')
     if 'memsat3' in params['helix_programs']:
-      features.append(memsat3)
-  if dict_get(params, 'barrel_programs'):
-    if 'tmbhunt' in params['barrel_programs']:
-      features.append(annotate_tmbhunt_web)
-    if 'bomp' in params['barrel_programs']:
-      features.append(annotate_bomp_web)
-  for extract_protein_feature in features:
-    extract_protein_feature(params, proteins)
-  
-  for seqid, protein in proteins.items():
-    # TODO: this is used for setting 'category', however
-    #       we may need to make a gram- OM specific version
-    #       (eg, run after strand prediction so we can look at
-    #            strand topology, detect long extracellular loops etc) 
-    details, category = predict_surface_exposure(params, protein)
-    proteins[seqid]['category'] = category
-    proteins[seqid]['details'] = details
-    
-    if stringent:
-      if dict_get(protein, 'is_signalp') and \
-       ( dict_get(protein, 'bomp') or \
-         dict_get(protein, 'tmbhunt') ):
-       proteins[seqid]['category'] = 'BARREL'
-    else:
-      if dict_get(protein, 'bomp') or \
-         dict_get(protein, 'tmbhunt'):
-         proteins[seqid]['category'] = 'BARREL'
-    
-  # TMBETA-NET knows to only run on predicted barrels
-  if 'tmbeta' in params['barrel_programs']:
-    annotate_tmbeta_net_web((params, proteins, category='BARREL')
+      annotations.append('annotate_memsat3')
 
-  for seqid in proteins:
-    details = proteins[seqid]['details']
-    if dict_get(proteins[seqid], 'tmbeta_strands'):
-      num_strands = len(proteins[seqid]['tmbeta_strands'])
-      details += 'tmbeta(%i)' % (num_strands)
-    if details.endswith(';'):
-      details = details[:-1]
-    if details is '':
-      details = "."
-    proteins[seqid]['details'] = details
-    
-  print_summary_table(proteins)
+  # currently we don't use any HMM profiles on gram-
+  # annotation, but this may be useful in the future
+  #annotations += ['annotate_hmmsearch3']
+  #params['hmm_profiles_dir'] = os.path.join(
+  #    os.path.dirname(__file__), 'gram_neg_profiles')
 
-  return seqids, proteins
+  return annotations
+
+#def identify_omps(params, stringent=False):
+#  """
+#  Identifies outer membrane proteins from gram-negative bacteria.
+#  
+#  If stringent=True, all predicted outer membrane barrels must also
+#  have a predicted signal sequence to be categorized as BARREL.
+#  """
+#  
+#  seqids, proteins = create_proteins_dict(params['fasta'])
+#
+#  features = [signalp4, lipop1, hmmsearch3]
+#  if dict_get(params, 'helix_programs'):
+#    if 'tmhmm' in params['helix_programs']:
+#      features.append(tmhmm)
+#    if 'memsat3' in params['helix_programs']:
+#      features.append(memsat3)
+#  if dict_get(params, 'barrel_programs'):
+#    if 'tmbhunt' in params['barrel_programs']:
+#      features.append(annotate_tmbhunt_web)
+#    if 'bomp' in params['barrel_programs']:
+#      features.append(annotate_bomp_web)
+#  for extract_protein_feature in features:
+#    extract_protein_feature(params, proteins)
+#  
+#  for seqid, protein in proteins.items():
+#    # TODO: this is used for setting 'category', however
+#    #       we may need to make a gram- OM specific version
+#    #       (eg, run after strand prediction so we can look at
+#    #            strand topology, detect long extracellular loops etc) 
+#    details, category = predict_surface_exposure(params, protein)
+#    proteins[seqid]['category'] = category
+#    proteins[seqid]['details'] = details
+#    
+#    if stringent:
+#      if dict_get(protein, 'is_signalp') and \
+#       ( dict_get(protein, 'bomp') or \
+#         dict_get(protein, 'tmbhunt') ):
+#       proteins[seqid]['category'] = 'BARREL'
+#    else:
+#      if dict_get(protein, 'bomp') or \
+#         dict_get(protein, 'tmbhunt'):
+#         proteins[seqid]['category'] = 'BARREL'
+#    
+#  # TMBETA-NET knows to only run on predicted barrels
+#  if 'tmbeta' in params['barrel_programs']:
+#    annotate_tmbeta_net_web((params, proteins, category='BARREL')
+#
+#  for seqid in proteins:
+#    details = proteins[seqid]['details']
+#    if dict_get(proteins[seqid], 'tmbeta_strands'):
+#      num_strands = len(proteins[seqid]['tmbeta_strands'])
+#      details += 'tmbeta(%i)' % (num_strands)
+#    if details.endswith(';'):
+#      details = details[:-1]
+#    if details is '':
+#      details = "."
+#    proteins[seqid]['details'] = details
+#    
+#  print_summary_table(proteins)
+#
+#  return seqids, proteins
