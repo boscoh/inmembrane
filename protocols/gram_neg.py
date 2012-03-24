@@ -60,6 +60,11 @@ def get_annotations(params):
   annotations = ['annotate_signalp4', 'annotate_lipop1']
   #annotations += ['annotate_tatp']
   annotations += ['annotate_bomp']
+  
+  # TMBETA-NET knows to only run on predicted barrels
+  # with the category 'OM(barrel)'
+  if 'tmbeta' in dict_get(params, 'barrel_programs'):
+    annotations.append('annotate_tmbeta_net_web')
 
   if dict_get(params, 'helix_programs'):
     if 'tmhmm' in params['helix_programs']:
@@ -75,7 +80,7 @@ def get_annotations(params):
 
   return annotations
 
-def post_process_protein(params, protein):
+def post_process_protein(params, protein, stringent=False):
     
   def has_tm_helix(protein):
     for program in params['helix_programs']:
@@ -96,134 +101,93 @@ def post_process_protein(params, protein):
           params['internal_exposed_loop_min']):
         return True
     return False
-      
+  
+  details = []
   #is_hmm_profile_match = dict_get(protein, 'hmmsearch')
-  is_lipop = dict_get(protein, 'is_lipop')
-  if is_lipop:
-    i_lipop_cut = protein['lipop_cleave_position']
   is_signalp = dict_get(protein, 'is_signalp')
+  # TODO: in terms of logic, a Tat signal is essentially the same
+  #       as a Sec (signalp) signal. Consider setting is_signalp = True
+  #       if is_tatp = True, so all logic just looks at is_signalp
+  #is_tatp = dict_get(protein, 'is_tatp')
+  is_lipop = dict_get(protein, 'is_lipop')
+  
+  is_barrel = False
+  if dict_get(protein, 'bomp'):
+    is_barrel = True
+    details += ['bomp']
+  if dict_get(protein, 'tmbhunt'):
+    is_barrel = True 
+    details += ['tmbhunt']
+  
+  # if stringent, predicted OM barrels must also have a predicted
+  # signal sequence 
+  if stringent and is_signalp and is_barrel:
+     protein['category'] = 'OM(barrel)'
+  elif is_barrel:
+     protein['category'] = 'OM(barrel)'
+  
+  # set number of predicted OM barrel strands in details
+  if dict_get(protein, 'tmbeta_strands'):
+    num_strands = len(protein['tmbeta_strands'])
+    details += ['tmbeta_strands(%i)' % (num_strands)]
+  
+  #if is_tatp:
+  #  details += ["tatp"]
+  #  if not is_lipop:
+  #    chop_nterminal_peptide(protein,  protein['tatp_cleave_position'])
+  
   if is_signalp:
-    i_signalp_cut = protein['signalp_cleave_position']
-
-  # TODO: make details a plain list.
-  #       leave the insertion of ';' to output time
-  details = ""
-  #if is_hmm_profile_match:
-  #  details += "hmm(%s);" % protein['hmmsearch'][0]
-  if is_lipop: 
-    details += "lipop;"
-  if is_signalp:
-    details += "signalp;"
-  for program in params['helix_programs']:
-    if has_tm_helix(protein):
-      n = len(protein['%s_helices' % program])
-      details += program + "(%d);" % n
-
+    details += ["signalp"]
+    if not is_lipop:
+      chop_nterminal_peptide(protein,  protein['signalp_cleave_position'])
+  
   if is_lipop:
-    chop_nterminal_peptide(protein, i_lipop_cut)
-  elif is_signalp:
-    chop_nterminal_peptide(protein, i_signalp_cut)
+    details += ["lipop"]
+    chop_nterminal_peptide(protein, protein['lipop_cleave_position'])
+  
+  #if is_hmm_profile_match:
+  #  details += ["hmm(%s)" % protein['hmmsearch'][0]]
 
-  elif has_tm_helix(protein):
+  if has_tm_helix(protein) and not is_barrel:
+    for program in params['helix_programs']:
+      n = len(protein['%s_helices' % program])
+      details += [program + "(%d);" % n]
+    
+    # TODO: detect long periplasmic OR cytoplasmic loops 
     if has_periplasmic_loop(protein):
-      category = "PSE"
+      category = "IM+peri"
     else:
-      category = "MEMBRANE"
-  else:
+      category = "IM"
+  elif not is_barrel:
     if is_lipop:
-      # whole protein considered outer terminal loop
-      if len(protein['seq']) < params['terminal_exposed_loop_min']:
-        category = "MEMBRANE"
-      else:
-        category = "PSE"
+      # TODO: check for inner vs. outer lipoprotein annotation
+      #       classify as LIPOPROTEIN(IM) or LIPOPROTEIN(OM)
+      category = "LIPOPROTEIN"
+      pass
     elif is_signalp:
       category = "SECRETED"
     else:
       category = "CYTOPLASM"
 
-  if details.endswith(';'):
-    details = details[:-1]
-  if details is '':
-    details = "."
+  if details is []:
+    details = ["."]
 
   protein['details'] = details
   protein['category'] = category
 
   return details, category
 
-#def identify_omps(params, stringent=False):
-#  """
-#  Identifies outer membrane proteins from gram-negative bacteria.
-#  
-#  If stringent=True, all predicted outer membrane barrels must also
-#  have a predicted signal sequence to be categorized as BARREL.
-#  """
-#  
-#  seqids, proteins = create_proteins_dict(params['fasta'])
-#
-#  features = [signalp4, lipop1, hmmsearch3]
-#  if dict_get(params, 'helix_programs'):
-#    if 'tmhmm' in params['helix_programs']:
-#      features.append(tmhmm)
-#    if 'memsat3' in params['helix_programs']:
-#      features.append(memsat3)
-#  if dict_get(params, 'barrel_programs'):
-#    if 'tmbhunt' in params['barrel_programs']:
-#      features.append(annotate_tmbhunt_web)
-#    if 'bomp' in params['barrel_programs']:
-#      features.append(annotate_bomp_web)
-#  for extract_protein_feature in features:
-#    extract_protein_feature(params, proteins)
-#  
-#  for seqid, protein in proteins.items():
-#    # TODO: this is used for setting 'category', however
-#    #       we may need to make a gram- OM specific version
-#    #       (eg, run after strand prediction so we can look at
-#    #            strand topology, detect long extracellular loops etc) 
-#    details, category = predict_surface_exposure(params, protein)
-#    proteins[seqid]['category'] = category
-#    proteins[seqid]['details'] = details
-#    
-#    if stringent:
-#      if dict_get(protein, 'is_signalp') and \
-#       ( dict_get(protein, 'bomp') or \
-#         dict_get(protein, 'tmbhunt') ):
-#       proteins[seqid]['category'] = 'BARREL'
-#    else:
-#      if dict_get(protein, 'bomp') or \
-#         dict_get(protein, 'tmbhunt'):
-#         proteins[seqid]['category'] = 'BARREL'
-#    
-#  # TMBETA-NET knows to only run on predicted barrels
-#  if 'tmbeta' in params['barrel_programs']:
-#    annotate_tmbeta_net_web((params, proteins, category='BARREL')
-#
-#  for seqid in proteins:
-#    details = proteins[seqid]['details']
-#    if dict_get(proteins[seqid], 'tmbeta_strands'):
-#      num_strands = len(proteins[seqid]['tmbeta_strands'])
-#      details += 'tmbeta(%i)' % (num_strands)
-#    if details.endswith(';'):
-#      details = details[:-1]
-#    if details is '':
-#      details = "."
-#    proteins[seqid]['details'] = details
-#    
-#  print_summary_table(proteins)
-#
-#  return seqids, proteins
-
 
 def protein_output_line(seqid, proteins):
   return '%-15s   %-13s  %-50s  %s' % \
       (seqid, 
       proteins[seqid]['category'], 
-      proteins[seqid]['details'],
+      ";".join(proteins[seqid]['details']),
       proteins[seqid]['name'][:60])
 
 def protein_csv_line(seqid, proteins):
   return '%s,%s,%s,"%s"\n' % \
       (seqid, 
        proteins[seqid]['category'], 
-       proteins[seqid]['details'],
+       ";".join(proteins[seqid]['details']),
        proteins[seqid]['name'])
