@@ -29,7 +29,7 @@ class TestHmmsearch3(unittest.TestCase):
 
     self.expected_output = {
         u'SPy_0128': ['LPxTG'], 
-        u'SPy_0191a': ['SLH_ls'], 
+        u'SPy_0191a': ['SLH'], 
     }
     for seqid in self.expected_output:
       for motif in self.expected_output[seqid]:
