@@ -47,14 +47,11 @@ def annotate_tmhmm(params, proteins):
     # initialize fields in proteins[seqid]
     if 'tmhmm_helices' not in proteins[seqid]:
       proteins[seqid].update({
-        'sequence_length':0,
         'tmhmm_helices':[],
         'tmhmm_inner_loops':[],
         'tmhmm_outer_loops':[]
       })
 
-    if 'Length' in l:
-      proteins[seqid]['sequence_length'] = int(words[-1])
     if 'inside' in l:
       proteins[seqid]['tmhmm_inner_loops'].append(
           (int(words[-2]), int(words[-1])))

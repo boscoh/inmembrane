@@ -119,6 +119,7 @@ def create_proteins_dict(fasta):
       words = l.split()
       if words:
         proteins[seqid]['seq'] += words[0]
+    proteins[seqid]['sequence_length'] = len(proteins[seqid]['seq'])
   return seqids, proteins
   
 
