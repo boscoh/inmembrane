@@ -2,6 +2,16 @@ from helpers import *
 
 
 def get_annotations(params):
+  """
+  Creates a list of annotation functions required
+  by this gram_pos protocol. The main program
+  will run the annotation functions of this list,
+  mapping the correct functions to the strings.
+
+  As well, the function does some bookeeping on
+  params to make sure the 'hmm_profiles_dir' is
+  pointing in the right place.
+  """
   annotations = [ \
       'annotate_signalp4', 'annotate_lipop1', 
       'annotate_hmmsearch3']
@@ -19,6 +29,12 @@ def get_annotations(params):
 
 
 def post_process_protein(params, protein):
+  """
+  This is the main analysis of the protein, where theprotein
+  dictionary should contain all the necessary information
+  from the annotations. Thus post_process_protein contain
+  can determine the final analysis.
+  """
 
   def sequence_length(protein):
     return protein['sequence_length']
