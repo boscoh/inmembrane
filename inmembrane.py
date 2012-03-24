@@ -91,6 +91,16 @@ default_params_str = """{
 
 
 def get_params():
+  """
+  Gets the params dictionary that hold all the configuration
+  information of the program. This is loaded from 'inmembrane.config'
+  which should be found in the same place as the main binary.
+
+  If 'inmembrane.config' is not a found, a default 'inmembrane.config'
+  is generated from 'default_params_str'. The config file should
+  be edited if the binaries are not available on the path, or have
+  different names.
+  """
   config = os.path.join(module_dir, 'inmembrane.config')
   if not os.path.isfile(config):
     log_stderr("# Couldn't find inmembrane.config file")

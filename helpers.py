@@ -9,13 +9,26 @@ import os, subprocess, sys
 LOG_DEBUG = False
 LOG_SILENT = False
 
+
+
 def dict_get(this_dict, prop):
+  """
+  Useful helper function to get values from dicts. Takes in
+  the possibility that the key may not exist, and in that
+  case returns False. Makes it easier to write code to avoid
+  handling the case of missing keys.
+  """
   if prop not in this_dict:
     return False
   return this_dict[prop]
   
 
 def run_with_output(cmd):
+  """
+  Runs an external program as a child process and captures
+  the input. May not work with external programs that include
+  complicated levels of shells.
+  """
   p = subprocess.Popen(
       cmd, shell=True, stdout=subprocess.PIPE, 
       stderr=subprocess.PIPE)
@@ -23,6 +36,11 @@ def run_with_output(cmd):
 
 
 def run(cmd, out_file=None):
+  """
+  Wrapper function to run external program so that existence
+  of binary can be checked and the output directed to a specific 
+  file.
+  """
   log_stderr("# " + cmd + " > " + out_file)
   if os.path.isfile(out_file) and (out_file != None):
     log_stderr("# -> skipped: %s already exists" % out_file)
@@ -42,11 +60,17 @@ def run(cmd, out_file=None):
 
 
 def silence_log(b):
+  """
+  Turns on logging silent mode w.r.t. to log_stderr and log_stdout
+  """
   global LOG_SILENT
   LOG_SILENT = b
 
 
 def log_stderr(s):
+  """
+  Wrapper for all stderr out. Allows future customization.
+  """
   if LOG_SILENT:
     return
   if s and s[-1] != "\n":
@@ -57,6 +81,9 @@ def log_stderr(s):
 
 
 def log_stdout(s):
+  """
+  Wrapper for all stderr out. Allows future customization.
+  """
   if LOG_SILENT:
     return
   print s
@@ -121,7 +148,41 @@ def create_proteins_dict(fasta):
   return seqids, proteins
   
 
+def print_proteins(proteins):
+  """
+  Prints out the proteins dictionary in a formatted 
+  manner that is also Python-eval compatible.
+  """
+  print "{"
+  for seqid in proteins:
+    print "  '%s': {" % seqid
+    for key, value in proteins[seqid].items():
+      print "    '%s': %s, " % (key, repr(value))
+    print "  },"
+  print "}"
+
+  
+def write_proteins_fasta(fasta, proteins, seqids):
+  """
+  Creates a fasta file of the sequences of a subset of the proteins.
+  """
+  f = open(fasta, "w")
+  for seqid in seqids:
+    f.write(">%s\n" % seqid)
+    f.write(proteins[seqid]['seq'] + "\n")
+  f.close()
+
+
 def chop_nterminal_peptide(protein, i_cut):
+  """
+  Finds all transmembrane fields in protein ("*_loops" and "*_helices")
+  and deletes an n-terminal section of the protein indicated by i_cut.
+
+  Assuming the topology of inner and outer loops remain the same, this
+  may delete a certain number of elements at the N-terminus. Allows a
+  simple way of removing lipo-protein and secretion-protein signals from
+  the evaluation of the outer_loops of the protein.
+  """
   protein['sequence_length'] -= i_cut
   for prop in protein:
     if '_loops' in prop or '_helices' in prop:
@@ -142,20 +203,16 @@ def chop_nterminal_peptide(protein, i_cut):
           loops[i] = (1, k)
 
 
-def print_proteins(proteins):
-  print "{"
-  for seqid in proteins:
-    print "  '%s': {" % seqid
-    for key, value in proteins[seqid].items():
-      print "    '%s': %s, " % (key, repr(value))
-    print "  },"
-  print "}"
-
-  
 def eval_surface_exposed_loop(
     sequence_length, n_transmembrane_region, outer_loops, 
     terminal_exposed_loop_min, internal_exposed_loop_min):
-    
+  """
+  This is the key algorithm in SurfG+ to identify Potentially Surface
+  Exposed proteins. It evaluates all loops that poke out of the periplasmic
+  side of the Gram+ bacterial membrane and tests if the loops are long
+  enough to stick out of the peptidoglycan layer to be cleaves by proteases
+  in a cell-shaving experiment.
+  """  
   if n_transmembrane_region == 0:
     # treat protein as one entire exposed loop
     return sequence_length >= terminal_exposed_loop_min
