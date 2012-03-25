@@ -38,6 +38,6 @@ for test_name in test_names:
     exec('from tests.%s import *' % test_name)
     tests_to_run.append(test_name)
 
-helpers.log_stderr("Will run tests for: " + `tests_to_run`)
+helpers.log_stderr("Will run tests for: " + ",".join(tests_to_run))
 
 unittest.main()

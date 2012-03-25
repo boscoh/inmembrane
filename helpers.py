@@ -52,7 +52,7 @@ def log_stderr(s):
   if s and s[-1] != "\n":
     s += "\n"
   if not s.startswith("#"):
-    s = "#" + s
+    s = "# " + s
   sys.stderr.write(s)
 
 
