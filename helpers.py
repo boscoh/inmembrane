@@ -162,13 +162,13 @@ def print_proteins(proteins):
   print "}"
 
   
-def write_proteins_fasta(fasta, proteins, seqids):
+def write_proteins_fasta(fasta_filename, proteins, seqids):
   """
   Creates a fasta file of the sequences of a subset of the proteins.
   """
-  f = open(fasta, "w")
+  f = open(fasta_filename, "w")
   for seqid in seqids:
-    f.write(">%s\n" % seqid)
+    f.write(">%s %s\n" % (seqid, proteins[seqid]['name']))
     f.write(proteins[seqid]['seq'] + "\n")
   f.close()
 
