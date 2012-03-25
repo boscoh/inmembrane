@@ -4,12 +4,16 @@ _inmembrane_ is a pipeline for proteome annotation to predict if a protein is ex
 
 ## Installation and Configuration
 
-Dowload the latest version of _inmembrane_ from the github repository: <https://github.com/boscoh/inmembrane/zipball>. This package includes tests, examples, data files, docs and a few included libraries ([Beautiful Soup](http://www.crummy.com/software/BeautifulSoup/), [mechanize](http://wwwsearch.sourceforge.net/mechanize) and [twill](http://twill.idyll.org/)).
+Dowload the latest version of _inmembrane_ from the github repository: <https://github.com/boscoh/inmembrane/zipball/master>. 
+
+This package includes tests, examples, data files, docs and a few included libraries ([Beautiful Soup](http://www.crummy.com/software/BeautifulSoup/), [mechanize](http://wwwsearch.sourceforge.net/mechanize) and [twill](http://twill.idyll.org/)).
 
 The editable parameters of _inmembrane_ are found in `inmembrane.config`, which is always located in the same directory as the main script. If no such file exists, a default `inmembrane.config` will be generated. The parameters are: 
 
 - the path location of the binaries for SignalP, LipoP, TMHMM, HMMSEARCH, and MEMSAT. This can be the full path, or just the binary name if it is on the system path environment. Use `which` to check. 
-- 'protocol' to indicate which analysis you want to use. Currently, we support: `gram_pos` the analysis of surface-exposed proteins of Gram+ bacteria; `gram_neg` the sub-cellular location of Gram- bacteria.
+- 'protocol' to indicate which analysis you want to use. Currently, we support:
+    - `gram_pos` the analysis of surface-exposed proteins of Gram+ bacteria; 
+    - `gram_neg` the sub-cellular location of Gram- bacteria.
 - 'hmm_profiles_dir': the location of the HMMER profiles for any HMM peptide sequence motifs
 -  for HMMER, you can set the cutoffs for significance, the E-value 'hmm_evalue_max', and the score 'hmm_score_min'
 - the shortest length of a loop that sticks out of the peptidoglycan layer of a Gram+ bacteria. The SurfG+ determined this to be 50 amino acids for terminal loops, and twice that for internal loops, 100
@@ -19,11 +23,11 @@ We provide a number of unit tests for _inmembrane_:
 
     python runtest.py
 
-As _inmembrane_ has a lot of dependencies, these tests are really useful in working out if the dependencies are installed in a way that is compatible with _inmembrane_. Since not all the binaries are needed, not all tests (and corresponding dependencies) are required for _inmembrane_ to work with each protocol.
+As _inmembrane_ has a lot of dependencies, these tests are really useful in working out if the dependencies are installed in a way that is compatible with _inmembrane_. Since not all the binaries are needed, not all tests (and corresponding dependencies) are required for _inmembrane_ to work.
 
 ## Execution
 
-_inmembrane_ was written in Python 2.7. It takes a FASTA input file and runs a number of external bioinformatic programs on the sequences. It then collects the output to make the final analysis, which is stored in a CSV file. The CSV will be given the same basename as the FASTA file. 
+_inmembrane_ was written in Python 2.7. It takes a FASTA input file and runs a number of external bioinformatic programs on the sequences. It then collects the output to make the final analysis, which is printed out and stored in a CSV file.  
 
 _inmembrane_ can be run in two modes. It can be run as a command-line program:  
      
@@ -35,11 +39,11 @@ The other way of running imembrane.py is with a custom script, such as `run_exam
 
 or simply double-click `run_example.py` in a file-manager. 
 
-If you open it with a text editor, you will see that the input file and the csv file are filled in. You can duplicate `run_example.py`, edit it with your input files, and run the program this way.
+If you open it with a text editor, you will see that the input file and the csv file are filled in. You can change this by simply duplicating `run_example.py`, and editing the parameters in a text editor.
 
 ## Output format
 
-The output of _inembrane_ consists of four columns of output. This is printed out on standard out and in a CSV file, which can be opened in EXCEL. The standard text output can be parsed using space delimiters (empty fields in the third column are indicated with a "."). Here's an example:
+The output of _inembrane_ consists of four columns of output. This is printed out on standard out and in a CSV file, which can be opened in EXCEL. If not specified, the CSV will be given the same basename as the FASTA file. The standard text output can be parsed using space delimiters (empty fields in the third column are indicated with a "."). Here's an example:
 
     SPy_0008   CYTOPLASM     .                   "SPy_0008 from AE004092"
     SPy_0009   CYTOPLASM     .                   "SPy_0009 from AE004092"
@@ -48,7 +52,7 @@ The output of _inembrane_ consists of four columns of output. This is printed ou
 
 - the first column is the SeqID which is the first token in the identifier line of the sequence in the FASTA file
 
-- the second column is the prediction, it is CYTOPLASM, MEMBRANE, PSE, or SECRETED.
+- the second column is the prediction, it is CYTOPLASM, MEMBRANE, PSE, or SECRETED. A value of PSE (Potentially Surface Exposed) means that _inmembrane_ has predicted the protein to be surface exposed and will be found in a membrane-shaving experiment.
 
 - the third line is a summary of features picked up by the other program:
     - tmhmm(2) means 2 transmembrane helices were found
@@ -104,9 +108,9 @@ Note the the 'runmemsat' script refers to PSIPRED v2, but it means MEMSAT3 - PSI
 
 ## Modification guide
 
-As _inmembrane_ is a glue script that runs a lot of external dependencies, we have tried to make the parsing code for each program as concise as possible. The program is written to use as much of the standard Python library as possible, and specifically uses native data structures which provide an incredible amount of flexibility. _Plugins_ that wraps an individual external program or web service can be found in the `inmembrane/plugins` directory. _Protocols_ which embody a particular high level workflow are found in `inmembrane/protocols`. 
+It is a fact of life for bioinformatics that new versions of basic tools changes output formats and API. We believe that it is an essential skill to rewrite parsers to handle the subtle but significant changes in different versions. We have written  _inmembrane_ to be easily modifiable and extensible. _Protocols_ which embody a particular high level workflow are found in `inmembrane/protocols`. 
 
-It is a fact of life for bioinformatics that new versions of basic tools changes output formats and API. We believe that it is an essential skill to rewrite parsers to handle the subtle but significant changes in different versions. Hopefully _inmembrane_ makes this as simple as possible.
+All interaction with a specific external program or web-site have been wrapped into a single python _plugin_ module, and placed in the `plugins` directory. This contains the code to both run the program and to parse the output. We have tried to make the parsing code as concise as possible. Specifically, by using the native Python dictionary, which allows an enormous amout of flexibility, we can extract the analysis with very little code.
 
 ### __inmembrane__ development style guide:
 
