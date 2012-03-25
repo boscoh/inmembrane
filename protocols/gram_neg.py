@@ -70,6 +70,8 @@ def print_summary_table(params, proteins):
 #       * If inner membrane, check for long cyto or peri loops: inner[+cyto][+peri]
 #       * If not is_signalp and not is_lipop (and not TAT): -> cytoplasmic
 def get_annotations(params):
+  params['signalp4_organism'] = 'gram-'
+  
   annotations = ['annotate_signalp4', 'annotate_lipop1']
   #annotations += ['annotate_tatp']
   annotations += ['annotate_bomp']

@@ -5,6 +5,8 @@ from helpers import dict_get, eval_surface_exposed_loop, \
                     chop_nterminal_peptide
 
 def get_annotations(params):
+  params['signalp4_organism'] = 'gram+'
+  
   annotations = [ \
       'annotate_signalp4', 'annotate_lipop1', 
       'annotate_hmmsearch3']
