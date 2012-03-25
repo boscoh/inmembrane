@@ -39,7 +39,7 @@ def annotate_lipop1(params, proteins):
     # the Asp+2 which we don't detect here (yet).
     # (Yamaguchi et al, 1988; Tokuda and Matsuyama, 2005 [review])
     if 'lipop_cleave_position' in proteins[seqid]:
-      plus_two = proteins[seqid]['lipop_cleave_position']+2
+      plus_two = proteins[seqid]['lipop_cleave_position']+1
       if proteins[seqid]['seq'][plus_two] == 'D':
         proteins[seqid]['lipop_im_retention_signal'] = True
       
