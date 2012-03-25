@@ -178,13 +178,13 @@ def post_process_protein(params, protein, stringent=False):
       category = "IM"
   elif not is_barrel:
     if is_lipop:
-      if protein['lipop_im_retention_signal']:
+      if dict_get(protein, 'lipop_im_retention_signal'):
         category = "LIPOPROTEIN(IM)"
       else:
         category = "LIPOPROTEIN(OM)"
       pass
     elif is_signalp:
-      category = "PERIPLASMIC/SECRETED"
+      category = "SECRETED/PERIPLASMIC"
     else:
       category = "CYTOPLASM"
 
