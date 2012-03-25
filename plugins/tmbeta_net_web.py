@@ -1,8 +1,8 @@
-import os, time, StringIO
-
+import sys, os, time, StringIO
+import json
 import twill
 from twill.commands import find, formfile, follow, fv, go, show, \
-                             showforms, showlinks, submit
+                             showforms, showlinks, submit, agent
                              
 import inmembrane
 
@@ -25,7 +25,11 @@ def annotate_tmbeta_net_web(params, proteins, \
                        residues of each predicted strand. 
                        (eg [[3,9],[14,21], ..etc ])
   """
-  import json
+
+  # set the user-agent so web services can block us if they want ... :/
+  python_version = sys.version.split()[0]
+  agent("Python-urllib/%s (twill; inmembrane)" % python_version)
+  
   outfile = 'tmbeta_net.out'
   inmembrane.log_stderr("# TMBETA-NET(web) %s > %s" % (params['fasta'], outfile))
   
