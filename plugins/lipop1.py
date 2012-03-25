@@ -33,4 +33,14 @@ def annotate_lipop1(params, proteins):
       proteins[seqid]['is_lipop'] = 'Sp' in words[2]
       proteins[seqid]['lipop_cleave_position'] = i
 
+    # check for an E.coli style inner membrane retention signal
+    # Asp+2 to cleavage site. There are other apparent retention 
+    # signals in E. coli and other gram- bacteria in addition to
+    # the Asp+2 which we don't detect here (yet).
+    # (Yamaguchi et al, 1988; Tokuda and Matsuyama, 2005 [review])
+    if 'lipop_cleave_position' in proteins[seqid]:
+      plus_two = proteins[seqid]['lipop_cleave_position']+2
+      if proteins[seqid]['seq'][plus_two] == 'D':
+        proteins[seqid]['lipop_im_retention_signal'] = True
+      
   return proteins

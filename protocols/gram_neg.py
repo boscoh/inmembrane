@@ -7,6 +7,19 @@ def predict_surface_exposure_barrel(params, protein):
   # TODO: This is a placeholder for a function which will do something
   #       similar to predict_surface_exposure, but focussed on inferring 
   #       outer membrane beta barrel topology.
+  #
+  #       At the moment it's not implemented since I have not
+  #       found an easily usable method which gives predictions
+  #       accurate enough to be of any real use, particularly
+  #       in terms of detecting barrel vs. non-barrel regions
+  #       in multidomain BB OMPs (TMBETA-NET strand prediction is 
+  #       implemented but it suffers from this problem). Probably 
+  #       we will have to do domain detection independently, then 
+  #       feed only the barrel domain to the strand predictor. 
+  #       I've found PSI-PRED actually works reasonably well on OMP BBs - 
+  #       this may be a simpler option over requiring a ProfTMB dependency 
+  #       or interfacing with the transFold web service.
+  #       
   #       Essentially, we should:
   #        * Move through the strand list in reverse.
   #        * Strand annotation alternates 'up' strand and 'down' strand
@@ -51,7 +64,7 @@ def print_summary_table(params, proteins):
 #       condition is met (eg is_signalp). 
 #       * If is_lipop, 
 #         check retention signal annotation (+2Asp) -> periplasmic inner or outer
-#       * If is_signalp (or TAT) and no other TM and not is_lipop -> periplasmic
+#       * If is_signalp (or TAT) and no TMs and not lipop or barrel -> periplasmic
 #       * If is_signalp, run OMPBB (BOMP) check. If OMPBB -> outer membrane bb
 #       * If is_signalp, and has after the signal tranmembranes -> inner membrane
 #       * If inner membrane, check for long cyto or peri loops: inner[+cyto][+peri]
@@ -127,7 +140,8 @@ def post_process_protein(params, protein, stringent=False):
      protein['category'] = 'OM(barrel)'
   
   # set number of predicted OM barrel strands in details
-  if dict_get(protein, 'tmbeta_strands'):
+  if (protein['category'] == 'OM(barrel)') and \
+      dict_get(protein, 'tmbeta_strands'):
     num_strands = len(protein['tmbeta_strands'])
     details += ['tmbeta_strands(%i)' % (num_strands)]
   
@@ -160,12 +174,13 @@ def post_process_protein(params, protein, stringent=False):
       category = "IM"
   elif not is_barrel:
     if is_lipop:
-      # TODO: check for inner vs. outer lipoprotein annotation
-      #       classify as LIPOPROTEIN(IM) or LIPOPROTEIN(OM)
-      category = "LIPOPROTEIN"
+      if protein['lipop_im_retention_signal']:
+        category = "LIPOPROTEIN(IM)"
+      else:
+        category = "LIPOPROTEIN(OM)"
       pass
     elif is_signalp:
-      category = "SECRETED"
+      category = "PERIPLASMIC/SECRETED"
     else:
       category = "CYTOPLASM"
 
