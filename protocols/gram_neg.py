@@ -74,7 +74,7 @@ def get_annotations(params):
   
   annotations = ['annotate_signalp4', 'annotate_lipop1']
   #annotations += ['annotate_tatp']
-  annotations += ['annotate_bomp']
+  annotations += ['annotate_bomp_web']
   
   # TMBETA-NET knows to only run on predicted barrels
   # with the category 'OM(barrel)'
@@ -118,6 +118,7 @@ def post_process_protein(params, protein, stringent=False):
     return False
   
   details = []
+  category = "UNKNOWN"
   #is_hmm_profile_match = dict_get(protein, 'hmmsearch')
   is_signalp = dict_get(protein, 'is_signalp')
   # TODO: in terms of logic, a Tat signal is essentially the same
@@ -137,12 +138,13 @@ def post_process_protein(params, protein, stringent=False):
   # if stringent, predicted OM barrels must also have a predicted
   # signal sequence 
   if stringent and is_signalp and is_barrel:
-     protein['category'] = 'OM(barrel)'
+     category = 'OM(barrel)'
   elif is_barrel:
-     protein['category'] = 'OM(barrel)'
-  
+     category = 'OM(barrel)'
+  protein['category'] = category
+
   # set number of predicted OM barrel strands in details
-  if (protein['category'] == 'OM(barrel)') and \
+  if (dict_get(protein, 'category') == 'OM(barrel)') and \
       dict_get(protein, 'tmbeta_strands'):
     num_strands = len(protein['tmbeta_strands'])
     details += ['tmbeta_strands(%i)' % (num_strands)]
