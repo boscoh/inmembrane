@@ -47,7 +47,9 @@ or simply double-click `run_example.py` in a file-manager. You can change this b
 
 ## Output format
 
-The output of _inembrane_ consists of four columns of output. This is printed out on standard out and in a CSV file, which can be opened in EXCEL. The standard text output can be parsed using space delimiters (empty fields in the third column are indicated with a "."). Here's an example:
+The output of _inembrane_ consists of four columns of output. This is printed out on standard out and in a CSV file, which can be opened in EXCEL. The standard text output can be parsed using space delimiters (empty fields in the third column are indicated with a "."). Logging information are prefaced by a'#' character.
+
+Here's an example:
 
     SPy_0008   CYTOPLASM     .                   "SPy_0008 from AE004092"
     SPy_0009   CYTOPLASM     .                   "SPy_0009 from AE004092"
