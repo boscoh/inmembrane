@@ -32,18 +32,22 @@ _inmembrane_ was written in Python 2.7. It takes a FASTA input file and runs a n
 _inmembrane_ can be run in two modes. It can be run as a command-line program:  
      
     python inmembrane.py your_fasta_file
+    
+If run in this mode, the CSV will be given the same basename as the FASTA file. 
 
 The other way of running imembrane.py is with a custom script, such as `run_example.py` where all pertinent input is in the script itself. You can either run this on the command-line like this:
 
     python run_example.py
 
-or simply double-click `run_example.py` in a file-manager. 
+or simply double-click `run_example.py` in a file-manager. You can change this by simply duplicating `run_example.py`, and editing the parameters in a text editor. In particular, the fields in the parameters include:  
 
-If you open it with a text editor, you will see that the input file and the csv file are filled in. You can change this by simply duplicating `run_example.py`, and editing the parameters in a text editor.
+  - 'fasta' the input FASTA file
+  - 'out_dir' the directoyr that stores intermediate output
+  - 'csv' the output CSV file
 
 ## Output format
 
-The output of _inembrane_ consists of four columns of output. This is printed out on standard out and in a CSV file, which can be opened in EXCEL. If not specified, the CSV will be given the same basename as the FASTA file. The standard text output can be parsed using space delimiters (empty fields in the third column are indicated with a "."). Here's an example:
+The output of _inembrane_ consists of four columns of output. This is printed out on standard out and in a CSV file, which can be opened in EXCEL. The standard text output can be parsed using space delimiters (empty fields in the third column are indicated with a "."). Here's an example:
 
     SPy_0008   CYTOPLASM     .                   "SPy_0008 from AE004092"
     SPy_0009   CYTOPLASM     .                   "SPy_0009 from AE004092"
