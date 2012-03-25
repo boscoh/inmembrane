@@ -22,6 +22,7 @@ class TestSignalp(unittest.TestCase):
     
     self.params = inmembrane.get_params()
     self.params['fasta'] = "input.fasta"
+    self.params['signalp4_organism'] = 'gram+'
     self.seqids, self.proteins = \
         inmembrane.create_proteins_dict(self.params['fasta'])
     inmembrane.annotate_signalp4(self.params, self.proteins)
