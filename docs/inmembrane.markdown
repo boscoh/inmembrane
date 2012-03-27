@@ -120,7 +120,7 @@ Cytopl. Membrane    432         519          548         489        440
 Extracellular       28          32           16          13         15
 Unknown             323         402          394         419        307
 Unknown/multiple    5           8            11          3          5
-Total 	             1696        1862         1821        1755       1529
+Total               1696        1862         1821        1755       1529
 </pre>
 
 ### Web-interface modules for further analysis
