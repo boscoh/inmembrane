@@ -98,17 +98,30 @@ Another example of cleaner code through dynamic programming is in the _HMMER_ pe
 The field of bioinformatics changes quickly, and in the few years between the release of SurfG+, some of the software used in SurfG+ is no longer available. As a result we could not use exactly the same versions of the binaries used in SurfG+. For instance TMMOD is no longer released as a binary and SignalP has progressed to Version 4.0. Nevertheless, _inmembrane_ produces comparable results to SurfG+ for the 4 bacterial genomes:
 
 <pre>
-             S.pyogenes L.acidophilus L.johnsonii   L. gasseri L.bulgaricus
-Accession    AE004092   CP000033      A017198       CP000413   CR954253
+             S.pyogenes L.acidophilus L.johnsonii   L.gasseri  L.bulgaricus
+Accession    AE004092   CP000033      AE017198       CP000413   CR954253
 Program       i    S       i   S         i   S        i   S       i   S
-Cytoplasmic  1243 1233   1290 1278     1248 1234    1262 1240   1132 1120                         
-Membrane      236 239     315 333       357 359      298 303     244 263                          
-PSE           140 177     169 187       176 202      157 191     116 134                           
-Secreted       78 47       88 64         40 26        38 21       70 45                    
-Total        1697 1720   1862 1884     1821 1842    1755 1776   1562 1568
+Cytoplasmic  1243 1234   1290 1280     1248 1234    1262 1240   1132 1119                         
+Membrane      236 239     315 332       357 358      298 303     244 264                          
+PSE           140 176     169 189       176 204      157 189     116 138                           
+Secreted       78 47       88 61         40 25        38 23       70 41                    
+Total        1696 1696   1862 1862     1821 1821    1755 1755   1562 1562
 </pre>
 
 Columns labelled 'S' are _SurfG+_ results and 'i' are _inmembrane_ results.
+
+This can be compared to PSortB 3.0 classifcation of the organisms.
+
+<pre>
+               S.pyogenes L.acidophilus L.johnsonii L.gasseri L.bulgaricus
+Cellwall            24          46           26          27         19
+Cytoplasmic         884         855          826         804        743
+Cytopl. Membrane    432         519          548         489        440
+Extracellular       28          32           16          13         15
+Unknown             323         402          394         419        307
+Unknown/multiple    5           8            11          3          5
+Total 	             1696        1862         1821        1755       1529
+</pre>
 
 ### Web-interface modules for further analysis
 
