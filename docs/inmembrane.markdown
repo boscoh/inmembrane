@@ -99,8 +99,8 @@ The field of bioinformatics changes quickly, and in the few years between the re
 
 <pre>
              S.pyogenes L.acidophilus L.johnsonii   L.gasseri  L.bulgaricus
-Accession    AE004092   CP000033      AE017198       CP000413   CR954253
-Program       i    S       i   S         i   S        i   S       i   S
+Accession    AE004092    CP000033      AE017198      CP000413    CR954253
+Program       S    i       S   i         S   i        S   i       S   i
 Cytoplasmic  1243 1234   1290 1280     1248 1234    1262 1240   1132 1119                         
 Membrane      236 239     315 332       357 358      298 303     244 264                          
 PSE           140 176     169 189       176 204      157 189     116 138                           
