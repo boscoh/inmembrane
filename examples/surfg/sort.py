@@ -6,7 +6,7 @@ import glob
 names = """
 AE004092 Streptococcus pyogenes 
 AE017198 Lactobacillus johnsonii
-P000033 Lactobacillus acidophilus 
+CP000033 Lactobacillus acidophilus 
 CP000413 Lactobacillus gasseri 
 CR954253 Lactobacillus delbrueckii 
 """
@@ -19,8 +19,7 @@ for genome in gbk:
     if not os.path.isfile(pse):
       os.system("python ../../inmembrane.py %s.fasta > %s" % (genome, pse))
 
-    if base in gbk:
-        print "%s: %s" % (base, gbk[base])
+    print "%s: %s" % (genome, gbk[genome])
     print "--"
     
     category_count = {}
