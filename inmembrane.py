@@ -151,7 +151,7 @@ def import_protocol_python(params):
   python command is generated that is to be processed by
   the 'exec' function.
   """
-  protocol_py = os.path.join('protocols', params['protocol']+'.py')
+  protocol_py = os.path.join(module_dir, 'protocols', params['protocol']+'.py')
   if not os.path.isfile(protocol_py):
     raise IOError("Couldn't find protcols/" + protocol_py)
   return 'import protocols.%s as protocol' % (params['protocol'])

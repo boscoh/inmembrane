@@ -14,8 +14,10 @@ tokens = [l.split() for l in names.splitlines()]
 gbk = { ts[0]: ' '.join(ts[1:]) for ts in tokens if ts}
 
 
-for pse in glob.glob('*pse'):
-    base, ext = os.path.splitext(pse)
+for genome in gbk:
+    pse = genome + '.pse'
+    if not os.path.isfile(pse):
+      os.system("python ../../inmembrane.py %s.fasta > %s" % (genome, pse))
 
     if base in gbk:
         print "%s: %s" % (base, gbk[base])
