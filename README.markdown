@@ -71,7 +71,7 @@ Here's an example:
 
 ## Installing dependencies
 
-As it is the nature of bioinformatic programs that they are changed and updated severely with different versions, and that stable APIs and output formats are the exception rather than the norm. It is very important that you have the exact version that we have programmed against.
+As it is the nature of bioinformatic programs that they are changed and updated severely with different versions, stable APIs with consistent output formats are the exception rather than the norm. It is very important that you have the exact version that we have programmed against. 
 
 Required dependencies, and their versions:
 
