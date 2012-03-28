@@ -10,10 +10,10 @@ def annotate_signalp4(params, proteins):
              params
   helpers.run(cmd, signalp4_out)
 
-  for l in open(signalp4_out):
-    if l.startswith("#"):
+  for line in open(signalp4_out):
+    if line.startswith("#"):
       continue
-    words = l.split()
+    words = line.split()
     seqid = helpers.parse_fasta_header(">"+words[0])[0]
     if (words[9] == "Y"):
       proteins[seqid]['is_signalp'] = True
