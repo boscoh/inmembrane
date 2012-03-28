@@ -1,11 +1,14 @@
+
+
 # __inmembrane__, a bioinformatic workflow for annotation of bacterial cell surface proteomes
 
 Andrew J. Perry and Bosco K. Ho
 _Department of Biochemistry, Monash University, Melbourne, Australia_
 
+
 # Abstract 
 
-_inmembrane_ is a tool to predict the surface-exposed regions of membrane proteins in sets of bacterial protein sequences. It is intended to be a direct replacement for SurfG+, which implemented such a protocol for Gram-positive bacterial proteomes. Through the use of a modern scripting language, _inmembrane_ provides a more accessible code base that is easier to modify, and provides a useful example of writing programrams for bioinformatic analysis. The program is hosted on the Github repository http://github.com/boscoh/inmembrane.
+_inmembrane_ is a tool to predict the surface-exposed regions of membrane proteins in sets of bacterial protein sequences. It is intended to be a direct replacement for SurfG+, which implemented such a protocol for Gram-positive bacterial proteomes. Through the use of a modern scripting language, _inmembrane_ provides a more accessible code base that is easier to modify, and provides a useful example of writing programs for bioinformatic analysis. The program is hosted on the Github repository http://github.com/boscoh/inmembrane.
 
 # Background
 
@@ -14,27 +17,49 @@ A common task in bioinformatics is to integrate the results of protein predictio
 In studies of membrane proteomes, quick annotation of an experimentally detected set of the proteins can help detect sequences of unexpected localization, and can alert researchers to possible contamination from other subcellular fractions. Ultimately, a concise summary of the properties of the detected membrane proteins in a particular proteomic set allows meaningful comparisons between different bacterial strains, species, and their responses in membrane remodelling to host and enviromental challenges.
 
 *****
+
 ![Membrane topologies](https://github.com/boscoh/inmembrane/raw/master/docs/images/membrane_topologies.png "Figure - Membrane topologies")
 
->Topologies represented in Gram-negative bacterial inner membrane include (left to right) polytopic transmembrane proteins, monotopic transmembrane proteins and lipoproteins on the periplasmic side of the membrane which are anchored via a lipid moeity covalently attached to the N-terminal cysteine ("CD", where "D" denotes an Asp outer membrane avoidance signal at position 2 (Masuda et al 2002)). The outer membrane also contains lipoproteins, usually on the inner leaflet exposed to the periplasm, however unlike the inner membrane the outer membrane contains beta-barrel membrane proteins ("beta"), some with large extracellular domains exposed on the surface. Akin to the Gram-negative inner membrane, the Gram-positive inner membrane contains mono and polytopic transmembrane proteins and lipoproteins. Gram-positive bacteria also display surface proteins associated covalently or non-covalently with the cell wall peptidoglycan layer via a number of "surface motifs", such as the LPxTG, LysM. Some proteins are also secreted into the extracellular milieu. A subset of Gram-positive bacteria (the Acinetobacterace) have also been shown to contain beta-barrel membrane proteins in their plasma membrane.
+> Figure 1. Topologies represented in Gram-negative bacterial inner membrane include (left to right) polytopic transmembrane proteins, monotopic transmembrane proteins and lipoproteins on the periplasmic side of the membrane which are anchored via a lipid moeity covalently attached to the N-terminal cysteine ("CD", where "D" denotes an Asp outer membrane avoidance signal at position 2 (Masuda et al 2002)). The outer membrane also contains lipoproteins, usually on the inner leaflet exposed to the periplasm, however unlike the inner membrane the outer membrane contains beta-barrel membrane proteins ("beta"), some with large extracellular domains exposed on the surface. Akin to the Gram-negative inner membrane, the Gram-positive inner membrane contains mono and polytopic transmembrane proteins and lipoproteins. Gram-positive bacteria also display surface proteins associated covalently or non-covalently with the cell wall peptidoglycan layer via a number of "surface motifs", such as the LPxTG, LysM. Some proteins are also secreted into the extracellular milieu. A subset of Gram-positive bacteria (the Acinetobacterace) have also been shown to contain beta-barrel membrane proteins in their plasma membrane.
+
 *****
 
-A number of published software packages exist for global prediction of subcellular localization of bacterial proteins exist. Most notable is _PSORTb v3.0_ (Yu, et al, 2010) which predicts general subcellular localization for Gram-positive, Gram-negative and Archaeal proteins sequences. _Augur_ (__ref__)is a specialized tool which enables prediction and proteome comparison of Gram-positive surface proteins via a web interface. LocateP (__ref__) is a pipeline wrapping existing specific localization predictors, and provides a web accessible database of pre-calculated subcellular localization for Gram-positive proteomes. The publicly available LocateP server does not allow analysis of arbitrary sets of sequences. While the source code for both _PSORTb 3.0_ is available under an open source license, the code for the other packages is not generally available for download.
+A number of published software packages exist for global prediction of subcellular localization of bacterial proteins exist. Most notable is _PSORTb v3.0_ (Yu, et al, 2010) which predicts general subcellular localization for Gram-positive, Gram-negative and Archaeal proteins sequences. _Augur_ (Billion et al., 2006) is a specialized tool which enables prediction and proteome comparison of Gram-positive surface proteins via a web interface. LocateP (Zhou et al., 2008) is a pipeline wrapping existing specific localization predictors, and provides a web accessible database of pre-calculated subcellular localization for Gram-positive proteomes. The publicly available LocateP server does not allow analysis of arbitrary sets of sequences. While the source code for both _PSORTb 3.0_ is available under an open source license, the code for the other packages is not generally available for download.
 
 An extension to general membrane localization prediction is the analysis of membrane protein topology to identify those with prominent surface exposed loops. These potentially surface exposed (PSE) proteins constitute attractive vaccine candidates. One such workflow for annotation of PSE proteins is the program SurfG+, which focuses on Gram-positive bacterial proteomes. SurfG+ is a Java program that carries out batch processing of several standard bioinformatic tools to specifically predict proteins that  protude out of the peptidoglycan layer of the bacterium. These predictions are intended to identify a set of proteins that would be amenable to cell-surface protease shaving experiments. SurfG+ itself does not carry out any extensive analysis itself, but rather leverages the results of a transmembrane helix predictor (_TMMOD_) (Robel et al, 2005), a secretion signal predictor (_SignalP_) (Jannick et al 2004), a lipoprotein signal predictior (_LipoP_) (Agnieszka et al 2003) and a sequence alignment for protein profiles (_HMMER_) (Robert et al 2011). 
 
 Nevertheless, _SurfG+_ suffers several problems that plague much bioinformatic software. Despite being published in 2009, the URL mentioned in the original reference no longer exists. We were able to find a [source-code repository](https://mulcyber.toulouse.inra.fr/projects/surfgplus) but the we were not able to get the program to work, due in part to dependencies that are not longer generally available for download.
 
+
 Since the core algorithm in _SurfG+_ is relatively straightforward, we decided to replicate the functionality of _SurfG+_ by writing _inmembrane_ in a modern scripting language. This lead to considerable simplifiction and clarification of the code base. Compared with the _SurfG+_ Java source code of 700K, _inmembrane_, without dependencies, is around 70K of Python code and includes additional functionality not offered by _SurfG+_. The smaller code case is substantially easier to reuse and repurpose for other users. Here, we discuss the issues involved in writing robust and accessible bioinformatic source code.
 
+
 ## Methods and Implementation
+
 _inmembrane_ is primarily designed to be run locally via the command line. The input is a set of sequences in FASTA format, the output is plain text, including a summary table and comma-separated-value (CSV) format suitable for import into spreadsheet software or scripted text processing.
 
-> __Figure__ - snippet of example output ?
+****
+
+    lcl|AE004092.1_cdsid_AAK34689.1   PSE            lipop;signalp                                       AE004092.1_cdsid_AAK34689.1 [gene=lmb] [protein=putative lam
+    lcl|AE004092.1_cdsid_AAK34690.1   PSE            hmm(Gram_pos_anchor);signalp;tmhmm(2)               AE004092.1_cdsid_AAK34690.1 [gene=SPy_2009] [protein=hypothe
+    lcl|AE004092.1_cdsid_AAK34691.1   SECRETED       signalp                                             AE004092.1_cdsid_AAK34691.1 [gene=scpA] [protein=C5A peptida
+    lcl|AE004092.1_cdsid_AAK34692.1   CYTOPLASM      .                                                   AE004092.1_cdsid_AAK34692.1 [gene=SPy_2013] [protein=transpo
+    lcl|AE004092.1_cdsid_AAK34693.1   SECRETED       signalp;tmhmm(1)                                    AE004092.1_cdsid_AAK34693.1 [gene=sic] [protein=inhibitor of
+    lcl|AE004092.1_cdsid_AAK34694.1   PSE            hmm(Gram_pos_anchor);signalp;tmhmm(1)               AE004092.1_cdsid_AAK34694.1 [gene=emm1] [protein=M protein t
+    lcl|AE004092.1_cdsid_AAK34695.1   CYTOPLASM      .                                                   AE004092.1_cdsid_AAK34695.1 [gene=mga] [protein=M protein tr
+    lcl|AE004092.1_cdsid_AAK34696.1   MEMBRANE       tmhmm(2)                                            AE004092.1_cdsid_AAK34696.1 [gene=SPy_2023] [protein=hypothe
+    lcl|AE004092.1_cdsid_AAK34697.1   SECRETED       signalp;tmhmm(1)                                    AE004092.1_cdsid_AAK34697.1 [gene=isp] [protein=immunogenic 
+    lcl|AE004092.1_cdsid_AAK34698.1   PSE            tmhmm(1)                                            AE004092.1_cdsid_AAK34698.1 [gene=SPy_2026] [protein=putativ
+    lcl|AE004092.1_cdsid_AAK34699.1   CYTOPLASM      .                                                   AE004092.1_cdsid_AAK34699.1 [gene=SPy_2027] [protein=putativ
+
+> Figure 2. Example of output
+
+****
 
 A set of unit tests, executable via the `run_test.py` script enables users and developers to quickly verify if their _inmembrane_ installation, with dependencies, is functioning as expected.
 
 ### Gram-positive protocol
+
 The _inmembrane_ Gram-positive surface protocol leverages a number of existing single localization predictors, including transmembrane topology prediction, to deduce a likely subcellular localization and expected surface exposure of a given proteome. Each sequence is annotated by every predictor, and then these annotations are used by the business logic of _inmembrane_ to classify proteins as potentially surface exposed ("PSE"), "Secreted", or the non-exposed classes "Cytoplasmic" and "Membrane".
 
 Annotations applied are as follows. HMMER 3.0 (Robert et al 2011) searches using hidden Markov models (HMM) derived from Pfam and Superfam are used to detect known Gram-positive surface sequence motifs. These include 
@@ -52,6 +77,31 @@ The prescence and topology of transmembrane segments in helical membrane protein
 
 _inmembrane_ collates the results of each analysis, and using the predicted topology of the intergral membrane proteins detected, predicts potentially surface-exposed loops following the algorithm used by SurfG+. By default, external terminal regions longer than 50 residues and external loops longer than 100 residues are considered to be potentially surface exposed. These values were previously experimentally derived based on membrane shaving experiements with _S. pyrogenes_ and may need modification to suit other species with different cell wall thickness (Barinov et al, 2009).
 
+******
+
+    if is_hmm_profile_match:
+      category =  "PSE"
+    elif has_tm_helix(protein):
+      if has_surface_exposed_loop(protein):
+        category = "PSE"
+      else:
+        category = "MEMBRANE"
+    else:
+      if is_lipop:
+        # whole protein considered outer terminal loop
+        if sequence_length(protein) < terminal_exposed_loop_min:
+          category = "MEMBRANE"
+        else:
+          category = "PSE"
+      elif is_signalp:
+        category = "SECRETED"
+      else:
+        category = "CYTOPLASM"
+
+> Figure 3. Main Gram-positive potentially surface exposed algorithm adapted from SurfG+ expressed in Python code.
+
+*******
+
 ### Gram-negative protocol
 
 >__TODO__
@@ -59,6 +109,8 @@ _inmembrane_ collates the results of each analysis, and using the predicted topo
 ### Future protocols
 
 __inmembrane__ is designed such that new workflows for annotation of membrane proteomes can be added relatively easily. Wrappers for programs that annotate a sequence with a particular feature can be added to `inmembrane/plugins/` following the example of existing plugins. The `inmembrane/plugin/signalp4.py` and `inmembrane/plugin/lipop1.py` plugins provide good templates for adoption and modification. In the simplest case, this means that if a superior method for signal peptide, transmembrane segment or lipoprotein prediction is developed, it will be straightforward to write a new plugin wrapping it for inclusion in the protocol, either as a parallel analysis or replacing one of the existing predictors. New _protocols_ can be added to the `inmembrane/protocols` directory, and selected for execution by changing _protocol_ parameter in the `inmembrane.config` file. Currently, we have implemented two protocols, _gram\_pos_, for prediction of PSE proteins in Gram-positive bacteria, and _gram\_neg_, for general annotation of Gram-positive subcellular localization.
+
+
 
 ## Discussion
 
@@ -75,7 +127,7 @@ As _inmembrane_ integrates the output of a large number of external dependencies
 
 In many bioinformatic programs, configuration information is dispersed throughout the header regions of multiple scripts and/or stored in environment variables, and users are asked to search through the program and modify the source code. While convenient for the original programmer, this can be frustrating and confusing even for expert users. A far better model is to isolate the configuration concerns to one clear place with sensible defaults. Following this model, _inmembrane_ reads configuration information from an explicit configuration file `inmembrane.config`, where a default version is auto-generated if it is not initally found.
 
-Since the configuration file for _inmembrane_ is itself a Python dictionary, users can write a short Python script that incorporates a specific configuration dictionary and executes _inmembrane_ directly. This provides a convenient record of each individual analysis, as well as a file that can be executed through a file-manager by double-clicking (__see xxx for example ??__).
+Since the configuration file for _inmembrane_ is itself a Python dictionary, users can write a short Python script that incorporates a specific configuration dictionary and executes _inmembrane_ directly. This provides a convenient record of each individual analysis, as well as a file that can be executed through a file-manager by double-clicking (an example is provided in the script `run_example.py`).
 
 ### Scripting Languages 
 
@@ -91,7 +143,36 @@ In _inmembrane_, the standard Python dictionary is used to provide a flexible wa
 
 The main program data in _inmembrane_ is represented with a flat dictionary called `protein`, indexed by sequence identifers. Let's say our FASTA file contains the mouse hemeglobin gene with the ID  `'MOUSE_HEME'`. The properties of `MOUSE_HEME` would then be found in `protein['MOUSE_HEME']`, which is itself a dictionary. `protein['MOUSE_HEME']` contains any arbitary number of different properties, also accessed as key-value pairs. For instance, the sequence length of the `'MOUSE_HEME'` sequence would be stored in `protein['MOUSE_HEME']['sequence_length']`. This data structure can capture the results of most potential bioinformatic analyses, where new properties are added to `protein` on the fly. The use of a dynamic flat dictionary avoids much of the boilerplate code involved with an OOP style programming.
 
-If we use a dictionary to represent our data structure, then the main work in _inmembrane_ of running other programs and processing their text output can be encapsulated into a simple function. For example with _SignalP_, we define a function `annotate_signalp(params, protein)` which takes the main protein data structure as input. The function runs the external SignalP binary, and then parses the text output. Text processing is very easy to write in Python and the processing for _SignalP_ can be done in about 10 lines of code. As `annotate_signalp` cycles through the text output of _SignalP_, then for each protein, if a secretion signal is found, a new property is added: `protein['MOUSE_HEME']['is_signalp'] = True`. 
+If we use a dictionary to represent our data structure, then the main work in _inmembrane_ of running other programs and processing their text output can be encapsulated into a simple function. For example with _SignalP_, we define a function `annotate_signalp(params, protein)` which takes the main protein data structure as input. The function runs the external SignalP binary, and then parses the text output. Text processing is very easy to write in Python and the processing for _SignalP_ can be done in about 10 lines of code. 
+
+***********
+
+    def annotate_signalp4(params, proteins):
+      for seqid in proteins:
+        proteins[seqid]['is_signalp'] = False
+        proteins[seqid]['signalp_cleave_position'] = None
+
+      signalp4_out = 'signalp.out'
+      cmd = '%(signalp4_bin)s -t %(signalp4_organism)s  %(fasta)s' % \
+                 params
+      helpers.run(cmd, signalp4_out)
+
+      for line in open(signalp4_out):
+        if line.startswith("#"):
+          continue
+        words = line.split()
+        seqid = helpers.parse_fasta_header(">"+words[0])[0]
+        if (words[9] == "Y"):
+          proteins[seqid]['is_signalp'] = True
+          proteins[seqid]['signalp_cleave_position'] = int(words[4])
+
+      return proteins
+    
+> Figure 4. Example of parsing code. The entire function responsible for processing _SignalP_ output
+
+***********
+
+As `annotate_signalp` cycles through the text output of _SignalP_, then for each protein, if a secretion signal is found, a new property is added: `protein['MOUSE_HEME']['is_signalp'] = True`. 
 
 We can thus abstract the main program loop as running a series of functions of the generic form `annotate_program(params, protein)`. This provides a simple API to extend new modules by simply adding new functions that annotates the `protein` dictionary. 
 
@@ -109,7 +190,7 @@ Cytoplasmic  1243 1234   1290 1280     1248 1234    1262 1240   1132 1119
 Membrane      236 239     315 332       357 358      298 303     244 264                          
 PSE           140 176     169 189       176 204      157 189     116 138                           
 Secreted       78 47       88 61         40 25        38 23       70 41                    
-Total        1696 1696   1862 1862     1821 1821    1755 1755   1562 1562
+Total        1697 1696   1862 1862     1821 1821    1755 1755   1562 1562
 </pre>
 
 Columns labelled 'S' are _SurfG+_ results and 'i' are _inmembrane_ results.
@@ -176,9 +257,15 @@ Links:
 
 In it's simplest from, a web service API is essentially an agreement between a service provider and their end-users on a machine readable, predictable and stable interface. Since 'screen scraping' as a method of interfacing with a sequence analysis tool does not use a well defined API with an implicit guarantee of stability, it can be prone to breakage when the format of the HTML form or results page is changed, even slightly. While we believe that the approach taken by _twill_ and the robust parsing provided by _BeautifulSoup_ will prevent many upstream changes breaking these wrappers, inevitably breakage will occur. In this case, the simplicity and ease of modifiability of these wrappers then becomes a key feature that allows expert users to fix them if and when it is required.
 
+
+
 # Conclusion
 
+
 _inmembrane_ provides a clean bioinformatic pipeline to analyze proteomes for proteins that are exposed out of the membrane. It has been written in a style of programming intended to enhance readability of the code. It has also been designed to be easily extensible and we sincerely hope that _inmembrane_ will be modified and improved by other researchers. We welcome other researchers to join us on Github.
+
+
+
 
 # Availability and requirements
 
@@ -197,7 +284,12 @@ __Licence:__ BSD Licence (2-clause)
 Any restrictions to use by non-academics: Use of _inmembrane_ itself is unrestricted, however many of the dependencies require special licencing for non-academic use.
 
 
+
 # References
+
+Miaomiao Zhou, Jos Boekhorst, Christof Francke and Roland J Siezen. (2008) LocateP: Genome-scale subcellular-location predictor for bacterial proteins. BMC Bioinformatics 2008, 9:173.
+
+A. Billion, R. Ghai, T. Chakraborty and T. Hain. (2006) Augur—a computational pipeline for whole genome microbial surface protein prediction and classification. Bioinformatics (2006) 22 (22): 2819-2820.
 
 Barinov A, Loux V, Hammani A, Nicolas P, Langella P, et al. (2009) Prediction of surface exposed proteins in Streptococcus pyogenes, with a potential application to other Gram-positive bacteria. __Proteomics__ 9: 61-73. <http://dx.doi.org/10.1002/pmic.200800195>
 
