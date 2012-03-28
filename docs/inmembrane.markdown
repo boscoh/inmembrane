@@ -131,9 +131,48 @@ Total               1696        1862         1821        1755       1529
 
 From time to time, bioinformatics researchers will provide useful sequence analysis tools with a HTML form based front end designed for web browsers, but with no official machine readable web API, and no downloadable standalone version of their software. While researchers may neglect to provide these interfaces for a multitude of reasons, for end-users the lack of a standalone version or a web API makes automated use for large scale analyses, such as that carried out by _inmembrane_, somewhat awkward and inconvenient. Several of the published tools for the detection of outer membrane beta-barrel proteins we wished to use as part of the _inmembrane_ workflow only provide a browser based interface, and some only allow submission of a single protein sequence at one time. To solve this problem we chose to implement automated queries to these web intefaces using the _twill_ library (C. Titus Brown, http://twill.idyll.org/), with subsequent parsing of any HTML output using the _BeautifulSoup_ library (Leonard Richardson, http://www.crummy.com/software/BeautifulSoup/).
 
-When writing a wrapper for a new service, commands to interface with the web form can be easily tested directly on the Python commandline, or by using _twill_ itself in interactive mode. This allows for quick prototyping of new web scrapers, prior to implementation as an _inmembrane_ plugin.
+When writing a wrapper for a new service, commands to interface with a web form can be easily tested directly on the Python commandline, or by using _twill_ itself in interactive mode. This allows for quick prototyping of new web scrapers, prior to implementation as an _inmembrane_ plugin.
 
-> Figure - commandline example of twill
+```python
+>>> from twill.commands import *                                                 (1)
+>>> go("http://services.cbu.uib.no/tools/bomp/")                                 (2)
+==> at http://services.cbu.uib.no/tools/bomp/
+'http://services.cbu.uib.no/tools/bomp/'
+>>> showforms()                                                                  (3)
+
+Form #1
+## ## __Name__________________ __Type___ __ID________ __Value__________________
+1     seqs                     textarea  (None)        
+2     useblast                 checkbox  blast        [] of ['on'] 
+3     evalue                   select    (None)       ['0.0000000001'] of ..
+4     queryfile                file      (None)       None 
+5  1  SUBMIT                   submit    (None)       Submit Search 
+6     None                     reset     (None)       None 
+
+..
+>>> formfile("1", "queryfile", "/home/perry/my_sequences.fasta")                 (4)
+
+>>> submit()                                                                     (5)
+
+>>> links = showlinks()                                                          (6)
+Links:
+0. UiB ==> http://www.uib.no
+..snip..
+10. services@cbu.uib.no ==> mailto:services@cbu.uib.no
+11. Click to check output status (new window) ==> viewOutput?id=99941690
+12.  ==> http://www.unifob.uib.no/
+13.  ==> http://www.uib.no/
+..
+>>> go("viewOutput?id=99941690")                                                 (7)
+==> at http://services.cbu.uib.no/tools/bomp/viewOutput?id=99941690
+'http://services.cbu.uib.no/tools/bomp/viewOutput?id=99941690'
+>>> out = show()                                                                 (8)
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
+ "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+..
+```
+> Figure - An example of interfacing with the BOMP ß-barrel outer membrane protein predictor (Berven et al, 2004) web site using _twill_ on the Python interactive commandline. _twill_ essentially behaves like a headless web-browser. Lines with `>>>` specify inputs to the Python interactive command line, while other lines are output from _twill_ (1) First the appropriate commands from the _twill_ library are imported. (2) We navigate to the BOMP website, which silently downloads the HTML page and (3) show a summary of the forms on that page, including field names and input types. (4) We then use the `formfile` function to associate a local file with the `queryfile` FILE input field. Calling `submit()` (5) is equivalent to clicking the SUBMIT button defined in the form. After a short delay, an intermediate page is returned, and we can list the hyperlinks on this page using (6) showlinks(), and assign them to a variable (`links`, a Python list). We can then navigate to the appropriate result page (7) and assign the HTML text of this page to a variable (`out`) (8) for downstream parsing using BeautifulSoup. This type of interactive exploration can be easily expanded into an _inmembrane_ plugin to programmically interface with the web service.
 
 In it's simplest from, a web service API is essentially an agreement between a service provider and their end-users on a machine readable, predictable and stable interface. Since 'screen scraping' as a method of interfacing with a sequence analysis tool does not use a well defined API with an implicit guarantee of stability, it can be prone to breakage when the format of the HTML form or results page is changed, even slightly. While we believe that the approach taken by _twill_ and the robust parsing provided by _BeautifulSoup_ will prevent many upstream changes breaking these wrappers, inevitably breakage will occur. In this case, the simplicity and ease of modifiability of these wrappers then becomes a key feature that allows expert users to fix them if and when it is required.
 
@@ -163,6 +202,8 @@ Any restrictions to use by non-academics: Use of _inmembrane_ itself is unrestri
 Barinov A, Loux V, Hammani A, Nicolas P, Langella P, et al. (2009) Prediction of surface exposed proteins in Streptococcus pyogenes, with a potential application to other Gram-positive bacteria. __Proteomics__ 9: 61-73. <http://dx.doi.org/10.1002/pmic.200800195>
 
 Bassi S (2007) A Primer on Python for Life Science Researchers. __PLoS Comput Biol__ 3(11): e199. <http://dx.doi.org/10.1371/journal.pcbi.0030199>
+
+﻿Berven FS, Flikka K, Jensen HB, Eidhammer I (2004) BOMP: a program to predict integral beta-barrel outer membrane proteins encoded within genomes of Gram-negative bacteria. Nucleic acids research 32: W394-9. <http://dx.crossref.org/10.1093/nar/gkh351>
 
 Jannick Dyrløv Bendtsen, Henrik Nielsen, Gunnar von Heijne and Søren Brunak. (2004) Improved Prediction of Signal Peptides: SignalP 3.0. __J. Mol. Biol.__ 340:783–795.
 
