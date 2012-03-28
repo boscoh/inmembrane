@@ -26,6 +26,9 @@ In studies of membrane proteomes, quick annotation of an experimentally detected
 
 A number of published software packages exist for global prediction of subcellular localization of bacterial proteins exist. Most notable is _PSORTb v3.0_ (Yu, et al, 2010) which predicts general subcellular localization for Gram-positive, Gram-negative and Archaeal proteins sequences. _Augur_ (Billion et al., 2006) is a specialized tool which enables prediction and proteome comparison of Gram-positive surface proteins via a web interface. LocateP (Zhou et al., 2008) is a pipeline wrapping existing specific localization predictors, and provides a web accessible database of pre-calculated subcellular localization for Gram-positive proteomes. The publicly available LocateP server does not allow analysis of arbitrary sets of sequences. While the source code for both _PSORTb 3.0_ is available under an open source license, the code for the other packages is not generally available for download.
 
+?? ClubSub-P ?? http://www.ncbi.nlm.nih.gov/pmc/articles/PMC3210502/
+?? CELLO ?? http://cello.life.nctu.edu.tw/
+
 An extension to general membrane localization prediction is the analysis of membrane protein topology to identify those with prominent surface exposed loops. These potentially surface exposed (PSE) proteins constitute attractive vaccine candidates. One such workflow for annotation of PSE proteins is the program SurfG+, which focuses on Gram-positive bacterial proteomes. SurfG+ is a Java program that carries out batch processing of several standard bioinformatic tools to specifically predict proteins that  protude out of the peptidoglycan layer of the bacterium. These predictions are intended to identify a set of proteins that would be amenable to cell-surface protease shaving experiments. SurfG+ itself does not carry out any extensive analysis itself, but rather leverages the results of a transmembrane helix predictor (_TMMOD_) (Robel et al, 2005), a secretion signal predictor (_SignalP_) (Jannick et al 2004), a lipoprotein signal predictior (_LipoP_) (Agnieszka et al 2003) and a sequence alignment for protein profiles (_HMMER_) (Robert et al 2011). 
 
 Nevertheless, _SurfG+_ suffers several problems that plague much bioinformatic software. Despite being published in 2009, the URL mentioned in the original reference no longer exists. We were able to find a [source-code repository](https://mulcyber.toulouse.inra.fr/projects/surfgplus) but the we were not able to get the program to work, due in part to dependencies that are not longer generally available for download.
@@ -78,7 +81,7 @@ The prescence and topology of transmembrane segments in helical membrane protein
 _inmembrane_ collates the results of each analysis, and using the predicted topology of the intergral membrane proteins detected, predicts potentially surface-exposed loops following the algorithm used by SurfG+. By default, external terminal regions longer than 50 residues and external loops longer than 100 residues are considered to be potentially surface exposed. These values were previously experimentally derived based on membrane shaving experiements with _S. pyrogenes_ and may need modification to suit other species with different cell wall thickness (Barinov et al, 2009).
 
 ******
-
+```python
     if is_hmm_profile_match:
       category =  "PSE"
     elif has_tm_helix(protein):
@@ -97,7 +100,7 @@ _inmembrane_ collates the results of each analysis, and using the predicted topo
         category = "SECRETED"
       else:
         category = "CYTOPLASM"
-
+```
 > Figure 3. Main Gram-positive potentially surface exposed algorithm adapted from SurfG+ expressed in Python code.
 
 *******
@@ -147,6 +150,7 @@ If we use a dictionary to represent our data structure, then the main work in _i
 
 ***********
 
+```python
     def annotate_signalp4(params, proteins):
       for seqid in proteins:
         proteins[seqid]['is_signalp'] = False
@@ -167,7 +171,7 @@ If we use a dictionary to represent our data structure, then the main work in _i
           proteins[seqid]['signalp_cleave_position'] = int(words[4])
 
       return proteins
-    
+```    
 > Figure 4. Example of parsing code. The entire function responsible for processing _SignalP_ output
 
 ***********
@@ -214,6 +218,8 @@ From time to time, bioinformatics researchers will provide useful sequence analy
 
 When writing a wrapper for a new service, commands to interface with a web form can be easily tested directly on the Python commandline, or by using _twill_ itself in interactive mode. This allows for quick prototyping of new web scrapers, prior to implementation as an _inmembrane_ plugin.
 
+***********
+
 ```python
 >>> from twill.commands import *                                                 (1)
 >>> go("http://services.cbu.uib.no/tools/bomp/")                                 (2)
@@ -253,7 +259,9 @@ Links:
 <html xmlns="http://www.w3.org/1999/xhtml">
 ..
 ```
-> Figure - An example of interfacing with the BOMP ß-barrel outer membrane protein predictor (Berven et al, 2004) web site using _twill_ on the Python interactive commandline. _twill_ essentially behaves like a headless web-browser. Lines with `>>>` specify inputs to the Python interactive command line, while other lines are output from _twill_ (1) First the appropriate commands from the _twill_ library are imported. (2) We navigate to the BOMP website, which silently downloads the HTML page and (3) show a summary of the forms on that page, including field names and input types. (4) We then use the `formfile` function to associate a local file with the `queryfile` FILE input field. Calling `submit()` (5) is equivalent to clicking the SUBMIT button defined in the form. After a short delay, an intermediate page is returned, and we can list the hyperlinks on this page using (6) showlinks(), and assign them to a variable (`links`, a Python list). We can then navigate to the appropriate result page (7) and assign the HTML text of this page to a variable (`out`) (8) for downstream parsing using BeautifulSoup. This type of interactive exploration can be easily expanded into an _inmembrane_ plugin to programmically interface with the web service.
+> Figure - An example of interfacing with the BOMP ß-barrel outer membrane protein predictor (Berven et al, 2004) web site using _twill_ on the Python interactive commandline. _twill_ essentially behaves like a headless web-browser. Lines with `>>>` denote inputs to the Python interactive command line, while other lines are output from _twill_ (1) First the appropriate commands from the _twill_ library are imported. (2) We navigate to the BOMP website, which silently downloads the HTML page and (3) show a summary of the forms on that page, including field names and input types. (4) We then use the `formfile` function to associate a local file with the `queryfile` FILE input field. Calling `submit()` (5) is equivalent to clicking the SUBMIT button defined in the form. After a short delay, an intermediate page is returned, and we can list the hyperlinks on this page using (6) showlinks(), and assign them to a variable (`links`, a Python list). We can then navigate to the appropriate result page (7) and assign the HTML text of this page to a variable (`out`) (8) for downstream parsing using BeautifulSoup. This type of interactive exploration can be easily expanded into an _inmembrane_ plugin to programmically interface with the web service.
+
+***********
 
 In it's simplest from, a web service API is essentially an agreement between a service provider and their end-users on a machine readable, predictable and stable interface. Since 'screen scraping' as a method of interfacing with a sequence analysis tool does not use a well defined API with an implicit guarantee of stability, it can be prone to breakage when the format of the HTML form or results page is changed, even slightly. While we believe that the approach taken by _twill_ and the robust parsing provided by _BeautifulSoup_ will prevent many upstream changes breaking these wrappers, inevitably breakage will occur. In this case, the simplicity and ease of modifiability of these wrappers then becomes a key feature that allows expert users to fix them if and when it is required.
 
