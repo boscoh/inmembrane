@@ -5,7 +5,7 @@ _Department of Biochemistry, Monash University, Melbourne, Australia_
 
 # Abstract 
 
-_inmembrane_ is a tool to predict the surface-exposed regions of membrane proteins in sets of bacterial protein sequences. It is intended to be a direct replacement for SurfG+, which implemented such a protocol for Gram-positive bacterial proteomes. Through the use of a modern scripting language, _inmembrane_ provides a more accessible code base that is easier to modify, and provides a useful example of writing programrams for bioinformatic analysis. The program is hosted on the Github repository http://github.com/boscoh/inmembrane.
+_inmembrane_ is a tool to predict the surface-exposed regions of membrane proteins in sets of bacterial protein sequences. It is intended to be a direct replacement for SurfG+, which implemented such a protocol for Gram-positive bacterial proteomes. Through the use of a modern scripting language, _inmembrane_ provides a more accessible code base that is easier to modify, and provides a useful example of writing programs for bioinformatic analysis. The program is hosted on the Github repository http://github.com/boscoh/inmembrane.
 
 # Background
 
@@ -25,7 +25,7 @@ A number of published software packages exist for global prediction of subcellul
 
 An extension to basic membrane localization prediction is the analysis of membrane protein topology to identify those with prominent surface exposed loops. These potentially surface exposed (PSE) proteins constitute attractive vaccine candidates. One such workflow for annotation of PSE proteins is the program SurfG+, which focuses on Grampositive bacterial proteomes. SurfG+ is a Java program that carries out batch processing of several standard bioinformatic tools to specifically predict proteins that  protude out of the peptidoglycan layer of the bacterium. These predictions are intended to identify a set of proteins that would be amenable to cell-surface protease shaving experiments. SurfG+ itself does not carry out any extensive analysis itself, but rather leverages the results of a transmembrane helix predictor (_TMMOD_) (Robel et al, 2005), a secretion signal predictor (_SignalP_) (Jannick et al 2004), a lipoprotein signal predictior (_LipoP_) (Agnieszka et al 2003) and a sequence alignment for protein profiles (_HMMER_) (Robert et al 2011). 
 
-Nevertheless, _SurfG+_ suffers several problems that plague much bioinformatic software. Despite being published in 2009, the URL mentioned in the original reference no longer exists.  We were able to find a [source-code repository](https://mulcyber.toulouse.inra.fr/projects/surfgplus) but the we were not able to get the program to work. Given the source code, we were able to deduce the basic algorithm of the program but the complex architecture of SurfG+ prevented us from making the program work on our system (Mac OSX and Ubuntu 11).
+Nevertheless, _SurfG+_ suffers several problems that plague much bioinformatic software. Despite being published in 2009, the URL mentioned in the original reference no longer exists.  We were able to find a [source-code repository](https://mulcyber.toulouse.inra.fr/projects/surfgplus) but the we were not able to get the program to work. Given the source code, we were able to deduce the basic algorithm of the program but the complex architecture of SurfG+ prevented us from making the program work on our system (MacOSX and Ubuntu 11).
 
 Since the core algorithm in _SurfG+_ is relatively straightforward, we decided to replicate the functionality of _SurfG+_ by writing _inmembrane_ in a modern scripting language. This lead to considerable simplifiction and clarification of the code base. Compared with the _SurfG+_ Java source code of 700K, _inmembrane_ is around 32K of Python code, including additional functionality not offered by _SurfG+_. The smaller code case is substantially easier to reuse and repurpose for other users. Here, we discuss the issues involved in writing robust and accessible bioinformatic source code.
 
@@ -105,7 +105,7 @@ Cytoplasmic  1243 1234   1290 1280     1248 1234    1262 1240   1132 1119
 Membrane      236 239     315 332       357 358      298 303     244 264                          
 PSE           140 176     169 189       176 204      157 189     116 138                           
 Secreted       78 47       88 61         40 25        38 23       70 41                    
-Total        1696 1696   1862 1862     1821 1821    1755 1755   1562 1562
+Total        1697 1696   1862 1862     1821 1821    1755 1755   1562 1562
 </pre>
 
 Columns labelled 'S' are _SurfG+_ results and 'i' are _inmembrane_ results.
@@ -135,7 +135,7 @@ In it's simplest from, a web service API is essentially an agreement between a s
 
 # Conclusion
 
-_inmembrane_ provides a clean bioinformatic pipeline to analyze proteomes for proteins that are exposed out of the membrane. It has been written in a  modern style of programming that optimizes readability. It has also been designed to be easily extensible and we sincerely hope that _inmembrane_ will be modified and improved by other researchers. We welcome other researchers to join us on Github.
+_inmembrane_ provides a clean bioinformatic pipeline to analyze proteomes for proteins that are exposed out of the membrane. It has been written in a  modern style of programming that optimizes readability, and designed to be easily extensible. We sincerely hope that _inmembrane_ will be modified and improved by other researchers, and we welcome you to join us on Github.
 
 # Availability and requirements
 
