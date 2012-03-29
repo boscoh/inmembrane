@@ -177,12 +177,15 @@ def process(params):
   for annotation in protocol.get_annotations(params):
     annotate_fn = eval(annotation)
     annotate_fn(params, proteins)
-
+  
   # do protocol analysis on the results of the annotations
   for seqid in seqids:
     protein = proteins[seqid]
     protocol.post_process_protein(params, protein)
     log_stdout(protocol.protein_output_line(seqid, proteins))
+
+  # print a summary table of classifications to stderr
+  log_stderr(protocol.summary_table(params, proteins))
 
   # always write to biologist-friendly csv file
   f = open(params['csv'], 'w')

@@ -93,23 +93,23 @@ def post_process_protein(params, protein):
     chop_nterminal_peptide(protein, i_signalp_cut)
 
   if is_hmm_profile_match:
-    category =  "PSE"
+    category =  "PSE-Cellwall"
   elif has_tm_helix(protein):
     if has_surface_exposed_loop(protein):
-      category = "PSE"
+      category = "PSE-Membrane"
     else:
-      category = "MEMBRANE"
+      category = "MEMBRANE(non-PSE)"
   else:
     if is_lipop:
       # whole protein considered outer terminal loop
       if sequence_length(protein) < terminal_exposed_loop_min:
-        category = "MEMBRANE"
+        category = "LIPOPROTEIN(non-PSE)"
       else:
-        category = "PSE"
+        category = "PSE-Lipoprotein"
     elif is_signalp:
       category = "SECRETED"
     else:
-      category = "CYTOPLASM"
+      category = "CYTOPLASM(non-PSE)"
 
   if details.endswith(';'):
     details = details[:-1]
@@ -137,5 +137,37 @@ def protein_csv_line(seqid, proteins):
        proteins[seqid]['name'])
 
 
+def summary_table(params, proteins):
+  """
+  Returns a string representing a simple summary table of
+  protein classifcations.
+  """
+  out = ""
+  counts = {}
+  for seqid in proteins:
+    category = proteins[seqid]['category']
+    
+    if category not in counts:
+      counts[category] = 0
+    else:
+      counts[category] += 1
+      
+  out += "\n\n# Number of proteins in each class:\n"
+  pse_total = 0
+  
+  for c in counts:
+    if "PSE-" in c:
+      pse_total += counts[c]
+  counts["PSE(total)"] = pse_total
+  
+  for c in sorted(counts):
+    if "PSE-" in c:
+      spacer = "  "
+      pse_total += counts[c]
+    else:
+      spacer = ""
+    out += "# %s%-15s\t%i\n" % (spacer, c, counts[c])
+  
+  #out += "#\n# PSE(total)\t\t%i\n" % (pse_total)
 
-
+  return out

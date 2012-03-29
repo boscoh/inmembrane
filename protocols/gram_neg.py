@@ -35,8 +35,12 @@ def predict_surface_exposure_barrel(params, protein):
   #          use those annotations directly.
   pass
 
-
-def print_summary_table(params, proteins):
+def summary_table(params, proteins):
+  """
+  Returns a string representing a simple summary table of
+  protein classifcations.
+  """
+  out = ""
   counts = {}
   counts["BARREL"] = 0
   for seqid in proteins:
@@ -45,16 +49,19 @@ def print_summary_table(params, proteins):
     # WIP: greedy barrel annotation
     if (dict_get(proteins[seqid], 'tmbhunt_prob') >= params['tmbhunt_cutoff']) or \
        (dict_get(proteins[seqid], 'bomp') >= params['bomp_cutoff']):
-       counts["BARREL"] += 1
+      counts["BARREL"] += 1
     
     if category not in counts:
       counts[category] = 0
     else:
       counts[category] += 1
       
-  log_stderr("# Number of proteins in each class:")
+  out += "# Number of proteins in each class:\n"
   for c in counts:
-    log_stderr("%-15s %i" % (c, counts[c]))
+    out += "# %-15s %i\n" % (c, counts[c])
+    
+  return out
+    
 
 # TODO: Workflow:
 #       These rules can be approached in two ways. Run every annotation plugin
@@ -142,6 +149,11 @@ def post_process_protein(params, protein, stringent=False):
   elif is_barrel:
      category = 'OM(barrel)'
   protein['category'] = category
+
+  # TODO: use thresholds for barrel annotation
+  #if (dict_get(proteins[seqid], 'tmbhunt_prob') >= params['tmbhunt_cutoff']) or \
+  #   (dict_get(proteins[seqid], 'bomp') >= params['bomp_cutoff']):
+  #  protein['category'] = 'OM(barrel)'
 
   # set number of predicted OM barrel strands in details
   if (dict_get(protein, 'category') == 'OM(barrel)') and \
