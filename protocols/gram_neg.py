@@ -42,21 +42,15 @@ def summary_table(params, proteins):
   """
   out = ""
   counts = {}
-  counts["BARREL"] = 0
   for seqid in proteins:
     category = proteins[seqid]['category']
-    
-    # WIP: greedy barrel annotation
-    if (dict_get(proteins[seqid], 'tmbhunt_prob') >= params['tmbhunt_cutoff']) or \
-       (dict_get(proteins[seqid], 'bomp') >= params['bomp_cutoff']):
-      counts["BARREL"] += 1
     
     if category not in counts:
       counts[category] = 0
     else:
       counts[category] += 1
       
-  out += "# Number of proteins in each class:\n"
+  out += "\n\n# Number of proteins in each class:\n"
   for c in counts:
     out += "# %-15s %i\n" % (c, counts[c])
     
