@@ -8,13 +8,11 @@ _Department of Biochemistry, Monash University, Melbourne, Australia_
 
 # Abstract 
 
-_inmembrane_ is a tool to predict the surface-exposed regions of membrane proteins in sets of bacterial protein sequences. It is intended to be a direct replacement for SurfG+, which implemented such a protocol for Gram-positive bacterial proteomes. Through the use of a modern scripting language, _inmembrane_ provides a more accessible code base that is easier to modify, and provides a useful example of writing programs for bioinformatic analysis. The program is hosted on the Github repository http://github.com/boscoh/inmembrane.
+_inmembrane_ is a tool to predict the surface-exposed regions of membrane proteins in sets of bacterial protein sequences. We have implemented a protocol for determining surface exposed proteins in Gram-positive bacterial proteomes by interfacing with multiple predictors of subcellular localization and membrane protein topology. Through the use of a modern scripting language, _inmembrane_ provides an accessible code base and extensible architecture that is amenable to modification for related sequence annotation tasks. The program is hosted on the Github repository http://github.com/boscoh/inmembrane.
 
 # Background
 
 A common task in bioinformatics is to integrate the results of protein prediction programs to deduce complex properties of proteins. In studies of membrane proteomes, quick annotation of an experimentally detected set of the proteins can help highlight sequences of unexpected localization, and can alert researchers to possible contamination from other subcellular fractions. Ultimately, a concise summary of the properties of the detected membrane proteins in a particular proteomic dataset allows meaningful comparisons between different bacterial strains, species, and their responses in membrane remodelling to host and enviromental challenges.
-
-In studies of membrane proteomes, quick annotation of an experimentally detected set of the proteins can help detect sequences of unexpected localization, and can alert researchers to possible contamination from other subcellular fractions. Ultimately, a concise summary of the properties of the detected membrane proteins in a particular proteomic set allows meaningful comparisons between different bacterial strains, species, and their responses in membrane remodelling to host and enviromental challenges.
 
 *****
 
@@ -24,17 +22,13 @@ In studies of membrane proteomes, quick annotation of an experimentally detected
 
 *****
 
-A number of published software packages exist for global prediction of subcellular localization of bacterial proteins exist. Most notable is _PSORTb v3.0_ (Yu, et al, 2010) which predicts general subcellular localization for Gram-positive, Gram-negative and Archaeal proteins sequences. _Augur_ (Billion et al., 2006) is a specialized tool which enables prediction and proteome comparison of Gram-positive surface proteins via a web interface. LocateP (Zhou et al., 2008) is a pipeline wrapping existing specific localization predictors, and provides a web accessible database of pre-calculated subcellular localization for Gram-positive proteomes. The publicly available LocateP server does not allow analysis of arbitrary sets of sequences. While the source code for both _PSORTb 3.0_ is available under an open source license, the code for the other packages is not generally available for download.
+A number of published software packages exist for global prediction of subcellular localization of bacterial proteins. Most notable is _PSORTb v3.0_ (Yu, et al, 2010) which predicts general subcellular localization for Gram-positive, Gram-negative and Archaeal proteins sequences. CELLO (Yu et al, 2006) is a web accessible Support Vector Machine-based classifier that predicts localization of Gram-positive, Gram-negative and eukaryotic proteins. Some predictors and databases have been developed with a focus solely on Gram-positive surface proteins. Both _Augur_ (Billion et al., 2006) and _LocateP_ (Zhou et al., 2008) are pipelines wrapping existing specific localization predictors, and provide web accessible databases of pre-calculated subcellular localization for Gram-positive proteomes. While the source code for _PSORTb 3.0_ is available under an open source license, the code for the other annotation pipelines discussed is not generally available for download.
 
-?? ClubSub-P ?? http://www.ncbi.nlm.nih.gov/pmc/articles/PMC3210502/
-?? CELLO ?? http://cello.life.nctu.edu.tw/
-
-An extension to general membrane localization prediction is the analysis of membrane protein topology to identify those with prominent surface exposed loops. These potentially surface exposed (PSE) proteins constitute attractive vaccine candidates. One such workflow for annotation of PSE proteins is the program SurfG+, which focuses on Gram-positive bacterial proteomes. SurfG+ is a Java program that carries out batch processing of several standard bioinformatic tools to specifically predict proteins that  protude out of the peptidoglycan layer of the bacterium. These predictions are intended to identify a set of proteins that would be amenable to cell-surface protease shaving experiments. SurfG+ itself does not carry out any extensive analysis itself, but rather leverages the results of a transmembrane helix predictor (_TMMOD_) (Robel et al, 2005), a secretion signal predictor (_SignalP_) (Jannick et al 2004), a lipoprotein signal predictior (_LipoP_) (Agnieszka et al 2003) and a sequence alignment for protein profiles (_HMMER_) (Robert et al 2011). 
+An extension to general membrane localization prediction is the analysis of membrane protein topology to identify prominent surface exposed loops. These potentially surface exposed (PSE) proteins are of particular interest since they constitute attractive vaccine candidates. One existing workflow for annotation of PSE proteins is the program SurfG+, which focuses on Gram-positive bacterial proteomes. SurfG+ is a Java program that carries out batch processing of several standard bioinformatic tools to specifically predict proteins that protude out of the peptidoglycan layer of the bacterium. These predictions are intended to identify a set of proteins that would be amenable to cell-surface protease shaving experiments. SurfG+ itself does not carry out any extensive analysis itself, but rather leverages the results of a transmembrane helix predictor (_TMMOD_) (Robel et al, 2005), a secretion signal predictor (_SignalP_) (Jannick et al 2004), a lipoprotein signal predictior (_LipoP_) (Agnieszka et al 2003) and a sequence alignment for protein profiles (_HMMER_) (Robert et al 2011). 
 
 Nevertheless, _SurfG+_ suffers several problems that plague much bioinformatic software. Despite being published in 2009, the URL mentioned in the original reference no longer exists. We were able to find a [source-code repository](https://mulcyber.toulouse.inra.fr/projects/surfgplus) but the we were not able to get the program to work, due in part to dependencies that are not longer generally available for download.
 
-
-Since the core algorithm in _SurfG+_ is relatively straightforward, we decided to replicate the functionality of _SurfG+_ by writing _inmembrane_ in a modern scripting language. This lead to considerable simplifiction and clarification of the code base. Compared with the _SurfG+_ Java source code of 700K, _inmembrane_, without dependencies, is around 70K of Python code and includes additional functionality not offered by _SurfG+_. The smaller code case is substantially easier to reuse and repurpose for other users. Here, we discuss the issues involved in writing robust and accessible bioinformatic source code.
+Since the core algorithm in _SurfG+_ is relatively straightforward, we decided to replicate and expand upon the functionality of _SurfG+_ by writing _inmembrane_ in a modern scripting language. This lead to considerable simplifiction and clarification of the code base. Compared with the _SurfG+_ Java source code of 700K, _inmembrane_, without dependencies, is around 70K of Python code and includes additional functionality not offered by _SurfG+_. The smaller code base is substantially easier to reuse and repurpose for other users. Here, we discuss the issues involved in writing robust and accessible bioinformatic source code.
 
 
 ## Methods and Implementation
@@ -273,8 +267,6 @@ In it's simplest from, a web service API is essentially an agreement between a s
 _inmembrane_ provides a clean bioinformatic pipeline to analyze proteomes for proteins that are exposed out of the membrane. It has been written in a style of programming intended to enhance readability of the code. It has also been designed to be easily extensible and we sincerely hope that _inmembrane_ will be modified and improved by other researchers. We welcome other researchers to join us on Github.
 
 
-
-
 # Availability and requirements
 
 __Project name:__ inmembrane
@@ -295,9 +287,11 @@ Any restrictions to use by non-academics: Use of _inmembrane_ itself is unrestri
 
 # References
 
-Miaomiao Zhou, Jos Boekhorst, Christof Francke and Roland J Siezen. (2008) LocateP: Genome-scale subcellular-location predictor for bacterial proteins. BMC Bioinformatics 2008, 9:173.
+Agnieszka S. Juncker, Hanni Willenbrock, Gunnar Von Heijne, Søren Brunak, Henrik Nielsen, And Anders Krogh. (2003) Prediction of lipoprotein signal peptides in Gram-negative bacteria. __Protein Science__ 12:1652–1662.
 
-A. Billion, R. Ghai, T. Chakraborty and T. Hain. (2006) Augur—a computational pipeline for whole genome microbial surface protein prediction and classification. Bioinformatics (2006) 22 (22): 2819-2820.
+Anders Krogh, Björn Larsson, Gunnar von Heijne and Erik L. L. Sonnhammer (2001) Predicting Transmembrane Protein Topology with a Hidden Markov Model: Application to Complete Genomes. __J. Mol. Biol.__ 305:567-580.
+
+Bateman, A., Bycroft, M., The structure of a LysM domain from E. coli membrane-bound lytic murein transglycosylase D (MltD). __J. Mol. Biol.__ 2000, 299, 1113–1119. <http://dx.doi.org/10.1006/jmbi.2000.3778>
 
 Barinov A, Loux V, Hammani A, Nicolas P, Langella P, et al. (2009) Prediction of surface exposed proteins in Streptococcus pyogenes, with a potential application to other Gram-positive bacteria. __Proteomics__ 9: 61-73. <http://dx.doi.org/10.1002/pmic.200800195>
 
@@ -305,35 +299,33 @@ Bassi S (2007) A Primer on Python for Life Science Researchers. __PLoS Comput Bi
 
 ﻿Berven FS, Flikka K, Jensen HB, Eidhammer I (2004) BOMP: a program to predict integral beta-barrel outer membrane proteins encoded within genomes of Gram-negative bacteria. Nucleic acids research 32: W394-9. <http://dx.crossref.org/10.1093/nar/gkh351>
 
-Jannick Dyrløv Bendtsen, Henrik Nielsen, Gunnar von Heijne and Søren Brunak. (2004) Improved Prediction of Signal Peptides: SignalP 3.0. __J. Mol. Biol.__ 340:783–795.
-
-Robert D. Finn, Jody Clements and Sean R. Eddy. (2011) HMMER web server: interactive sequence similarity searching. __Nucleic Acids Research__ 39:W29–W37.
-
-Agnieszka S. Juncker, Hanni Willenbrock, Gunnar Von Heijne, Søren Brunak, Henrik Nielsen, And Anders Krogh. (2003) Prediction of lipoprotein signal peptides in Gram-negative bacteria. __Protein Science__ 12:1652–1662.
-
-Anders Krogh, Björn Larsson, Gunnar von Heijne and Erik L. L. Sonnhammer (2001) Predicting Transmembrane Protein Topology with a Hidden Markov Model: Application to Complete Genomes. __J. Mol. Biol.__ 305:567-580.
-
-Robel Y. Kahsay1, Guang Gao1 and Li Liao1. An improved hidden Markov model for transmembrane protein detection and topology prediction and its applications to complete genomes (2005) __Bioinformatics__ 21: 1853-1858.
-
-﻿Jones DT. Improving the accuracy of transmembrane protein topology prediction using evolutionary information. __Bioinformatics (Oxford, England)__ 2007 Mar;23(5):538-44. <http://dx.doi.org/10.1093/bioinformatics/btl677>
-
-N.Y. Yu, J.R. Wagner, M.R. Laird, G. Melli, S. Rey, R. Lo, P. Dao, S.C. Sahinalp, M. Ester, L.J. Foster, F.S.L. Brinkman (2010) PSORTb 3.0: Improved protein subcellular localization prediction with refined localization subcategories and predictive capabilities for all prokaryotes, __Bioinformatics__ 26(13):1608-1615 <http://dx.doi.org/10.1093/bioinformatics/btq249>
-
-﻿Masuda K, Matsuyama S-ichi, Tokuda H. Elucidation of the function of lipoprotein-sorting signals that determine membrane localization. __Proceedings of the National Academy of Sciences of the United States of America__ 2002 May;99(11):7390-5. <http://dx.doi.org/10.1073/pnas.112085599>
+Billion A., Ghai R., Chakraborty T. and Hain T. (2006) Augur—a computational pipeline for whole genome microbial surface protein prediction and classification. Bioinformatics (2006) 22 (22): 2819-2820.
 
 Boekhorst, J., de Been, M. W., Kleerebezem, M., Siezen, R. J., Genome-wide detection and analysis of cell wall-bound proteins with LPxTG-like sorting motifs. __J. Bacteriol.__ 2005, 187, 4928–4934. <http://dx.doi.org/10.1128/​JB.187.14.4928-4934.2005>
-
-Jonquieres, R., Bierne, H., Fiedler, F., Gounon, P., Cossart, P., Interaction between the protein InlB of Listeria mono- cytogenes and lipoteichoic acid: A novel mechanism of
-protein association at the surface of Gram-positive bacteria. __Mol.Microbiol.__ 1999, 34, 902–914. <http://dx.doi.org/10.1046/j.1365-2958.1999.01652.x>
 
 Foster, S. J., Cloning, expression, sequence analysis and biochemical characterization of an autolytic amidase of Bacillus subtilis 168 trpC2. __J. Gen. Microbiol.__ 1991, 137, 1987–1998. <http://dx.doi.org/10.1099/00221287-137-8-1987>
 
 Janecek, S., Svensson, B., Russell, R. R., Location of repeat elements in glucansucrases of Leuconostoc and Strepto- coccus species. __FEMS Microbiol. Lett.__ 2000, 192, 53–57. <http://dx.doi.org/10.1111/j.1574-6968.2000.tb09358.x>
 
-Bateman, A., Bycroft, M., The structure of a LysM domain from E. coli membrane-bound lytic murein transglycosylase D (MltD). __J. Mol. Biol.__ 2000, 299, 1113–1119. <http://dx.doi.org/10.1006/jmbi.2000.3778>
+Jannick Dyrløv Bendtsen, Henrik Nielsen, Gunnar von Heijne and Søren Brunak. (2004) Improved Prediction of Signal Peptides: SignalP 3.0. __J. Mol. Biol.__ 340:783–795.
+
+﻿Jones DT. Improving the accuracy of transmembrane protein topology prediction using evolutionary information. __Bioinformatics (Oxford, England)__ 2007 Mar;23(5):538-44. <http://dx.doi.org/10.1093/bioinformatics/btl677>
+
+Jonquieres, R., Bierne, H., Fiedler, F., Gounon, P., Cossart, P., Interaction between the protein InlB of Listeria mono- cytogenes and lipoteichoic acid: A novel mechanism of
+protein association at the surface of Gram-positive bacteria. __Mol.Microbiol.__ 1999, 34, 902–914. <http://dx.doi.org/10.1046/j.1365-2958.1999.01652.x>
+
+﻿Masuda K, Matsuyama S-ichi, Tokuda H. Elucidation of the function of lipoprotein-sorting signals that determine membrane localization. __Proceedings of the National Academy of Sciences of the United States of America__ 2002 May;99(11):7390-5. <http://dx.doi.org/10.1073/pnas.112085599>
+
+Mesnage, S., Fontaine, T., Mignot, T., Delepierre, M. et al., Bacterial SLH domain proteins are noncovalently anchored to the cell surface via a conserved mechanism involving wall polysaccharide pyruvylation. __EMBO J.__ 2000, 19, 4473–4484. <http://dx.doi.org/10.1093/emboj/19.17.4473>
+
+Miaomiao Zhou, Jos Boekhorst, Christof Francke and Roland J Siezen. (2008) LocateP: Genome-scale subcellular-location predictor for bacterial proteins. BMC Bioinformatics 2008, 9:173.
+
+Robel Y. Kahsay1, Guang Gao1 and Li Liao1. An improved hidden Markov model for transmembrane protein detection and topology prediction and its applications to complete genomes (2005) __Bioinformatics__ 21: 1853-1858.
+
+Robert D. Finn, Jody Clements and Sean R. Eddy. (2011) HMMER web server: interactive sequence similarity searching. __Nucleic Acids Research__ 39:W29–W37.
 
 Waligora, A. J., Hennequin, C., Mullany, P., Bourlioux, P. et al., Characterization of a cell surface protein of Clostridium difficile with adhesive properties. __Infect. Immun.__ 2001, 69, 2144–2153. <http://dx.doi.org/10.1128/​IAI.69.4.2144-2153.2001>
 
-N.Y. Yu, J.R. Wagner, M.R. Laird, G. Melli, S. Rey, R. Lo, P. Dao, S.C. Sahinalp, M. Ester, L.J. Foster, F.S.L. Brinkman (2010) PSORTb 3.0: Improved protein subcellular localization prediction with refined localization subcategories and predictive capabilities for all prokaryotes, __Bioinformatics__ 26(13):1608-1615 <http://dx.doi.org/10.1093/bioinformatics/btq249>
+Yu CS, Chen YC, Lu CH, Hwang JK: Prediction of protein subcellular localization. Proteins: Structure, Function and Bioinformatics 2006, 64:643-651.
 
-Mesnage, S., Fontaine, T., Mignot, T., Delepierre, M. et al., Bacterial SLH domain proteins are noncovalently anchored to the cell surface via a conserved mechanism involving wall polysaccharide pyruvylation. __EMBO J.__ 2000, 19, 4473–4484. <http://dx.doi.org/10.1093/emboj/19.17.4473>
+Yu NY, Wagner JR, Laird MR, Melli G, Rey S, Lo R, Dao P, Sahinalp SC, Ester M, Foster LJ, Brinkman FSL (2010) PSORTb 3.0: Improved protein subcellular localization prediction with refined localization subcategories and predictive capabilities for all prokaryotes, __Bioinformatics__ 26(13):1608-1615 <http://dx.doi.org/10.1093/bioinformatics/btq249>
