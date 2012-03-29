@@ -1,8 +1,8 @@
-import os, time, StringIO
+import sys, os, time, StringIO
 
 import twill
 from twill.commands import find, formfile, follow, fv, go, show, \
-                             showforms, showlinks, submit
+                             showforms, showlinks, submit, agent
                              
 import inmembrane
 
@@ -23,6 +23,10 @@ def annotate_tmbhunt_web(params, proteins, \
   if len(proteins) >= 10000:
     inmembrane.log_stderr("# TMB-HUNT(web): error, can't take more than 10,000 sequences.")
     return
+  
+  # set the user-agent so web services can block us if they want ... :/
+  python_version = sys.version.split()[0]
+  agent("Python-urllib/%s (twill; inmembrane)" % python_version)
   
   out = 'tmbhunt.out'
   inmembrane.log_stderr("# TMB-HUNT(web) %s > %s" % (params['fasta'], out))

@@ -76,7 +76,7 @@ def log_stderr(s):
   if s and s[-1] != "\n":
     s += "\n"
   if not s.startswith("#"):
-    s = "#" + s
+    s = "# " + s
   sys.stderr.write(s)
 
 
@@ -145,6 +145,7 @@ def create_proteins_dict(fasta):
       words = l.split()
       if words:
         proteins[seqid]['seq'] += words[0]
+    proteins[seqid]['sequence_length'] = len(proteins[seqid]['seq'])
   return seqids, proteins
   
 
@@ -160,7 +161,10 @@ def print_proteins(proteins):
       print "    '%s': %s, " % (key, repr(value))
     print "  },"
   print "}"
-
+  # Standard Library alternative 
+  # import pprint
+  # pp = pprint.PrettyPrinter(indent=4)
+  # print pp.pformat(proteins)
   
 def write_proteins_fasta(fasta_filename, proteins, seqids):
   """
@@ -202,7 +206,6 @@ def chop_nterminal_peptide(protein, i_cut):
         elif j<=0 and k>0:
           loops[i] = (1, k)
 
-
 def eval_surface_exposed_loop(
     sequence_length, n_transmembrane_region, outer_loops, 
     terminal_exposed_loop_min, internal_exposed_loop_min):
@@ -212,7 +215,11 @@ def eval_surface_exposed_loop(
   side of the Gram+ bacterial membrane and tests if the loops are long
   enough to stick out of the peptidoglycan layer to be cleaves by proteases
   in a cell-shaving experiment.
-  """  
+
+  Returns True if any outer loop, or the N- or C-terminii are
+  longer than the given thresholds.
+  """
+
   if n_transmembrane_region == 0:
     # treat protein as one entire exposed loop
     return sequence_length >= terminal_exposed_loop_min
@@ -256,5 +263,3 @@ def clean_directory(top, excluded_files):
         os.remove(os.path.join(root, name))
     for name in dirs:
       os.rmdir(os.path.join(root, name))
-
-

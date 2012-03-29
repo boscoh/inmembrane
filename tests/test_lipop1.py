@@ -30,12 +30,14 @@ class TestLipoP(unittest.TestCase):
     self.expected_output = {
         u'SPy_0252': True,
         u'SPy_2077': False, 
-        u'SPy_0317': True
+        u'SPy_0317': True,
+        u'tr|Q9HYX8' : True,
     }
+    
     for seqid in self.expected_output:
       self.assertEqual(
           self.expected_output[seqid], self.proteins[seqid]['is_lipop'])
-
+    self.assertTrue(self.proteins[u'tr|Q9HYX8']['lipop_im_retention_signal'])
     os.chdir(save_dir)
 
 

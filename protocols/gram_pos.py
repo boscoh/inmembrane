@@ -1,5 +1,8 @@
-from helpers import *
-
+#from helpers import *
+import os
+import helpers
+from helpers import dict_get, eval_surface_exposed_loop, \
+                    chop_nterminal_peptide
 
 def get_annotations(params):
   """
@@ -12,6 +15,9 @@ def get_annotations(params):
   params to make sure the 'hmm_profiles_dir' is
   pointing in the right place.
   """
+
+  params['signalp4_organism'] = 'gram+'
+  
   annotations = [ \
       'annotate_signalp4', 'annotate_lipop1', 
       'annotate_hmmsearch3']
@@ -115,10 +121,7 @@ def post_process_protein(params, protein):
 
   return details, category
 
-# TODO: Shouldn't these be shared functions that every
-#       protocol uses by default (probably in inmembrane.py) ? 
-#       The processing in the
-#       protocol should be decoupled from the output.
+
 def protein_output_line(seqid, proteins):
   return '%-15s   %-13s  %-50s  %s' % \
       (seqid, 
@@ -126,16 +129,12 @@ def protein_output_line(seqid, proteins):
       proteins[seqid]['details'],
       proteins[seqid]['name'][:60])
 
-
 def protein_csv_line(seqid, proteins):
   return '%s,%s,%s,"%s"\n' % \
       (seqid, 
        proteins[seqid]['category'], 
        proteins[seqid]['details'],
-       proteins[seqid]['name'][:60])
-
-
-
+       proteins[seqid]['name'])
 
 
 

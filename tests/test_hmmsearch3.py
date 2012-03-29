@@ -28,12 +28,24 @@ class TestHmmsearch3(unittest.TestCase):
     inmembrane.annotate_hmmsearch3(self.params, self.proteins)
 
     self.expected_output = {
-        u'SPy_0128': ['LPxTG'], 
-        u'SPy_0191a': ['SLH_ls'], 
+      'SPy_0191a': {
+        'sequence_length': 69, 
+        'hmmsearch': [], 
+        'name': 'SPy_0191a from AE004092', 
+        'seq': 'MSKQEVRDSLSTVVGDLSLTTRENQIGSLFLDVQSDEDFGFKVVKVLKSKGIVLNALDESVCGFKFVVE', 
+      },
+      'SPy_0128': {
+        'sequence_length': 340, 
+        'hmmsearch': ['LPxTG'], 
+        'name': 'SPy_0128 from AE004092', 
+        'seq': 'MKLRHLLLTGAALTSFAATTVHGETVVNGAKLTVTKNLDLVNSNALIPNTDFTFKIEPDTTVNEDGNKFKGVALNTPMTKVTYTNSDKGGSNTKTAEFDFSEVTFEKPGVYYYKVTEEKIDKVPGVSYDTTSYTVQVHVLWNEEQQKPVATYIVGYKEGSKVPIQFKNSLDSTTLTVKKKVSGTGGDRSKDFNFGLTLKANQYYKASEKVMIEKTTKGGQAPVQTEASIDQLYHFTLKDGESIKVTNLPVGVDYVVTEDDYKSEKYTTNVEVSPQDGAVKNIAGNSTEQETSTDKDMTITFTNKKDFEVPTGVAMTVAPYIALGIVAVGGALYFVKKKNA', 
+      },
     }
-    for seqid in self.expected_output:
-      for motif in self.expected_output[seqid]:
-        self.assertTrue(motif in self.proteins[seqid]['hmmsearch'])
+
+    #import helpers
+    #helpers.print_proteins(self.proteins)
+    
+    self.assertEqual(self.proteins, self.expected_output)
 
     os.chdir(save_dir)
 

@@ -100,7 +100,6 @@ def annotate_memsat3(params, proteins):
 
     # initialize the protein data structure
     protein.update({
-      'sequence_length':len(seq),
       'memsat3_scores':[],
       'memsat3_helices':[],
       'memsat3_inner_loops':[],

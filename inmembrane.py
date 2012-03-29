@@ -69,7 +69,6 @@ default_params_str = """{
   'csv': '',
   'out_dir': '',
   'protocol': 'gram_pos', # 'gram_neg'
-  'signalp4_organism': 'gram+',
   'signalp4_bin': 'signalp',
   'lipop1_bin': 'LipoP',
   'tmhmm_bin': 'tmhmm',
