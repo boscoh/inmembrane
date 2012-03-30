@@ -75,19 +75,19 @@ def post_process_protein(params, protein):
 
   # TODO: make details a plain list.
   #       leave the insertion of ';' to output time
-  details = ""
+  details = []
   if is_hmm_profile_match:
-    details += "hmm(%s);" % protein['hmmsearch'][0]
+    details += ["hmm(%s)" % ",".join(protein['hmmsearch'])]
   if is_lipop: 
-    details += "lipop;"
+    details += ["lipop"]
   if is_signalp:
-    details += "signalp;"
+    details += ["signalp"]
   for program in params['helix_programs']:
     if has_tm_helix(protein):
       n = len(protein['%s_helices' % program])
-      details += program + "(%d);" % n
+      details += [program + "(%d)" % n]
 
-  if is_lipop: 
+  if is_lipop:
     chop_nterminal_peptide(protein, i_lipop_cut)
   elif is_signalp:
     chop_nterminal_peptide(protein, i_signalp_cut)
@@ -111,10 +111,8 @@ def post_process_protein(params, protein):
     else:
       category = "CYTOPLASM(non-PSE)"
 
-  if details.endswith(';'):
-    details = details[:-1]
-  if details is '':
-    details = "."
+  if details is []:
+    details = ["."]
 
   protein['details'] = details
   protein['category'] = category
@@ -123,17 +121,17 @@ def post_process_protein(params, protein):
 
 
 def protein_output_line(seqid, proteins):
-  return '%-15s   %-13s  %-50s  %s' % \
+  return '%-15s   %-18s  %-50s  %s' % \
       (seqid, 
       proteins[seqid]['category'], 
-      proteins[seqid]['details'],
+      ";".join(proteins[seqid]['details']),
       proteins[seqid]['name'][:60])
 
 def protein_csv_line(seqid, proteins):
   return '%s,%s,%s,"%s"\n' % \
       (seqid, 
        proteins[seqid]['category'], 
-       proteins[seqid]['details'],
+       ";".join(proteins[seqid]['details']),
        proteins[seqid]['name'])
 
 

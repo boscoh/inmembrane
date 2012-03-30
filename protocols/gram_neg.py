@@ -170,7 +170,7 @@ def post_process_protein(params, protein, stringent=False):
     chop_nterminal_peptide(protein, protein['lipop_cleave_position'])
   
   #if is_hmm_profile_match:
-  #  details += ["hmm(%s)" % protein['hmmsearch'][0]]
+  #  details += ["hmm(%s);" % ",".join(protein['hmmsearch'])]
 
   if has_tm_helix(protein) and not is_barrel:
     for program in params['helix_programs']:
