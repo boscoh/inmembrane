@@ -77,25 +77,25 @@ _inmembrane_ collates the results of each analysis, and using the predicted topo
 ******
 ```python
     if is_hmm_profile_match:
-      category =  "PSE"
+      category =  "PSE-Cellwall"
     elif has_tm_helix(protein):
       if has_surface_exposed_loop(protein):
-        category = "PSE"
+        category = "PSE-Membrane"
       else:
-        category = "MEMBRANE"
+        category = "MEMBRANE(non-PSE)"
     else:
       if is_lipop:
         # whole protein considered outer terminal loop
         if sequence_length(protein) < terminal_exposed_loop_min:
-          category = "MEMBRANE"
+          category = "LIPOPROTEIN(non-PSE)"
         else:
-          category = "PSE"
+          category = "PSE-Lipoprotein"
       elif is_signalp:
         category = "SECRETED"
       else:
-        category = "CYTOPLASM"
+        category = "CYTOPLASM(non-PSE)"
 ```
-> Figure 3. Main Gram-positive potentially surface exposed algorithm adapted from SurfG+ expressed in Python code.
+> Figure 3. Main logic classifying subcellular localization and potential surface exposure for Gram-positive protein sequences, expressed in Python code. This algorithm was adapted from _SurfG+_. 
 
 *******
 
