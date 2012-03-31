@@ -18,7 +18,6 @@ def annotate_signalp4(params, proteins):
     proteins[seqid]['signalp_cleave_position'] = int(words[4])
     if (words[9] == "Y"):
       proteins[seqid]['is_signalp'] = True
-      #proteins[seqid]['signalp_cleave_position'] = int(words[4])
 
   return proteins
     

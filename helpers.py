@@ -180,7 +180,7 @@ def write_proteins_fasta(fasta_filename, proteins, seqids):
 def chop_nterminal_peptide(protein, i_cut):
   """
   Finds all transmembrane fields in protein ("*_loops" and "*_helices")
-  and deletes an n-terminal section of the protein indicated by i_cut.
+  and deletes an N-terminal section of the protein indicated by i_cut.
 
   Assuming the topology of inner and outer loops remain the same, this
   may delete a certain number of elements at the N-terminus. Allows a
@@ -190,21 +190,31 @@ def chop_nterminal_peptide(protein, i_cut):
   protein['sequence_length'] -= i_cut
   for prop in protein:
     if '_loops' in prop or '_helices' in prop:
-      loops = protein[prop]
-      for i in range(len(loops)):
-        j, k = loops[i]
-        loops[i] = (j - i_cut, k - i_cut)
+      sses = protein[prop]
+      for i in range(len(sses)):
+        j, k = sses[i]
+        sses[i] = (j - i_cut, k - i_cut)
   for prop in protein:
     if '_loops' in prop or '_helices' in prop:
-      loops = protein[prop]
-      for i in reversed(range(len(loops))):
-        j, k = loops[i]
-        # tests if this loop has been cut out
+      sses = protein[prop]
+      for i in reversed(range(len(sses))):
+        j, k = sses[i]
+        # tests if this loop or TM-helix has been cut out
         if j<=0 and k<=0:
-          del loops[i]
-        # otherewise, neg value means loop is at the new N-terminal
+          del sses[i]
+        # otherewise, neg value means loop or TM-helix is at the new N-terminal
         elif j<=0 and k>0:
-          loops[i] = (1, k)
+          sses[i] = (1, k)
+          # if a TM-helix gets cut in half and becomes a new N-terminal,
+          # convert the remaining residue to a loop and remove the helix
+          if '_helices' in prop:
+            del sses[i]
+            for x in protein:
+              if '_loops' in x:
+                new_N_loop = protein[x][0]
+                new_N_loop[0] = 1
+            del sses[i]
+            
 
 def eval_surface_exposed_loop(
     sequence_length, n_transmembrane_region, outer_loops, 

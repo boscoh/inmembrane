@@ -155,13 +155,17 @@ def post_process_protein(params, protein, stringent=False):
     num_strands = len(protein['tmbeta_strands'])
     details += ['tmbeta_strands(%i)' % (num_strands)]
   
+  # TODO: chop_nterminal_peptide isn't fully removing an
+  #       N-terminal TM if the predicted cut site is with the TM
+  #       eg see YCBK_ECOLI in EcK12_MG1655
+  #       need to come up with a rule to ensure that N-terminal
+  #       TMs are converted to being a loop if they are cut in half
   if is_tatfind:
     details += ["tatfind"]
     if not is_lipop:
       # since tatfind doesn't predict the signal peptidase cleavage site, 
       # we take the signalp predictions
-      if dict_get(protein, 'signalp_cleave_position'):
-        chop_nterminal_peptide(protein,  protein['signalp_cleave_position'])
+      chop_nterminal_peptide(protein,  protein['signalp_cleave_position'])
   
   if is_signalp:
     details += ["signalp"]
