@@ -192,7 +192,7 @@ def post_process_protein(params, protein, stringent=False):
       else:
         category = "LIPOPROTEIN(OM)"
       pass
-    elif is_signalp:
+    elif (is_signalp or is_tatfind):
       category = "SECRETED/PERIPLASMIC"
     else:
       category = "CYTOPLASM"
