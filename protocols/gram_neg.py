@@ -73,8 +73,8 @@ def summary_table(params, proteins):
 def get_annotations(params):
   params['signalp4_organism'] = 'gram-'
   
-  annotations = ['annotate_signalp4', 'annotate_lipop1']
-  #annotations += ['annotate_tatp']
+  annotations = ['annotate_signalp4', 'annotate_lipop1', \
+                 'annotate_tatfind_web']
   annotations += ['annotate_bomp_web']
   
   # TMBETA-NET knows to only run on predicted barrels
@@ -125,7 +125,7 @@ def post_process_protein(params, protein, stringent=False):
   # TODO: in terms of logic, a Tat signal is essentially the same
   #       as a Sec (signalp) signal. Consider setting is_signalp = True
   #       if is_tatp = True, so all logic just looks at is_signalp
-  #is_tatp = dict_get(protein, 'is_tatp')
+  is_tatfind = dict_get(protein, 'is_tatfind')
   is_lipop = dict_get(protein, 'is_lipop')
   
   is_barrel = False
@@ -155,10 +155,12 @@ def post_process_protein(params, protein, stringent=False):
     num_strands = len(protein['tmbeta_strands'])
     details += ['tmbeta_strands(%i)' % (num_strands)]
   
-  #if is_tatp:
-  #  details += ["tatp"]
-  #  if not is_lipop:
-  #    chop_nterminal_peptide(protein,  protein['tatp_cleave_position'])
+  if is_tatfind:
+    details += ["tatfind"]
+    if not is_lipop:
+      # since tatfind doesn't predict the signal peptidase cleavage site, 
+      # we take the signalp predictions
+      chop_nterminal_peptide(protein,  protein['signalp_cleave_position'])
   
   if is_signalp:
     details += ["signalp"]
