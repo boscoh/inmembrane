@@ -160,7 +160,8 @@ def post_process_protein(params, protein, stringent=False):
     if not is_lipop:
       # since tatfind doesn't predict the signal peptidase cleavage site, 
       # we take the signalp predictions
-      chop_nterminal_peptide(protein,  protein['signalp_cleave_position'])
+      if dict_get(protein, 'signalp_cleave_position'):
+        chop_nterminal_peptide(protein,  protein['signalp_cleave_position'])
   
   if is_signalp:
     details += ["signalp"]
