@@ -62,6 +62,6 @@ def annotate_tatfind_web(params, proteins, \
   fh.write(tatfind_output)
   fh.close()
   
-  proteins = parse_tatfind_output(tatfind_output.split("\n")) 
+  proteins = parse_tatfind_output(tatfind_output.split("\n"), proteins) 
   
   return proteins
