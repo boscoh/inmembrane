@@ -206,11 +206,11 @@ def chop_nterminal_peptide(protein, i_cut):
         elif j<=0 and k>0:
           sses[i] = (1, k)
           # if a TM-helix gets cut in half and becomes a new N-terminal,
-          # convert the remaining residue to a loop and remove the helix
+          # convert the remaining residues to a loop and remove the helix
           if '_helices' in prop:
-            del sses[i]
+            program = prop.split('_')[0]
             for x in protein:
-              if '_loops' in x:
+              if x == '%s_loops' % program:
                 new_N_loop = protein[x][0]
                 new_N_loop[0] = 1
             del sses[i]
