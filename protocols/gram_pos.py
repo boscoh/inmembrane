@@ -109,7 +109,7 @@ def post_process_protein(params, protein):
     else:
       category = "CYTOPLASM(non-PSE)"
 
-  if details is []:
+  if details == []:
     details = ["."]
 
   protein['details'] = details

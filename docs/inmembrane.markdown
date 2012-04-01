@@ -36,19 +36,19 @@ Since the core algorithm in _SurfG+_ is relatively straightforward, we decided t
 _inmembrane_ is primarily designed to be run locally via the command line. The input is a set of sequences in FASTA format, the output is plain text, including a summary table and comma-separated-value (CSV) format suitable for import into spreadsheet software or scripted text processing.
 
 ****
-
-    lcl|AE004092.1_cdsid_AAK34689.1   PSE            lipop;signalp                                       AE004092.1_cdsid_AAK34689.1 [gene=lmb] [protein=putative lam
-    lcl|AE004092.1_cdsid_AAK34690.1   PSE            hmm(Gram_pos_anchor);signalp;tmhmm(2)               AE004092.1_cdsid_AAK34690.1 [gene=SPy_2009] [protein=hypothe
-    lcl|AE004092.1_cdsid_AAK34691.1   SECRETED       signalp                                             AE004092.1_cdsid_AAK34691.1 [gene=scpA] [protein=C5A peptida
-    lcl|AE004092.1_cdsid_AAK34692.1   CYTOPLASM      .                                                   AE004092.1_cdsid_AAK34692.1 [gene=SPy_2013] [protein=transpo
-    lcl|AE004092.1_cdsid_AAK34693.1   SECRETED       signalp;tmhmm(1)                                    AE004092.1_cdsid_AAK34693.1 [gene=sic] [protein=inhibitor of
-    lcl|AE004092.1_cdsid_AAK34694.1   PSE            hmm(Gram_pos_anchor);signalp;tmhmm(1)               AE004092.1_cdsid_AAK34694.1 [gene=emm1] [protein=M protein t
-    lcl|AE004092.1_cdsid_AAK34695.1   CYTOPLASM      .                                                   AE004092.1_cdsid_AAK34695.1 [gene=mga] [protein=M protein tr
-    lcl|AE004092.1_cdsid_AAK34696.1   MEMBRANE       tmhmm(2)                                            AE004092.1_cdsid_AAK34696.1 [gene=SPy_2023] [protein=hypothe
-    lcl|AE004092.1_cdsid_AAK34697.1   SECRETED       signalp;tmhmm(1)                                    AE004092.1_cdsid_AAK34697.1 [gene=isp] [protein=immunogenic 
-    lcl|AE004092.1_cdsid_AAK34698.1   PSE            tmhmm(1)                                            AE004092.1_cdsid_AAK34698.1 [gene=SPy_2026] [protein=putativ
-    lcl|AE004092.1_cdsid_AAK34699.1   CYTOPLASM      .                                                   AE004092.1_cdsid_AAK34699.1 [gene=SPy_2027] [protein=putativ
-
+```
+lcl|AE004092.1_cdsid_AAK34689.1   PSE-Lipoprotein     lipop;signalp                                 AE004092.1_cdsid_AAK34689.1 [gene=lmb]
+lcl|AE004092.1_cdsid_AAK34690.1   PSE-Cellwall        hmm(Gram_pos_anchor,LPxTG);signalp;tmhmm(2)   AE004092.1_cdsid_AAK34690.1 [gene=SPy_2009]
+lcl|AE004092.1_cdsid_AAK34691.1   PSE-Cellwall        hmm(LPxTG_PS50847);signalp                    AE004092.1_cdsid_AAK34691.1 [gene=scpA]
+lcl|AE004092.1_cdsid_AAK34692.1   CYTOPLASM(non-PSE)  .                                             AE004092.1_cdsid_AAK34692.1 [gene=SPy_2013]
+lcl|AE004092.1_cdsid_AAK34693.1   SECRETED            signalp;tmhmm(1)                              AE004092.1_cdsid_AAK34693.1 [gene=sic]
+lcl|AE004092.1_cdsid_AAK34694.1   PSE-Cellwall        hmm(Gram_pos_anchor,LPxTG);signalp;tmhmm(1)   AE004092.1_cdsid_AAK34694.1 [gene=emm1]
+lcl|AE004092.1_cdsid_AAK34695.1   CYTOPLASM(non-PSE)  .                                             AE004092.1_cdsid_AAK34695.1 [gene=mga]
+lcl|AE004092.1_cdsid_AAK34696.1   MEMBRANE(non-PSE)   tmhmm(2)                                      AE004092.1_cdsid_AAK34696.1 [gene=SPy_2023]
+lcl|AE004092.1_cdsid_AAK34697.1   SECRETED            signalp;tmhmm(1)                              AE004092.1_cdsid_AAK34697.1 [gene=isp]
+lcl|AE004092.1_cdsid_AAK34698.1   PSE-Membrane        tmhmm(1)                                      AE004092.1_cdsid_AAK34698.1 [gene=SPy_2026]
+lcl|AE004092.1_cdsid_AAK34699.1   CYTOPLASM(non-PSE)  .                                             AE004092.1_cdsid_AAK34699.1 [gene=SPy_2027]
+```
 > Figure 2. Example of output
 
 ****
@@ -186,6 +186,10 @@ Another example of cleaner code through dynamic programming is in the _HMMER_ pe
 
 The field of bioinformatics changes quickly, and in the few years between the release of SurfG+, some of the software used in SurfG+ is no longer redily available. As a result we could not use exactly the same versions of the binaries used in SurfG+. For instance _TMMOD_ is no longer released as a binary and SignalP has progressed to Version 4.0. Nevertheless, _inmembrane_ produces comparable results to SurfG+ for the 4 bacterial genomes orginally tested:
 
+***********
+
+>__TODO__: Update this table to reflect slightly different numbers due to handling of N-terminal chops.
+
 <pre>
              S.pyogenes L.acidophilus L.johnsonii   L.gasseri  L.bulgaricus
 Accession    AE004092    CP000033      AE017198      CP000413    CR954253
@@ -198,6 +202,10 @@ Total        1697 1696   1862 1862     1821 1821    1755 1755   1562 1562
 </pre>
 
 Columns labelled 'S' are _SurfG+_ results and 'i' are _inmembrane_ results.
+Some _inmembrane_ subclasses have been combined to directly compare with SurfG+ 
+(ie, PSE = PSE-Membrane + PSE-Cellwall + PSE-Lipoprotein)
+
+***********
 
 This can be compared to PSortB 3.0 classifcation of the organisms.
 

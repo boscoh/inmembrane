@@ -198,7 +198,7 @@ def post_process_protein(params, protein, stringent=False):
     else:
       category = "CYTOPLASM"
 
-  if details is []:
+  if details == []:
     details = ["."]
 
   protein['details'] = details
