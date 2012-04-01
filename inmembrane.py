@@ -83,8 +83,8 @@ default_params_str = """{
   'hmm_profiles_dir': '%(hmm_profiles)s',
   'hmm_evalue_max': 0.1,
   'hmm_score_min': 10,
-  'terminal_exposed_loop_min': 50,
-  'internal_exposed_loop_min': 100,
+  'terminal_exposed_loop_min': 50, # unused in gram_neg protocol
+  'internal_exposed_loop_min': 100, # try 30 for gram_neg
 }
 """
 

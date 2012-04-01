@@ -90,19 +90,28 @@ def post_process_protein(params, protein, stringent=False):
         return True
     return False
 
-  # TODO: rather than this, lets classify each inner membrane protein as 
-  # IM with optional large periplasmic or large cytoplasmic loops/domain
-  # (eg possible classifications: IM+cyt, IM+peri, IM+cyt+peri )
-  def has_periplasmic_loop(protein):
-    for program in params['helix_programs']:
-      if eval_surface_exposed_loop(
-          protein['sequence_length'], 
-          len(protein['%s_helices' % (program)]), 
-          protein['%s_outer_loops' % (program)], 
-          params['terminal_exposed_loop_min'], 
-          params['internal_exposed_loop_min']):
-        return True
+  # we use these functions to detect if and TM-containing IM proteins
+  # have large loops / terminal regions in the periplasm or cytoplasm
+  # that may be accessible / inaccessible in spheroplast shaving 
+  # experiments.
+  def has_long_loops(protein, loop_str='_outer_loops', \
+                     loop_length=params['internal_exposed_loop_min']):
+    for annot in protein:
+      if loop_str in annot:
+        for loop in protein[annot]:
+          l_len = loop[1]-loop[0]
+          if l_len >= loop_length:
+            return True
     return False
+  
+  def long_in_periplasm(protein, \
+                        loop_length=params['internal_exposed_loop_min']):
+    return has_long_loops(protein, '_outer_loops', loop_length)
+  
+  def long_in_cytoplasm(protein, \
+                        loop_length=params['internal_exposed_loop_min']):
+    return has_long_loops(protein, '_inner_loops', loop_length)
+
   
   details = []
   category = "UNKNOWN"
@@ -163,11 +172,11 @@ def post_process_protein(params, protein, stringent=False):
       n = len(protein['%s_helices' % program])
       details += [program + "(%d);" % n]
     
-    # TODO: detect long periplasmic OR cytoplasmic loops 
-    if has_periplasmic_loop(protein):
-      category = "IM+peri"
-    else:
-      category = "IM"
+    category = "IM"
+    if long_in_periplasm(protein):
+      category += "+peri"
+    if long_in_cytoplasm(protein):
+      category += "+cyto"
   elif not is_barrel:
     if is_lipop:
       if dict_get(protein, 'lipop_im_retention_signal'):
