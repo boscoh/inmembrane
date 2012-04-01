@@ -88,11 +88,10 @@ def get_annotations(params):
     if 'memsat3' in params['helix_programs']:
       annotations.append('annotate_memsat3')
 
-  # currently we don't use any HMM profiles on gram-
-  # annotation, but this may be useful in the future
-  #annotations += ['annotate_hmmsearch3']
-  #params['hmm_profiles_dir'] = os.path.join(
-  #    os.path.dirname(__file__), 'gram_neg_profiles')
+  # run some hmm profiles to detect features (eg Tat signal)
+  annotations += ['annotate_hmmsearch3']
+  params['hmm_profiles_dir'] = os.path.join(
+      os.path.dirname(__file__), 'gram_neg_profiles')
 
   return annotations
 
@@ -120,13 +119,18 @@ def post_process_protein(params, protein, stringent=False):
   
   details = []
   category = "UNKNOWN"
-  #is_hmm_profile_match = dict_get(protein, 'hmmsearch')
+  is_hmm_profile_match = dict_get(protein, 'hmmsearch')
   is_signalp = dict_get(protein, 'is_signalp')
   # TODO: in terms of logic, a Tat signal is essentially the same
-  #       as a Sec (signalp) signal. Consider setting is_signalp = True
-  #       if is_tatp = True, so all logic just looks at is_signalp
+  #       as a Sec (signalp) signal. Consider setting is_signal_pept = True
+  #       if is_tatp = True, so all logic just looks at is_signal_pept
   is_tatfind = dict_get(protein, 'is_tatfind')
   is_lipop = dict_get(protein, 'is_lipop')
+  
+  is_signal_pept = False
+  if is_signalp or is_tatfind or \
+     ("Tat_PS51318" in dict_get(protein, 'hmmsearch')):
+    is_signal_pept = True
   
   is_barrel = False
   if dict_get(protein, 'bomp'):
@@ -155,29 +159,22 @@ def post_process_protein(params, protein, stringent=False):
     num_strands = len(protein['tmbeta_strands'])
     details += ['tmbeta_strands(%i)' % (num_strands)]
   
-  # TODO: chop_nterminal_peptide isn't fully removing an
-  #       N-terminal TM if the predicted cut site is with the TM
-  #       eg see YCBK_ECOLI in EcK12_MG1655
-  #       need to come up with a rule to ensure that N-terminal
-  #       TMs are converted to being a loop if they are cut in half
+  if is_signal_pept and not is_lipop:
+    # we use the SignalP signal peptidase cleavage site for Tat signals 
+    chop_nterminal_peptide(protein,  protein['signalp_cleave_position'])
+  
   if is_tatfind:
     details += ["tatfind"]
-    if not is_lipop:
-      # since tatfind doesn't predict the signal peptidase cleavage site, 
-      # we take the signalp predictions
-      chop_nterminal_peptide(protein,  protein['signalp_cleave_position'])
   
   if is_signalp:
     details += ["signalp"]
-    if not is_lipop:
-      chop_nterminal_peptide(protein,  protein['signalp_cleave_position'])
   
   if is_lipop:
     details += ["lipop"]
     chop_nterminal_peptide(protein, protein['lipop_cleave_position'])
   
-  #if is_hmm_profile_match:
-  #  details += ["hmm(%s);" % ",".join(protein['hmmsearch'])]
+  if is_hmm_profile_match:
+    details += ["hmm(%s)" % ",".join(protein['hmmsearch'])]
 
   if has_tm_helix(protein) and not is_barrel:
     for program in params['helix_programs']:
@@ -196,8 +193,8 @@ def post_process_protein(params, protein, stringent=False):
       else:
         category = "LIPOPROTEIN(OM)"
       pass
-    elif (is_signalp or is_tatfind):
-      category = "SECRETED/PERIPLASMIC"
+    elif (is_signal_pept):
+      category = "PERIPLASMIC/SECRETED"
     else:
       category = "CYTOPLASM"
 

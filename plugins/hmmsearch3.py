@@ -51,5 +51,4 @@ def annotate_hmmsearch3(params, proteins):
             score >= params['hmm_score_min']:
           proteins[seqid]['hmmsearch'].append(hmm_name)
 
-
   return proteins
