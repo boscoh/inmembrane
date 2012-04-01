@@ -121,37 +121,32 @@ def post_process_protein(params, protein, stringent=False):
   category = "UNKNOWN"
   is_hmm_profile_match = dict_get(protein, 'hmmsearch')
   is_signalp = dict_get(protein, 'is_signalp')
-  # TODO: in terms of logic, a Tat signal is essentially the same
-  #       as a Sec (signalp) signal. Consider setting is_signal_pept = True
-  #       if is_tatp = True, so all logic just looks at is_signal_pept
   is_tatfind = dict_get(protein, 'is_tatfind')
   is_lipop = dict_get(protein, 'is_lipop')
   
+  # in terms of most sublocalization logic, a Tat signal is essentially the 
+  # same as a Sec (signalp) signal. We use is_signal_pept to denote that 
+  # either is present.
   is_signal_pept = False
   if is_signalp or is_tatfind or \
      ("Tat_PS51318" in dict_get(protein, 'hmmsearch')):
     is_signal_pept = True
   
   is_barrel = False
-  if dict_get(protein, 'bomp'):
+  if dict_get(protein, 'bomp') >= params['bomp_cutoff']:
     is_barrel = True
     details += ['bomp']
-  if dict_get(protein, 'tmbhunt'):
+  if dict_get(protein, 'tmbhunt_prob') >= params['tmbhunt_cutoff']:
     is_barrel = True 
     details += ['tmbhunt']
   
   # if stringent, predicted OM barrels must also have a predicted
-  # signal sequence 
-  if stringent and is_signalp and is_barrel:
-     category = 'OM(barrel)'
+  # signal sequence
+  if stringent and is_signal_pept and is_barrel:
+    category = 'OM(barrel)'
   elif is_barrel:
-     category = 'OM(barrel)'
+    category = 'OM(barrel)'
   protein['category'] = category
-
-  # TODO: use thresholds for barrel annotation
-  #if (dict_get(proteins[seqid], 'tmbhunt_prob') >= params['tmbhunt_cutoff']) or \
-  #   (dict_get(proteins[seqid], 'bomp') >= params['bomp_cutoff']):
-  #  protein['category'] = 'OM(barrel)'
 
   # set number of predicted OM barrel strands in details
   if (dict_get(protein, 'category') == 'OM(barrel)') and \
