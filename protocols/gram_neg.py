@@ -5,7 +5,7 @@ from helpers import dict_get, eval_surface_exposed_loop, \
 
 def predict_surface_exposure_barrel(params, protein):
   # TODO: This is a placeholder for a function which will do something
-  #       similar to predict_surface_exposure, but focussed on inferring 
+  #       similar to predict_surface_exposure, but focused on inferring 
   #       outer membrane beta barrel topology.
   #
   #       At the moment it's not implemented since I have not
@@ -56,20 +56,7 @@ def summary_table(params, proteins):
     
   return out
     
-
-# TODO: Workflow:
-#       These rules can be approached in two ways. Run every annotation plugin
-#       on every sequence, then post-hoc apply these rules (potentially inefficient
-#       and rude to web services). Alternatively the protocol can control the
-#       annotation loop and only run certain analyses (eg BOMP) if a certain 
-#       condition is met (eg is_signalp). 
-#       * If is_lipop, 
-#         check retention signal annotation (+2Asp) -> periplasmic inner or outer
-#       * If is_signalp (or TAT) and no TMs and not lipop or barrel -> periplasmic
-#       * If is_signalp, run OMPBB (BOMP) check. If OMPBB -> outer membrane bb
-#       * If is_signalp, and has after the signal tranmembranes -> inner membrane
-#       * If inner membrane, check for long cyto or peri loops: inner[+cyto][+peri]
-#       * If not is_signalp and not is_lipop (and not TAT): -> cytoplasmic
+    
 def get_annotations(params):
   params['signalp4_organism'] = 'gram-'
   

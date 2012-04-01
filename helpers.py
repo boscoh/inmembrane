@@ -223,7 +223,7 @@ def eval_surface_exposed_loop(
   This is the key algorithm in SurfG+ to identify Potentially Surface
   Exposed proteins. It evaluates all loops that poke out of the periplasmic
   side of the Gram+ bacterial membrane and tests if the loops are long
-  enough to stick out of the peptidoglycan layer to be cleaves by proteases
+  enough to stick out of the peptidoglycan layer to be cleaved by proteases
   in a cell-shaving experiment.
 
   Returns True if any outer loop, or the N- or C-terminii are
