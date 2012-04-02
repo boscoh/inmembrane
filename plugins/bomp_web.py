@@ -5,7 +5,7 @@ citation = {'ref': u"﻿Berven FS, Flikka K, Jensen HB, Eidhammer I (2004) "
                    u"BOMP: a program to predict integral beta-barrel outer "
                    u"membrane proteins encoded within genomes of Gram-negative "
                    u"bacteria. Nucleic acids research 32: W394-9. \n"
-                   u"<http://dx.crossref.org/10.1093/nar/gkh351",
+                   u"<http://dx.crossref.org/10.1093/nar/gkh351>",
             'name': "BOMP"
            }
 
