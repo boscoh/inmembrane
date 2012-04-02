@@ -26,6 +26,7 @@
 # THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH 
 # DAMAGE.
 
+__version__ = "0.9"
 
 import sys
 import os
@@ -40,13 +41,15 @@ from helpers import *
 from plugins import *
 
 description = """
+inmembrane %s (https://github.com/boscoh/inmembrane)
+
 Inmembrane is a proteome annotation pipeline. It takes 
 a FASTA file, then carries out sequential analysis of 
 each sequence with a bunch of third-party programs, and 
 collates the results.
 
 (c) 2011 Bosco Ho and Andrew Perry
-"""
+""" % (__version__)
 
 
 # figure out absoulte directory for inmembrane scripts
