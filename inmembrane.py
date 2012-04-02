@@ -185,6 +185,9 @@ def process(params):
     f.write(protocol.protein_csv_line(seqid, proteins))
   f.close()
 
+
+  # TODO: citations for specific HMMs (PFAM etc ?)
+  
   # write citations to a file and gracefully deal with plugins
   # without a citation defined
   import codecs
