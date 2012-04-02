@@ -60,10 +60,14 @@ def summary_table(params, proteins):
 def get_annotations(params):
   params['signalp4_organism'] = 'gram-'
   
-  annotations = ['annotate_signalp4', 'annotate_lipop1', \
+  annotations = ['annotate_signalp4', 
+                 'annotate_lipop1',
                  'annotate_tatfind_web']
-  annotations += ['annotate_bomp_web']
   
+  if 'bomp' in dict_get(params, 'barrel_programs'):
+    annotations.append('annotate_bomp_web')
+  if 'tmbhunt' in dict_get(params, 'barrel_programs'):
+    annotations.append('annotate_tmbhunt_web')
   # TMBETA-NET knows to only run on predicted barrels
   # with the category 'OM(barrel)'
   if 'tmbeta' in dict_get(params, 'barrel_programs'):

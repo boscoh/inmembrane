@@ -18,9 +18,9 @@ def get_annotations(params):
 
   params['signalp4_organism'] = 'gram+'
   
-  annotations = [ \
-      'annotate_signalp4', 'annotate_lipop1', 
-      'annotate_hmmsearch3']
+  annotations = ['annotate_signalp4', 
+                 'annotate_lipop1', 
+                 'annotate_hmmsearch3']
 
   if dict_get(params, 'helix_programs'):
     if 'tmhmm' in params['helix_programs']:
