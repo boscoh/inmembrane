@@ -1,7 +1,17 @@
+# -*- coding: utf-8 -*-
 import helpers 
 
+citation = {'ref': u"Agnieszka S. Juncker, Hanni Willenbrock, "
+                   u"Gunnar Von Heijne, Søren Brunak, Henrik Nielsen, "
+                   u"And Anders Krogh. (2003) Prediction of lipoprotein "
+                   u"signal peptides in Gram-negative bacteria. Protein "
+                   u"Science 12:1652–1662. \n"
+                   u"<http://dx.doi.org/10.1110/ps.0303703>",
+            'name': 'LipoP 1.0'
+           } 
 
-def annotate_lipop1(params, proteins):
+
+def annotate(params, proteins):
   """
   Uses LipoP to identify lipo-attachment signals in the protein. 
   The 'proteins' dictionary is annotated by adding two fields:

@@ -7,7 +7,7 @@ module_dir = os.path.abspath(os.path.dirname(__file__))
 sys.path.insert(0, os.path.join(module_dir, '..'))
 
 import inmembrane 
-
+import plugins
 
 class TestTmhmm(unittest.TestCase):
   def setUp(self):
@@ -24,7 +24,7 @@ class TestTmhmm(unittest.TestCase):
     self.params['fasta'] = "input.fasta"
     self.seqids, self.proteins = \
         inmembrane.create_proteins_dict(self.params['fasta'])
-    inmembrane.annotate_tmhmm(self.params, self.proteins)
+    plugins.tmhmm.annotate(self.params, self.proteins)
 
     # inmembrane.print_proteins(self.proteins)
     

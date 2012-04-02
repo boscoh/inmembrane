@@ -7,7 +7,7 @@ module_dir = os.path.abspath(os.path.dirname(__file__))
 sys.path.insert(0, os.path.join(module_dir, '..'))
 
 import inmembrane 
-
+import plugins
 
 class TestHmmsearch3(unittest.TestCase):
   def setUp(self):
@@ -25,7 +25,7 @@ class TestHmmsearch3(unittest.TestCase):
     self.params['hmm_profiles_dir'] = "../../protocols/gram_pos_profiles"
     self.seqids, self.proteins = \
         inmembrane.create_proteins_dict(self.params['fasta'])
-    inmembrane.annotate_hmmsearch3(self.params, self.proteins)
+    plugins.hmmsearch3.annotate(self.params, self.proteins)
 
     self.expected_output = {
       'SPy_0191a': {

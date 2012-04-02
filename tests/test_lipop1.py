@@ -7,7 +7,7 @@ module_dir = os.path.abspath(os.path.dirname(__file__))
 sys.path.insert(0, os.path.join(module_dir, '..'))
 
 import inmembrane 
-
+import plugins
 
 class TestLipoP(unittest.TestCase):
   def setUp(self):
@@ -25,7 +25,7 @@ class TestLipoP(unittest.TestCase):
     self.seqids, self.proteins = \
         inmembrane.create_proteins_dict(self.params['fasta'])
 
-    inmembrane.annotate_lipop1(self.params, self.proteins)
+    plugins.lipop1.annotate(self.params, self.proteins)
 
     self.expected_output = {
         u'SPy_0252': True,

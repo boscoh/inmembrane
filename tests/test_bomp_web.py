@@ -8,7 +8,7 @@ module_dir = os.path.abspath(os.path.dirname(__file__))
 sys.path.insert(0, os.path.join(module_dir, '..'))
 
 import inmembrane
-
+import plugins
 
 class TestBomp(unittest.TestCase):
   def setUp(self):
@@ -32,7 +32,7 @@ class TestBomp(unittest.TestCase):
     self.seqids, self.proteins = \
         inmembrane.create_proteins_dict(self.params['fasta'])
 
-    self.output = inmembrane.annotate_bomp_web(self.params, self.proteins, force=True)
+    self.output = plugins.bomp_web.annotate(self.params, self.proteins, force=True)
 
 
     self.assertEqual(self.expected_output, self.output)

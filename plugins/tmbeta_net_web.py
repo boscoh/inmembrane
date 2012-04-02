@@ -1,14 +1,24 @@
+# -*- coding: utf-8 -*-
+
+citation = {'ref': u"Gromiha MM, Ahmad S, Suwa M. Neural network-based "
+                   u"prediction of transmembrane beta-strand segments in "
+                   u"outer membrane proteins. Journal of computational "
+                   u"chemistry 2004 Apr;25(5):762-7. \n"
+                   u"<http://dx.doi.org/10.1002/jcc.10386>",
+            'name': "TMBETA-NET"
+           }
+
+__DEBUG__ = False
+
 import sys, os, time, StringIO
 import json
 import twill
 from twill.commands import find, formfile, follow, fv, go, show, \
                              showforms, showlinks, submit, agent
                              
-import inmembrane
+from helpers import dict_get, log_stderr
 
-
-
-def annotate_tmbeta_net_web(params, proteins, \
+def annotate(params, proteins, \
                    url="http://psfs.cbrc.jp/tmbeta-net/", \
                    category='OM(barrel)',
                    force=False):
@@ -31,11 +41,11 @@ def annotate_tmbeta_net_web(params, proteins, \
   agent("Python-urllib/%s (twill; inmembrane)" % python_version)
   
   outfile = 'tmbeta_net.out'
-  inmembrane.log_stderr("# TMBETA-NET(web) %s > %s" % (params['fasta'], outfile))
+  log_stderr("# TMBETA-NET(web) %s > %s" % (params['fasta'], outfile))
   
   tmbeta_strands = {}
   if not force and os.path.isfile(outfile):
-    inmembrane.log_stderr("# -> skipped: %s already exists" % outfile)
+    log_stderr("# -> skipped: %s already exists" % outfile)
     fh = open(outfile, 'r')
     tmbeta_strands = json.loads(fh.read())
     fh.close()    
@@ -45,23 +55,23 @@ def annotate_tmbeta_net_web(params, proteins, \
     return tmbeta_strands
 
   # dump extraneous output into this blackhole so we don't see it
-  if not inmembrane.LOG_DEBUG: twill.set_output(StringIO.StringIO())
+  if not __DEBUG__: twill.set_output(StringIO.StringIO())
 
   for seqid in proteins:
     
     # only run on sequences which match the category filter
     if force or \
        (category == None) or \
-       (inmembrane.dict_get(proteins[seqid], 'category') == category):
+       (dict_get(proteins[seqid], 'category') == category):
       pass
     else:
       continue
       
     go(url)
-    if inmembrane.LOG_DEBUG: showforms()
+    if __DEBUG__: showforms()
     fv("1","sequence",proteins[seqid]['seq'])
     submit()
-    inmembrane.log_stderr("# TMBETA-NET: Predicting strands for %s - %s\n" \
+    log_stderr("# TMBETA-NET: Predicting strands for %s - %s\n" \
                       % (seqid, proteins[seqid]['name']))
     out = show()
     time.sleep(1)
@@ -69,7 +79,7 @@ def annotate_tmbeta_net_web(params, proteins, \
     # parse the web page returned, extract strand boundaries
     proteins[seqid]['tmbeta_strands'] = []
     for l in out.split('\n'):
-      if inmembrane.LOG_DEBUG: inmembrane.log_stderr("## " + l)
+      if __DEBUG__: log_stderr("## " + l)
 
       if "<BR>Segment " in l:
         i,j = l.split(":")[1].split("to")
@@ -77,7 +87,7 @@ def annotate_tmbeta_net_web(params, proteins, \
         j = int(j.strip()[1:])
         proteins[seqid]['tmbeta_strands'].append([i,j])
 
-        if inmembrane.LOG_DEBUG: inmembrane.log_stderr("# TMBETA-NET(web) segments: %s, %s" % (i, j))
+        if __DEBUG__: log_stderr("# TMBETA-NET(web) segments: %s, %s" % (i, j))
 
     tmbeta_strands[seqid] = proteins[seqid]['tmbeta_strands']
 

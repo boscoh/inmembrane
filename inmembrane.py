@@ -36,6 +36,8 @@ from optparse import OptionParser
 
 from helpers import *
 
+# will load all plugins in the plugins/ directory
+from plugins import *
 
 description = """
 Inmembrane is a proteome annotation pipeline. It takes 
@@ -49,19 +51,6 @@ collates the results.
 
 # figure out absoulte directory for inmembrane scripts
 module_dir = os.path.abspath(os.path.dirname(__file__))
-
-
-# Load all modules found in plugins dynamically 
-# Each module should have the structure where there is only 
-# one main function with the same name of the function
-# and takes two parameters:
-#   mymodule.mymodule(params, proteins)
-file_tag = os.path.join(module_dir, 'plugins', '*.py')
-for plugin in glob.glob(file_tag):
-  if "__init__" in plugin:
-    continue
-  plugin_name = os.path.basename(plugin)[:-3]
-  exec('from plugins.%s import * ' % plugin_name)
 
 
 default_params_str = """{
@@ -133,6 +122,9 @@ def init_output_dir(params):
     params['csv'] = basename + '.csv'
   params['csv'] = os.path.abspath(params['csv'])
 
+  params['citations'] = os.path.join(params['out_dir'], 'citations.txt')
+  params['citations'] = os.path.abspath(params['citations'])
+  
   fasta = "input.fasta"
   shutil.copy(params['fasta'], os.path.join(base_dir, fasta))
   params['fasta'] = fasta
@@ -174,9 +166,9 @@ def process(params):
   #       eg. protocol.run(params, proteins)
 
   # annotates with external binaries as found in plugins
-  for annotation in protocol.get_annotations(params):
-    annotate_fn = eval(annotation)
-    annotate_fn(params, proteins)
+  for plugin_str in protocol.get_annotations(params):
+    plugin = eval(plugin_str)
+    plugin.annotate(params, proteins)
   
   # do protocol analysis on the results of the annotations
   for seqid in seqids:
@@ -193,8 +185,32 @@ def process(params):
     f.write(protocol.protein_csv_line(seqid, proteins))
   f.close()
 
-
-
+  # write citations to a file and gracefully deal with plugins
+  # without a citation defined
+  import codecs
+  import textwrap
+  f = codecs.open(params['citations'], mode='w', encoding='utf-8')
+  programs_used = []
+  for program in protocol.get_annotations(params):
+    plugin = eval(program)
+    try:
+      f.write(plugin.citation['name']+":\n")
+      f.write(textwrap.fill(plugin.citation['ref']))
+    except AttributeError:
+      f.write("%s - no citation provided." % program)
+    f.write("\n\n")
+    try:
+      programs_used.append(plugin.citation['name'])
+    except AttributeError, KeyError:
+      programs_used.append(program)
+    
+  f.close()
+  log_stderr("\n")
+  log_stderr("This run used %s." % (", ".join(programs_used)) )
+  log_stderr("Citations have been written to %s \n"
+             "# - please cite as appropriate." % 
+             (params['citations']) )
+            
 if __name__ == "__main__":
   parser = OptionParser()
   (options, args) = parser.parse_args()

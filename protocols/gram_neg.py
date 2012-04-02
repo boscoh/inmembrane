@@ -60,27 +60,27 @@ def summary_table(params, proteins):
 def get_annotations(params):
   params['signalp4_organism'] = 'gram-'
   
-  annotations = ['annotate_signalp4', 
-                 'annotate_lipop1',
-                 'annotate_tatfind_web']
+  annotations = ['signalp4', 
+                 'lipop1',
+                 'tatfind_web']
   
   if 'bomp' in dict_get(params, 'barrel_programs'):
-    annotations.append('annotate_bomp_web')
+    annotations.append('bomp_web')
   if 'tmbhunt' in dict_get(params, 'barrel_programs'):
-    annotations.append('annotate_tmbhunt_web')
+    annotations.append('tmbhunt_web')
   # TMBETA-NET knows to only run on predicted barrels
   # with the category 'OM(barrel)'
   if 'tmbeta' in dict_get(params, 'barrel_programs'):
-    annotations.append('annotate_tmbeta_net_web')
+    annotations.append('tmbeta_net_web')
 
   if dict_get(params, 'helix_programs'):
     if 'tmhmm' in params['helix_programs']:
-      annotations.append('annotate_tmhmm')
+      annotations.append('tmhmm')
     if 'memsat3' in params['helix_programs']:
-      annotations.append('annotate_memsat3')
+      annotations.append('memsat3')
 
   # run some hmm profiles to detect features (eg Tat signal)
-  annotations += ['annotate_hmmsearch3']
+  annotations += ['hmmsearch3']
   params['hmm_profiles_dir'] = os.path.join(
       os.path.dirname(__file__), 'gram_neg_profiles')
 

@@ -1,6 +1,15 @@
+# -*- coding: utf-8 -*-
 import helpers
 
-def annotate_signalp4(params, proteins):
+citation = {'ref': u"Petersen TN, Brunak S, von Heijne G, Nielsen H. "
+                   u"SignalP 4.0: discriminating signal peptides from "
+                   u"transmembrane regions. Nature methods 2011 "
+                   u"Jan;8(10):785-6. \n"
+                   u"<http://dx.doi.org/10.1038/nmeth.1701>",
+            'name': "SignalP 4.0"
+           }
+
+def annotate(params, proteins):
   for seqid in proteins:
     proteins[seqid]['is_signalp'] = False
     proteins[seqid]['signalp_cleave_position'] = None

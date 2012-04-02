@@ -18,15 +18,15 @@ def get_annotations(params):
 
   params['signalp4_organism'] = 'gram+'
   
-  annotations = ['annotate_signalp4', 
-                 'annotate_lipop1', 
-                 'annotate_hmmsearch3']
+  annotations = ['signalp4', 
+                 'lipop1', 
+                 'hmmsearch3']
 
   if dict_get(params, 'helix_programs'):
     if 'tmhmm' in params['helix_programs']:
-      annotations.append('annotate_tmhmm')
+      annotations.append('tmhmm')
     if 'memsat3' in params['helix_programs']:
-      annotations.append('annotate_memsat3')
+      annotations.append('memsat3')
 
   params['hmm_profiles_dir'] = os.path.join(
       os.path.dirname(__file__), 'gram_pos_profiles')

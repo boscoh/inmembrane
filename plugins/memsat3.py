@@ -1,13 +1,21 @@
+# -*- coding: utf-8 -*-
 import os
 import re
 import helpers
 
+citation = {'ref': u"﻿Jones DT. Improving the accuracy of transmembrane "
+                   u"protein topology prediction using evolutionary "
+                   u"information. Bioinformatics (Oxford, England) "
+                   u"2007 Mar;23(5):538-44. \n"
+                   u"<http://dx.doi.org/10.1093/bioinformatics/btl677",
+            'name': "MEMSAT3"
+            }
 
 def parse_memsat(protein, memsat_out):
   """
   Parses a MEMSAT3 output file for a FASTA sequence and
   annotates the protein dictionary. This is an auxillary function
-  called by annotate_memsat3, and the fields are described there.
+  called by annotate, and the fields are described there.
   """
 
   f = open(memsat_out)
@@ -71,7 +79,7 @@ def has_transmembrane_in_globmem(globmem_out):
   return True
 
         
-def annotate_memsat3(params, proteins):
+def annotate(params, proteins):
   """
   Runs MEMSAT3 and parses the output files. Takes a standard 'inmembrane'
   params dictionary and a global proteins dictionary which it populates with

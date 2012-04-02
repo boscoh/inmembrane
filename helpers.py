@@ -5,10 +5,7 @@
 import os, subprocess, sys
 
 
-
-LOG_DEBUG = False
 LOG_SILENT = False
-
 
 
 def dict_get(this_dict, prop):

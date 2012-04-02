@@ -7,7 +7,7 @@ module_dir = os.path.abspath(os.path.dirname(__file__))
 sys.path.insert(0, os.path.join(module_dir, '..'))
 
 import inmembrane 
-
+import plugins
 
 class TestMemsat3(unittest.TestCase):
   def setUp(self):
@@ -24,7 +24,7 @@ class TestMemsat3(unittest.TestCase):
     self.params['fasta'] = "input.fasta"
     self.seqids, self.proteins = \
         inmembrane.create_proteins_dict(self.params['fasta'])
-    inmembrane.annotate_memsat3(self.params, self.proteins)
+    plugins.memsat3.annotate(self.params, self.proteins)
 
     self.expected_output = {
       'SPy_1392': {

@@ -1,9 +1,13 @@
+# -*- coding: utf-8 -*-
+
+citation = {'ref': "http://hmmer.org", 'name' : 'HMMER 3.0'}
+
 import os
 import glob
 import helpers
 
 
-def annotate_hmmsearch3(params, proteins):
+def annotate(params, proteins):
   """
   Returns a reference to the proteins data structure.
 

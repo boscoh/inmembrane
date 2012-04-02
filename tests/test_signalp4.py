@@ -7,7 +7,7 @@ module_dir = os.path.abspath(os.path.dirname(__file__))
 sys.path.insert(0, os.path.join(module_dir, '..'))
 
 import inmembrane 
-
+import plugins
 
 class TestSignalp(unittest.TestCase):
   def setUp(self):
@@ -25,7 +25,7 @@ class TestSignalp(unittest.TestCase):
     self.params['signalp4_organism'] = 'gram+'
     self.seqids, self.proteins = \
         inmembrane.create_proteins_dict(self.params['fasta'])
-    inmembrane.annotate_signalp4(self.params, self.proteins)
+    plugins.signalp4.annotate(self.params, self.proteins)
 
     self.expected_output = {
         u'SPy_0252': True, 

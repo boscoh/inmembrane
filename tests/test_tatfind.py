@@ -7,7 +7,7 @@ module_dir = os.path.abspath(os.path.dirname(__file__))
 sys.path.insert(0, os.path.join(module_dir, '..'))
 
 import inmembrane 
-
+import plugins
 
 class TestTatfind(unittest.TestCase):
   def setUp(self):
@@ -24,7 +24,7 @@ class TestTatfind(unittest.TestCase):
     self.params['fasta'] = "input.fasta"
     self.seqids, self.proteins = \
         inmembrane.create_proteins_dict(self.params['fasta'])
-    inmembrane.annotate_tatfind_web(self.params, self.proteins)
+    plugins.tatfind_web.annotate(self.params, self.proteins)
 
     self.expected_output = {
       'sp|P31550': {
@@ -47,8 +47,8 @@ class TestTatfind(unittest.TestCase):
       },
     }
 
-    import helpers
-    helpers.print_proteins(self.proteins)
+    #import helpers
+    #helpers.print_proteins(self.proteins)
     
     self.assertEqual(self.proteins, self.expected_output)
 

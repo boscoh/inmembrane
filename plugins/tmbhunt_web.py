@@ -1,13 +1,25 @@
+# -*- coding: utf-8 -*-
+
+citation = {'ref': u"Garrow, A.G., Agnew, A. and Westhead, D.R. TMB-Hunt: An "
+                   u"amino acid composition based method to screen proteomes "
+                   u"for beta-barrel transmembrane proteins. BMC "
+                   u"Bioinformatics, 2005, 6: 56 \n "
+                   u"<http://dx.doi.org/10.1186/1471-2105-6-56>",
+            'name': "TMB-HUNT"
+           }
+
+__DEBUG__ = False
+
 import sys, os, time, StringIO
 
 import twill
 from twill.commands import find, formfile, follow, fv, go, show, \
                              showforms, showlinks, submit, agent
                              
-import inmembrane
+from helpers import log_stderr, parse_fasta_header
 
 
-def annotate_tmbhunt_web(params, proteins, \
+def annotate(params, proteins, \
              force=False):
   """
   Uses the TMB-HUNT web service 
@@ -21,7 +33,7 @@ def annotate_tmbhunt_web(params, proteins, \
   # TODO: automatically split large sets into multiple jobs
   #       TMB-HUNT will only take 10000 seqs at a time
   if len(proteins) >= 10000:
-    inmembrane.log_stderr("# TMB-HUNT(web): error, can't take more than 10,000 sequences.")
+    log_stderr("# TMB-HUNT(web): error, can't take more than 10,000 sequences.")
     return
   
   # set the user-agent so web services can block us if they want ... :/
@@ -29,17 +41,17 @@ def annotate_tmbhunt_web(params, proteins, \
   agent("Python-urllib/%s (twill; inmembrane)" % python_version)
   
   out = 'tmbhunt.out'
-  inmembrane.log_stderr("# TMB-HUNT(web) %s > %s" % (params['fasta'], out))
+  log_stderr("# TMB-HUNT(web) %s > %s" % (params['fasta'], out))
   
   if not force and os.path.isfile(out):
-    inmembrane.log_stderr("# -> skipped: %s already exists" % out)
+    log_stderr("# -> skipped: %s already exists" % out)
     return parse_tmbhunt(proteins, out)
   
   # dump extraneous output into this blackhole so we don't see it
-  if not inmembrane.LOG_DEBUG: twill.set_output(StringIO.StringIO())
+  if not __DEBUG__: twill.set_output(StringIO.StringIO())
   
   go("http://bmbpcu36.leeds.ac.uk/~andy/betaBarrel/AACompPred/aaTMB_Hunt.cgi")
-  if inmembrane.LOG_DEBUG: showforms()
+  if __DEBUG__: showforms()
 
   # read up the FASTA format seqs
   fh = open(params['fasta'], 'r')
@@ -50,7 +62,7 @@ def annotate_tmbhunt_web(params, proteins, \
   fv("1", "sequences", fasta_seqs)
 
   submit()
-  if inmembrane.LOG_DEBUG: showlinks()
+  if __DEBUG__: showlinks()
 
   # small jobs will lead us straight to the results, big jobs
   # go via a 'waiting' page which we skip past if we get it
@@ -64,14 +76,14 @@ def annotate_tmbhunt_web(params, proteins, \
   # parse the job_id from the url, since due to a bug in
   # TMB-HUNT the link on the results page from large jobs is wrong
   job_id = follow("Full results").split('/')[-1:][0].split('.')[0]
-  inmembrane.log_stderr("# TMB-HUNT(web) job_id is: %s <http://www.bioinformatics.leeds.ac.uk/~andy/betaBarrel/AACompPred/tmp/tmp_output%s.html>" % (job_id, job_id))
+  log_stderr("# TMB-HUNT(web) job_id is: %s <http://www.bioinformatics.leeds.ac.uk/~andy/betaBarrel/AACompPred/tmp/tmp_output%s.html>" % (job_id, job_id))
   
   # polling until TMB-HUNT finishes
   # TMB-HUNT advises that 4000 sequences take ~10 mins
   # we poll a little faster than that
   polltime = (len(proteins)*0.1)+2
   while True:
-    inmembrane.log_stderr("# TMB-HUNT(web): waiting another %i sec ..." % (polltime))
+    log_stderr("# TMB-HUNT(web): waiting another %i sec ..." % (polltime))
     time.sleep(polltime)
     try:
       go("http://bmbpcu36.leeds.ac.uk/~andy/betaBarrel/AACompPred/tmp/%s.txt" % (job_id))
@@ -80,7 +92,7 @@ def annotate_tmbhunt_web(params, proteins, \
       polltime = polltime * 2
       
     if polltime >= 7200: # 2 hours
-      inmembrane.log_stderr("# TMB-HUNT error: Taking too long.")
+      log_stderr("# TMB-HUNT error: Taking too long.")
       return
     
   txt_out = show()
@@ -106,7 +118,7 @@ def parse_tmbhunt(proteins, out):
       # TMB-HUNT munges FASTA ids by making them all uppercase,
       # so we find the equivalent any-case id in our proteins list
       # and use that. ugly but necessary.
-      seqid, desc = inmembrane.parse_fasta_header(l)
+      seqid, desc = parse_fasta_header(l)
       for i in proteins.keys():
         if seqid.upper() == i.upper():
           seqid = i

@@ -1,7 +1,17 @@
+# -*- coding: utf-8 -*-
+
+citation = {'ref': u"Anders Krogh, Björn Larsson, Gunnar von Heijne and Erik L. "
+                   u"L. Sonnhammer (2001) Predicting Transmembrane Protein "
+                   u"Topology with a Hidden Markov Model: Application to "
+                   u"Complete Genomes. J. Mol. Biol. 305:567-580. \n"
+                   u"<http://dx.doi.org/10.1006/jmbi.2000.4315>",
+            'name': "TMHMM 2.0"
+           }
+
 import helpers
 
 
-def annotate_tmhmm(params, proteins):
+def annotate(params, proteins):
   """
   Runs THMHMM and parses the output files. Takes a standard 'inmembrane'
   params dictionary and a global proteins dictionary which it populates with

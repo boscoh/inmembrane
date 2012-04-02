@@ -24,7 +24,7 @@ A common task in bioinformatics is to integrate the results of protein predictio
 
 A number of published software packages exist for global prediction of subcellular localization of bacterial proteins. Most notable is _PSORTb v3.0_ (Yu, et al, 2010) which predicts general subcellular localization for Gram-positive, Gram-negative and Archaeal proteins sequences. CELLO (Yu et al, 2006) is a web accessible Support Vector Machine-based classifier that predicts localization of Gram-positive, Gram-negative and eukaryotic proteins. Some predictors and databases have been developed with a focus solely on Gram-positive surface proteins. Both _Augur_ (Billion et al., 2006) and _LocateP_ (Zhou et al., 2008) are pipelines wrapping existing specific localization predictors, and provide web accessible databases of pre-calculated subcellular localization for Gram-positive proteomes. While the source code for _PSORTb 3.0_ is available under an open source license, the code for the other annotation pipelines discussed is not generally available for download.
 
-An extension to general membrane localization prediction is the analysis of membrane protein topology to identify prominent surface exposed loops. These potentially surface exposed (PSE) proteins are of particular interest since they constitute attractive vaccine candidates. One existing workflow for annotation of PSE proteins is the program SurfG+, which focuses on Gram-positive bacterial proteomes. SurfG+ is a Java program that carries out batch processing of several standard bioinformatic tools to specifically predict proteins that protude out of the peptidoglycan layer of the bacterium. These predictions are intended to identify a set of proteins that would be amenable to cell-surface protease shaving experiments. SurfG+ itself does not carry out any extensive analysis itself, but rather leverages the results of a transmembrane helix predictor (_TMMOD_) (Robel et al, 2005), a secretion signal predictor (_SignalP_) (Thomas et al 2011), a lipoprotein signal predictior (_LipoP_) (Agnieszka et al 2003) and a sequence alignment for protein profiles (_HMMER_) (Robert et al 2011). 
+An extension to general membrane localization prediction is the analysis of membrane protein topology to identify prominent surface exposed loops. These potentially surface exposed (PSE) proteins are of particular interest since they constitute attractive vaccine candidates. One existing workflow for annotation of PSE proteins is the program SurfG+, which focuses on Gram-positive bacterial proteomes. SurfG+ is a Java program that carries out batch processing of several standard bioinformatic tools to specifically predict proteins that protude out of the peptidoglycan layer of the bacterium. These predictions are intended to identify a set of proteins that would be amenable to cell-surface protease shaving experiments. SurfG+ itself does not carry out any extensive analysis itself, but rather leverages the results of a transmembrane helix predictor (_TMMOD_) (Robel et al, 2005), a secretion signal predictor (_SignalP_) (Thomas et al 2011), a lipoprotein signal predictior (_LipoP_) (Agnieszka et al 2003) and a sequence alignment for protein profiles (_HMMER_) (http://hmmer.org). 
 
 Nevertheless, _SurfG+_ suffers several problems that plague much bioinformatic software. Despite being published in 2009, the URL mentioned in the original reference no longer exists. We were able to find a [source-code repository](https://mulcyber.toulouse.inra.fr/projects/surfgplus) but the we were not able to get the program to work, due in part to dependencies that are not longer generally available for download.
 
@@ -59,7 +59,7 @@ A set of unit tests, executable via the `run_test.py` script enables users and d
 
 The _inmembrane_ Gram-positive surface protocol leverages a number of existing single localization predictors, including transmembrane topology prediction, to deduce a likely subcellular localization and expected surface exposure of a given proteome. Each sequence is annotated by every predictor, and then these annotations are used by the business logic of _inmembrane_ to classify proteins as potentially surface exposed ("PSE"), "Secreted", or the non-exposed classes "Cytoplasmic" and "Membrane".
 
-Annotations applied are as follows. HMMER 3.0 (Robert et al 2011) searches using hidden Markov models (HMM) derived from Pfam and Superfam are used to detect known Gram-positive surface sequence motifs. These include 
+Annotations applied are as follows. HMMER 3.0 (http://hmmer.org) searches using hidden Markov models (HMM) derived from Pfam and Superfam are used to detect known Gram-positive surface sequence motifs. These include 
 LPxTG (Boekhorst et al, 2005) [[PF00746](http://pfam.sanger.ac.uk/family/PF00746) and the HMM used by SurfG+ (Barinov et al 2009)], 
 GW repeat domains (Jonquieres et al, 1999) [Superfam models 0040855, 0040856, 0040857], 
 peptidoglycan (PG) binding domain (Type 1) (Foster, 1991) [[PF01471](http://pfam.sanger.ac.uk/family/PF01471), [PF08823](http://pfam.sanger.ac.uk/family/PF08823), [PF09374](http://pfam.sanger.ac.uk/family/PF09374)]], 
@@ -105,8 +105,8 @@ _inmembrane_ collates the results of each analysis, and using the predicted topo
 
 BOMP, SignalP, TatFind (Rose et al, 2002), LipoP (with additional detection of Asp+2 inner membrane retention signal), TMHMM.
 
-Optionally TMB-HUNT as an additional outer membrane ß-barrel classifier, and TMBETA-NET can be used to predict the number (and location) of transmembrane strands for these outer membrane proteins. These predictors are turned off by default since in practise we found the BOMP classification more reliable,
-and the TMBETA-NET strand predictions prone to false positives for multidomain outer membrane proteins containing both a ß-barrel and an additional soluble domain.
+Optionally TMB-HUNT (Garrow et al, 2005) as an additional outer membrane ß-barrel classifier, and TMBETA-NET can be used to predict the number (and location) of transmembrane strands for these outer membrane proteins. These predictors are turned off by default since in practise we found the BOMP classification more reliable,
+and the TMBETA-NET (Gromiha et al, 2004) strand predictions prone to false positives for multidomain outer membrane proteins containing both a ß-barrel and an additional soluble domain.
 
 
 ### Future protocols
@@ -146,12 +146,12 @@ In _inmembrane_, the standard Python dictionary is used to provide a flexible wa
 
 The main program data in _inmembrane_ is represented with a flat dictionary called `protein`, indexed by sequence identifers. Let's say our FASTA file contains the _Streptococcus pyogenes_ C5a peptidase sequence with the ID `'C5AP_STRPY'`. The properties of `C5AP_STRPY` would then be found in `protein['C5AP_STRPY']`, which is itself a dictionary. `protein['C5AP_STRPY']` contains any arbitary number of different properties, also accessed as key-value pairs. For instance, the sequence length of the `'C5AP_STRPY'` sequence would be stored in `protein['C5AP_STRPY']['sequence_length']`. This data structure can capture the results of most basic sequence analyses, where new properties are added to `protein` on the fly. The use of a dynamic flat dictionary avoids much of the boilerplate code involved with an OOP style programming.
 
-If we use a dictionary to represent our data structure, then the main work in _inmembrane_ of running other programs and processing their text output can be encapsulated into a simple function. For example with _SignalP_, we define a function `annotate_signalp(params, protein)` which takes the main protein data structure as input. The function runs the external SignalP binary, and then parses the text output. Text processing is very easy to write in Python and the extracting the minimum information required by our protocol from _SignalP_ output can be achieved with around 10 lines of code. 
+If we use a dictionary to represent our data structure, then the main work in _inmembrane_ of running other programs and processing their text output can be encapsulated into a simple function. For example with _SignalP_, we define a function `signalp.annotate(params, protein)` which takes the main protein data structure as input. The function runs the external SignalP binary, and then parses the text output. Text processing is very easy to write in Python and the extracting the minimum information required by our protocol from _SignalP_ output can be achieved with around 10 lines of code. 
 
 ***********
 
 ```python
-    def annotate_signalp4(params, proteins):
+    def annotate(params, proteins):
       for seqid in proteins:
         proteins[seqid]['is_signalp'] = False
         proteins[seqid]['signalp_cleave_position'] = None
@@ -172,13 +172,13 @@ If we use a dictionary to represent our data structure, then the main work in _i
 
       return proteins
 ```    
-> Figure 4. Example of parsing code. The entire function responsible for processing _SignalP_ output
+> Figure 4. Example of parsing code in the signalp4 plugin. The entire function responsible for processing _SignalP_ output.
 
 ***********
 
-As `annotate_signalp` cycles through the text output of _SignalP_, then for each protein, if a secretion signal is found, a new property is added: `protein['C5AP_STRPY']['is_signalp'] = True`. 
+As `signalp.annotate` cycles through the text output of _SignalP_, then for each protein, if a secretion signal is found, a new property is added: `protein['C5AP_STRPY']['is_signalp'] = True`. 
 
-We can thus abstract the main program loop as running a series of functions of the generic form `annotate_program(params, protein)`. This provides a simple API to extend new modules by simply adding new functions that annotates the `protein` dictionary. 
+We can thus abstract the main program loop as running a series of functions of the generic form `program.annotate(params, protein)`. This provides a simple API to extend new modules by simply adding new functions that annotates the `protein` dictionary. 
 
 Another example of cleaner code through dynamic programming is in the _HMMER_ peptide motif matching. Instead of hard-coding the sequence profiles search as in _SurfG+_, _inmembrane_ dynamically searches the `hmm_profiles_dir` directory for profiles to search against. Conveniently, new profiles can then be processed by simply dropping them into this directory.
 
@@ -291,7 +291,7 @@ __Operating systems:__ Linux
 
 __Programming language:__ Python
 
-__Other requirements:__ HMMER, SignalP, LipoP, TMHMM or MEMSAT3. An Internet connection is required for web services such as BOMP and TMBETA-NET.
+__Other requirements:__ HMMER, SignalP, LipoP, TMHMM or MEMSAT3. An Internet connection is required for web services such as BOMP and TMB-HUNT.
 
 __Licence:__ BSD Licence (2-clause)
 
@@ -301,9 +301,9 @@ Any restrictions to use by non-academics: Use of _inmembrane_ itself is unrestri
 
 # References
 
-Agnieszka S. Juncker, Hanni Willenbrock, Gunnar Von Heijne, Søren Brunak, Henrik Nielsen, And Anders Krogh. (2003) Prediction of lipoprotein signal peptides in Gram-negative bacteria. __Protein Science__ 12:1652–1662.
+Agnieszka S. Juncker, Hanni Willenbrock, Gunnar Von Heijne, Søren Brunak, Henrik Nielsen, And Anders Krogh. (2003) Prediction of lipoprotein signal peptides in Gram-negative bacteria. __Protein Science__ 12:1652–1662. <http://dx.doi.org/10.1110/ps.0303703>
 
-Anders Krogh, Björn Larsson, Gunnar von Heijne and Erik L. L. Sonnhammer (2001) Predicting Transmembrane Protein Topology with a Hidden Markov Model: Application to Complete Genomes. __J. Mol. Biol.__ 305:567-580.
+Anders Krogh, Björn Larsson, Gunnar von Heijne and Erik L. L. Sonnhammer (2001) Predicting Transmembrane Protein Topology with a Hidden Markov Model: Application to Complete Genomes. __J. Mol. Biol.__ 305:567-580. <http://dx.doi.org/10.1006/jmbi.2000.4315>
 
 Bateman, A., Bycroft, M., The structure of a LysM domain from E. coli membrane-bound lytic murein transglycosylase D (MltD). __J. Mol. Biol.__ 2000, 299, 1113–1119. <http://dx.doi.org/10.1006/jmbi.2000.3778>
 
@@ -318,6 +318,10 @@ Billion A., Ghai R., Chakraborty T. and Hain T. (2006) Augur—a computational p
 Boekhorst, J., de Been, M. W., Kleerebezem, M., Siezen, R. J., Genome-wide detection and analysis of cell wall-bound proteins with LPxTG-like sorting motifs. __J. Bacteriol.__ 2005, 187, 4928–4934. <http://dx.doi.org/10.1128/​JB.187.14.4928-4934.2005>
 
 Foster, S. J., Cloning, expression, sequence analysis and biochemical characterization of an autolytic amidase of Bacillus subtilis 168 trpC2. __J. Gen. Microbiol.__ 1991, 137, 1987–1998. <http://dx.doi.org/10.1099/00221287-137-8-1987>
+
+Garrow, A.G., Agnew, A. and Westhead, D.R. TMB-Hunt: An amino acid composition based method to screen proteomes for beta-barrel transmembrane proteins. BMC Bioinformatics, 2005, 6: 56 <http://dx.doi.org/10.1186/1471-2105-6-56>
+
+Gromiha MM, Ahmad S, Suwa M. Neural network-based prediction of transmembrane beta-strand segments in outer membrane proteins. Journal of computational chemistry 2004 Apr;25(5):762-7. <http://dx.doi.org/10.1002/jcc.10386>
 
 Janecek, S., Svensson, B., Russell, R. R., Location of repeat elements in glucansucrases of Leuconostoc and Strepto- coccus species. __FEMS Microbiol. Lett.__ 2000, 192, 53–57. <http://dx.doi.org/10.1111/j.1574-6968.2000.tb09358.x>
 
@@ -334,7 +338,7 @@ Miaomiao Zhou, Jos Boekhorst, Christof Francke and Roland J Siezen. (2008) Locat
 
 Robel Y. Kahsay1, Guang Gao1 and Li Liao1. An improved hidden Markov model for transmembrane protein detection and topology prediction and its applications to complete genomes (2005) __Bioinformatics__ 21: 1853-1858.
 
-Robert D. Finn, Jody Clements and Sean R. Eddy. (2011) HMMER web server: interactive sequence similarity searching. __Nucleic Acids Research__ 39:W29–W37.
+Eddy SR. A new generation of homology search tools based on probabilistic inference, Genome Informatics 2009 - Proceedings of the 20th International Conference. London: Imperial College Press; 2009 p. 205-211. <http://dx.doi.org/10.1142/9781848165632_0019> <http://hmmer.org>
 
 Rose, R.W., T. Brüser,. J. C. Kissinger, and M. Pohlschröder. 2002. Adaptation of protein secretion to extremely high salt concentrations by extensive use of the twin arginine translocation pathway. Mol. Microbiol. 5: 943-950 <http://dx.doi.org/10.1046/j.1365-2958.2002.03090.x>
 
