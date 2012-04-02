@@ -184,7 +184,8 @@ def process(params):
   for seqid in seqids:
     f.write(protocol.protein_csv_line(seqid, proteins))
   f.close()
-
+  log_stderr("\n")
+  log_stderr("Output written to %s" % (params['csv']))
 
   # TODO: citations for specific HMMs (PFAM etc ?)
   

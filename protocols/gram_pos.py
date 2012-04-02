@@ -75,7 +75,7 @@ def post_process_protein(params, protein):
 
   details = []
   if is_hmm_profile_match:
-    details += ["hmm(%s)" % ",".join(protein['hmmsearch'])]
+    details += ["hmm(%s)" % "|".join(protein['hmmsearch'])]
   if is_lipop: 
     details += ["lipop"]
   if is_signalp:
