@@ -3,7 +3,7 @@
 #
 
 import os, subprocess, sys
-
+import textwrap
 
 LOG_SILENT = False
 
@@ -165,22 +165,14 @@ def print_proteins(proteins):
  
   
 def write_proteins_fasta(
-    fasta_filename, proteins, seqids, width=72):
+    fasta_filename, proteins, seqids, width=50):
   """
   Creates a fasta file of the sequences of a subset of the proteins.
   """
   f = open(fasta_filename, "w")
   for seqid in seqids:
-    f.write(">%s\n" % (proteins[seqid]['name']))
-    seq = proteins[seqid]['seq']
-    if width:
-      i = 0
-      n = len(seq)
-      while i < n:
-        f.write(seq[i:i+width] + "\n")
-        i += width
-    else:
-      f.write(seq + "\n")
+    seq_wrap = textwrap.fill(proteins[seqid]['seq'], width)
+    f.write(">%s\n%s\n" % (proteins[seqid]['name'], seq_wrap))
   f.close()
 
 
