@@ -103,7 +103,7 @@ _inmembrane_ collates the results of each analysis, and using the predicted topo
 
 >__TODO__
 
-BOMP, SignalP, TatFind (Rose et al, 2002), LipoP (with additional detection of Asp+2 inner membrane retention signal), TMHMM.
+BOMP, TMB-HUNT, TMBETADISC-RBF, SignalP, TatFind (Rose et al, 2002), LipoP (with additional detection of Asp+2 inner membrane retention signal), TMHMM.
 
 Optionally TMB-HUNT (Garrow et al, 2005) as an additional outer membrane ß-barrel classifier, and TMBETA-NET can be used to predict the number (and location) of transmembrane strands for these outer membrane proteins. These predictors are turned off by default since in practise we found the BOMP classification more reliable,
 and the TMBETA-NET (Gromiha et al, 2004) strand predictions prone to false positives for multidomain outer membrane proteins containing both a ß-barrel and an additional soluble domain.
@@ -291,7 +291,7 @@ __Operating systems:__ Linux
 
 __Programming language:__ Python
 
-__Other requirements:__ HMMER, SignalP, LipoP, TMHMM or MEMSAT3. An Internet connection is required for web services such as BOMP and TMB-HUNT.
+__Other requirements:__ HMMER, SignalP, LipoP, TMHMM or MEMSAT3. An Internet connection is required for web services such as BOMP, TMB-HUNT and TMBETADISC-RBF.
 
 __Licence:__ BSD Licence (2-clause)
 
@@ -335,6 +335,8 @@ protein association at the surface of Gram-positive bacteria. __Mol.Microbiol.__
 Mesnage, S., Fontaine, T., Mignot, T., Delepierre, M. et al., Bacterial SLH domain proteins are noncovalently anchored to the cell surface via a conserved mechanism involving wall polysaccharide pyruvylation. __EMBO J.__ 2000, 19, 4473–4484. <http://dx.doi.org/10.1093/emboj/19.17.4473>
 
 Miaomiao Zhou, Jos Boekhorst, Christof Francke and Roland J Siezen. (2008) LocateP: Genome-scale subcellular-location predictor for bacterial proteins. BMC Bioinformatics 2008, 9:173.
+
+﻿Ou Y-YY, Gromiha MMM, Chen S-AA, Suwa M (2008) TMBETADISC-RBF: Discrimination of beta-barrel membrane proteins using RBF networks and PSSM profiles. Computational biology and chemistry. <http//dx.doi.org/10.1016/j.compbiolchem.2008.03.002>
 
 Robel Y. Kahsay1, Guang Gao1 and Li Liao1. An improved hidden Markov model for transmembrane protein detection and topology prediction and its applications to complete genomes (2005) __Bioinformatics__ 21: 1853-1858.
 

@@ -68,6 +68,8 @@ def get_annotations(params):
     annotations.append('bomp_web')
   if 'tmbhunt' in dict_get(params, 'barrel_programs'):
     annotations.append('tmbhunt_web')
+  if 'tmbetadisc-rbf' in dict_get(params, 'barrel_programs'):
+    annotations.append('tmbetadisc_rbf_web')
   # TMBETA-NET knows to only run on predicted barrels
   # with the category 'OM(barrel)'
   if 'tmbeta' in dict_get(params, 'barrel_programs'):
@@ -86,7 +88,7 @@ def get_annotations(params):
 
   return annotations
 
-def post_process_protein(params, protein, stringent=False):
+def post_process_protein(params, protein):
     
   def has_tm_helix(protein):
     for program in params['helix_programs']:
@@ -133,23 +135,22 @@ def post_process_protein(params, protein, stringent=False):
     is_signal_pept = True
   
   is_barrel = False
-  if dict_get(protein, 'bomp') >= params['bomp_cutoff']:
-    is_barrel = True
-    details += ['bomp']
-  if dict_get(protein, 'tmbhunt_prob') >= params['tmbhunt_cutoff']:
-    is_barrel = True 
-    details += ['tmbhunt']
-  
-  # if stringent, predicted OM barrels must also have a predicted
-  # signal sequence
-  if stringent and is_signal_pept and is_barrel:
-    category = 'OM(barrel)'
-  elif is_barrel:
-    category = 'OM(barrel)'
-  protein['category'] = category
+  if is_signal_pept:
+    if (dict_get(protein, 'bomp') >= params['bomp_cutoff']):
+      is_barrel = True
+      category = 'OM(barrel)'
+      details += ['bomp']
+    if dict_get(protein, 'tmbhunt_prob') >= params['tmbhunt_cutoff']:
+      is_barrel = True 
+      category = 'OM(barrel)'
+      details += ['tmbhunt']
+    if dict_get(protein, 'is_tmbetadisc_rbf') == True:
+      is_barrel = True 
+      category = 'OM(barrel)'
+      details += ['tmbetadisc-rbf']
 
   # set number of predicted OM barrel strands in details
-  if (dict_get(protein, 'category') == 'OM(barrel)') and \
+  if is_barrel and \
       dict_get(protein, 'tmbeta_strands'):
     num_strands = len(protein['tmbeta_strands'])
     details += ['tmbeta_strands(%i)' % (num_strands)]
