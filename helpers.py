@@ -162,15 +162,25 @@ def print_proteins(proteins):
   # import pprint
   # pp = pprint.PrettyPrinter(indent=4)
   # print pp.pformat(proteins)
+ 
   
-def write_proteins_fasta(fasta_filename, proteins, seqids):
+def write_proteins_fasta(
+    fasta_filename, proteins, seqids, width=72):
   """
   Creates a fasta file of the sequences of a subset of the proteins.
   """
   f = open(fasta_filename, "w")
   for seqid in seqids:
-    f.write(">%s %s\n" % (seqid, proteins[seqid]['name']))
-    f.write(proteins[seqid]['seq'] + "\n")
+    f.write(">%s\n" % (proteins[seqid]['name']))
+    seq = proteins[seqid]['seq']
+    if width:
+      i = 0
+      n = len(seq)
+      while i < n:
+        f.write(seq[i:i+width] + "\n")
+        i += width
+    else:
+      f.write(seq + "\n")
   f.close()
 
 
