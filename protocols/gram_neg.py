@@ -17,6 +17,7 @@ def get_annotations(params):
     annotations.append('tmbhunt_web')
   if 'tmbetadisc-rbf' in dict_get(params, 'barrel_programs'):
     annotations.append('tmbetadisc_rbf_web')
+    
   # TMBETA-NET knows to only run on predicted barrels
   # with the category 'OM(barrel)'
   if 'tmbeta' in dict_get(params, 'barrel_programs'):
@@ -81,21 +82,25 @@ def post_process_protein(params, protein):
      ("Tat_PS51318" in dict_get(protein, 'hmmsearch')):
     is_signal_pept = True
   
+  # first just annotate barrel predictors
+  barrel_detected = False
+  if (dict_get(protein, 'bomp') >= params['bomp_cutoff']):
+    details += ['bomp']
+    barrel_detected = True
+  if dict_get(protein, 'tmbhunt_prob') >= params['tmbhunt_cutoff']:
+    details += ['tmbhunt']
+    barrel_detected = True
+  if dict_get(protein, 'is_tmbetadisc_rbf') == True:
+    details += ['tmbetadisc-rbf']
+    barrel_detected = True
+  
+  # we only regard the barrel prediction as a true positive
+  # if a signal peptide is also present
   is_barrel = False
-  if is_signal_pept:
-    if (dict_get(protein, 'bomp') >= params['bomp_cutoff']):
-      is_barrel = True
-      category = 'OM(barrel)'
-      details += ['bomp']
-    if dict_get(protein, 'tmbhunt_prob') >= params['tmbhunt_cutoff']:
-      is_barrel = True 
-      category = 'OM(barrel)'
-      details += ['tmbhunt']
-    if dict_get(protein, 'is_tmbetadisc_rbf') == True:
-      is_barrel = True 
-      category = 'OM(barrel)'
-      details += ['tmbetadisc-rbf']
-
+  if is_signal_pept and barrel_detected:
+    category = 'OM(barrel)'
+    is_barrel = True
+    
   # set number of predicted OM barrel strands in details
   if is_barrel and \
       dict_get(protein, 'tmbeta_strands'):
@@ -174,7 +179,7 @@ def summary_table(params, proteins):
     category = proteins[seqid]['category']
     
     if category not in counts:
-      counts[category] = 0
+      counts[category] = 1
     else:
       counts[category] += 1
       

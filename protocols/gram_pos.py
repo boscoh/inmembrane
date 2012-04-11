@@ -144,7 +144,7 @@ def summary_table(params, proteins):
     category = proteins[seqid]['category']
     
     if category not in counts:
-      counts[category] = 0
+      counts[category] = 1
     else:
       counts[category] += 1
       
