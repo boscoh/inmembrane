@@ -105,6 +105,6 @@ def annotate(params, proteins, \
   fh.write(output)
   fh.close()
   
-  proteins = parse_tmbetadisc_output(output.split("\n"), proteins) 
+  proteins = parse_tmbetadisc_output(output, proteins) 
   
   return proteins
