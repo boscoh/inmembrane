@@ -3,59 +3,6 @@ import helpers
 from helpers import dict_get, eval_surface_exposed_loop, \
                     chop_nterminal_peptide, log_stderr
 
-def predict_surface_exposure_barrel(params, protein):
-  # TODO: This is a placeholder for a function which will do something
-  #       similar to predict_surface_exposure, but focused on inferring 
-  #       outer membrane beta barrel topology.
-  #
-  #       At the moment it's not implemented since I have not
-  #       found an easily usable method which gives predictions
-  #       accurate enough to be of any real use, particularly
-  #       in terms of detecting barrel vs. non-barrel regions
-  #       in multidomain BB OMPs (TMBETA-NET strand prediction is 
-  #       implemented but it suffers from this problem). Probably 
-  #       we will have to do domain detection independently, then 
-  #       feed only the barrel domain to the strand predictor. 
-  #       I've found PSI-PRED actually works reasonably well on OMP BBs - 
-  #       this may be a simpler option over requiring a ProfTMB dependency 
-  #       or interfacing with the transFold web service.
-  #       
-  #       Essentially, we should:
-  #        * Move through the strand list in reverse.
-  #        * Strand annotation alternates 'up' strand and 'down' strand
-  #        * Loop annotation (starting with the C-terminal residue) alternates
-  #          'inside' and 'outside'.
-  #        * If everything is sane, we should finish on a down strand. If not,
-  #          consider a rule to make an 'N-terminal up strand' become 
-  #          an 'inside loop'
-  #        * Sanity check on loop lengths ? 'Outside' loops should be on average
-  #          longer than non-terminal 'inside' loops.
-  #        * For alternative strand predictors (eg transFold, ProfTMB), which
-  #          may specifically label inner and outer loops, we should obviously
-  #          use those annotations directly.
-  pass
-
-def summary_table(params, proteins):
-  """
-  Returns a string representing a simple summary table of
-  protein classifcations.
-  """
-  out = ""
-  counts = {}
-  for seqid in proteins:
-    category = proteins[seqid]['category']
-    
-    if category not in counts:
-      counts[category] = 0
-    else:
-      counts[category] += 1
-      
-  out += "\n\n# Number of proteins in each class:\n"
-  for c in counts:
-    out += "# %-15s %i\n" % (c, counts[c])
-    
-  return out
-    
     
 def get_annotations(params):
   params['signalp4_organism'] = 'gram-'
@@ -96,7 +43,7 @@ def post_process_protein(params, protein):
         return True
     return False
 
-  # we use these functions to detect if and TM-containing IM proteins
+  # these functions detect if and TM-containing IM proteins
   # have large loops / terminal regions in the periplasm or cytoplasm
   # that may be accessible / inaccessible in spheroplast shaving 
   # experiments.
@@ -202,7 +149,6 @@ def post_process_protein(params, protein):
 
   return details, category
 
-
 def protein_output_line(seqid, proteins):
   return '%-15s   %-13s  %-50s  %s' % \
       (seqid, 
@@ -216,3 +162,24 @@ def protein_csv_line(seqid, proteins):
        proteins[seqid]['category'], 
        ";".join(proteins[seqid]['details']),
        proteins[seqid]['name'])
+
+def summary_table(params, proteins):
+  """
+  Returns a string representing a simple summary table of
+  protein classifcations.
+  """
+  out = ""
+  counts = {}
+  for seqid in proteins:
+    category = proteins[seqid]['category']
+    
+    if category not in counts:
+      counts[category] = 0
+    else:
+      counts[category] += 1
+      
+  out += "\n\n# Number of proteins in each class:\n"
+  for c in counts:
+    out += "# %-15s %i\n" % (c, counts[c])
+    
+  return out
