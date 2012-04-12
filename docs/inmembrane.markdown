@@ -109,7 +109,7 @@ _inmembrane_ collates the results of each analysis, and using the predicted topo
 
 >__TODO__
 
-BOMP, SignalP, TatFind (Rose et al, 2002), LipoP (with additional detection of Asp+2 inner membrane retention signal), TMHMM.
+BOMP, TMB-HUNT, TMBETADISC-RBF, SignalP, TatFind (Rose et al, 2002), LipoP (with additional detection of Asp+2 inner membrane retention signal), TMHMM.
 
 Optionally TMB-HUNT (Garrow et al, 2005) as an additional outer membrane ß-barrel classifier, and TMBETA-NET can be used to predict the number (and location) of transmembrane strands for these outer membrane proteins. These predictors are turned off by default since in practise we found the BOMP classification more reliable, and the TMBETA-NET (Gromiha et al, 2004) strand predictions prone to false positives for multidomain outer membrane proteins containing both a ß-barrel and an additional soluble domain.
 
@@ -302,7 +302,7 @@ __Operating systems:__ Linux
 
 __Programming language:__ Python
 
-__Other requirements:__ HMMER, SignalP, LipoP, TMHMM or MEMSAT3. An Internet connection is required for web services such as BOMP and TMB-HUNT.
+__Other requirements:__ HMMER, SignalP, LipoP, TMHMM or MEMSAT3. An Internet connection is required for web services such as BOMP, TMB-HUNT and TMBETADISC-RBF.
 
 __Licence:__ BSD Licence (2-clause)
 
@@ -328,6 +328,8 @@ Billion A, Ghai R, Chakraborty T, Hain T. (2006) Augur—a computational pipelin
 
 Boekhorst, J., de Been, M. W., Kleerebezem, M., Siezen, R. J., (2005) Genome-wide detection and analysis of cell wall-bound proteins with LPxTG-like sorting motifs. __J. Bacteriol.__ 187:4928–4934. <http://dx.doi.org/10.1128/​JB.187.14.4928-4934.2005>
 
+Eddy SR. (2009) A new generation of homology search tools based on probabilistic inference, Genome Informatics. __PNAS__ 205-211. <http://dx.doi.org/10.1142/9781848165632_0019> <http://hmmer.org>
+
 Foster, S. J., (1991) Cloning, expression, sequence analysis and biochemical characterization of an autolytic amidase of Bacillus subtilis 168 trpC2. __J. Gen. Microbiol.__ 137:1987–1998. <http://dx.doi.org/10.1099/00221287-137-8-1987>
 
 Garrow, A.G., Agnew, A. and Westhead, D.R. (2005) TMB-Hunt: An amino acid composition based method to screen proteomes for beta-barrel transmembrane proteins. BMC Bioinformatics, 6: 56 <http://dx.doi.org/10.1186/1471-2105-6-56>
@@ -340,15 +342,15 @@ Janecek, S., Svensson, B., Russell, R. R., (2000) Location of repeat elements in
 
 Jonquieres, R., Bierne, H., Fiedler, F., Gounon, P., Cossart, P., (1999)  Interaction between the protein InlB of Listeria mono- cytogenes and lipoteichoic acid: A novel mechanism of protein association at the surface of Gram-positive bacteria. __Mol.Microbiol.__ 34:902–914. <http://dx.doi.org/10.1046/j.1365-2958.1999.01652.x>
 
-﻿Masuda K, Matsuyama S-ichi, Tokuda H. (2002) Elucidation of the function of lipoprotein-sorting signals that determine membrane localization. __Proceedings of the National Academy of Sciences of the United States of America__  99(11):7390-5. <http://dx.doi.org/10.1073/pnas.112085599>
+﻿Kahsay RY, Gao G, Liao L. (2005)  An improved hidden Markov model for transmembrane protein detection and topology prediction and its applications to complete genomes. __Bioinformatics__ 21: 1853-1858.
+
+Masuda K, Matsuyama S-ichi, Tokuda H. (2002) Elucidation of the function of lipoprotein-sorting signals that determine membrane localization. __Proceedings of the National Academy of Sciences of the United States of America__  99(11):7390-5. <http://dx.doi.org/10.1073/pnas.112085599>
 
 Mesnage, S., Fontaine, T., Mignot, T., Delepierre, M. et al., (2000) Bacterial SLH domain proteins are noncovalently anchored to the cell surface via a conserved mechanism involving wall polysaccharide pyruvylation. __EMBO J.__ 19, 4473–4484. <http://dx.doi.org/10.1093/emboj/19.17.4473>
 
-Zhou M, Boekhorst J, Francke C, Siezen RJ. (2008) LocateP: Genome-scale subcellular-location predictor for bacterial proteins. __BMC Bioinformatics__ 2008, 9:173.
+Ou Y-YY, Gromiha MMM, Chen S-AA, Suwa M (2008) TMBETADISC-RBF: Discrimination of beta-barrel membrane proteins using RBF networks and PSSM profiles. Computational biology and chemistry. <http//dx.doi.org/10.1016/j.compbiolchem.2008.03.002>
 
-Kahsay RY, Gao G, Liao L. (2005)  An improved hidden Markov model for transmembrane protein detection and topology prediction and its applications to complete genomes. __Bioinformatics__ 21: 1853-1858.
-
-Eddy SR. (2009) A new generation of homology search tools based on probabilistic inference, Genome Informatics. __Proceedings of the 20th International Conference. London: Imperial College Press__ 205-211. <http://dx.doi.org/10.1142/9781848165632_0019> <http://hmmer.org>
+Robel Y. Kahsay1, Guang Gao1 and Li Liao1. An improved hidden Markov model for transmembrane protein detection and topology prediction and its applications to complete genomes (2005) __Bioinformatics__ 21: 1853-1858.
 
 Rose RW, Brüser T, Kissinger JC, Pohlschröder M. (2002) Adaptation of protein secretion to extremely high salt concentrations by extensive use of the twin arginine translocation pathway. __Mol. Microbiol.__ 5: 943-950 <http://dx.doi.org/10.1046/j.1365-2958.2002.03090.x>
 
@@ -359,3 +361,5 @@ Waligora, A. J., Hennequin, C., Mullany, P., Bourlioux, P. et al., Characterizat
 Yu CS, Chen YC, Lu CH, Hwang JK. (2006) Prediction of protein subcellular localization. __Proteins: Structure, Function and Bioinformatics__ 64:643-651.
 
 Yu NY, Wagner JR, Laird MR, Melli G, Rey S, Lo R, Dao P, Sahinalp SC, Ester M, Foster LJ, Brinkman FSL (2010) PSORTb 3.0: Improved protein subcellular localization prediction with refined localization subcategories and predictive capabilities for all prokaryotes, __Bioinformatics__ 26(13):1608-1615 <http://dx.doi.org/10.1093/bioinformatics/btq249>
+
+Zhou M, Boekhorst J, Francke C, Siezen RJ. (2008) LocateP: Genome-scale subcellular-location predictor for bacterial proteins. __BMC Bioinformatics__ 2008, 9:173.

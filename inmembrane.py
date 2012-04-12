@@ -214,7 +214,7 @@ def process(params):
   f.close()
   log_stderr("\n")
   log_stderr("This run used %s." % (", ".join(programs_used)) )
-  log_stderr("Citations have been written to %s \n"
+  log_stderr("References have been written to %s \n"
              "# - please cite as appropriate." % 
              (params['citations']) )
             

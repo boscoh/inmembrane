@@ -14,6 +14,8 @@ import sys, os, time, StringIO
 import twill
 from twill.commands import find, formfile, follow, fv, go, show, \
                              showforms, showlinks, submit, agent
+from BeautifulSoup import BeautifulSoup
+
 from helpers import log_stderr, parse_fasta_header
 
 
@@ -98,7 +100,6 @@ def annotate(params, proteins, \
   
   # Results are in the only <table> on this page, formatted like:
   # <tr><th>gi|107836852|gb|ABF84721.1<th>5</tr>
-  from BeautifulSoup import BeautifulSoup
   soup = BeautifulSoup(bomp_html)
   bomp_categories = {} # dictionary of {name, category} pairs
   for tr in soup.findAll('tr')[1:]:
