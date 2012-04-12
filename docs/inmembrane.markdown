@@ -103,7 +103,7 @@ _inmembrane_ collates the results of each analysis, and using the predicted topo
         category = "CYTOPLASM(non-PSE)"
 ```
 
-> Figure 3. Main logic classifying subcellular localization and potential surface exposure for Gram-positive protein sequences, expressed in Python code. This algorithm was adapted from _SurfG+_. The function `has_surface_exposed_loop` evaluates whether the extracellular loops are sufficifiently long to be exposed out of the peptidoglycan. The rule adapted from _SurfG+_ is a minimum length of 50 amino acids for terminal loops, and 100 amino acids for internal loops.
+> Figure 3. Main logic classifying subcellular localization and potential surface exposure for Gram-positive protein sequences, expressed in Python code. This algorithm was adapted from _SurfG+_. The function `has_surface_exposed_loop` evaluates whether the extracellular loops are sufficifiently long to be exposed out of the peptidoglycan layer. The rule adapted from _SurfG+_ is a minimum length of 50 amino acids for terminal loops, and 100 amino acids for internal loops.
 
 *******
 
@@ -179,7 +179,7 @@ If we use a dictionary to represent our data structure, then the main work in _i
       return proteins
 ```    
 
-> Figure 4. Example of parsing code in the signalp4 plugin. The entire function responsible for processing _SignalP_ output.
+> Figure 4. Example of parsing code in the signalp4 plugin. The entire function responsible for processing _SignalP_ output. `helpers` is an _inmembrane_ module with utility functions. 
 
 ***********
 
@@ -208,7 +208,8 @@ Secreted       78 47       88 61         40 25        38 23       70 41
 Total        1697 1696   1862 1862     1821 1821    1755 1755   1562 1562
 
 Columns labelled 'S' are _SurfG+_ results and 'i' are _inmembrane_ results.
-Some _inmembrane_ subclasses have been combined to directly compare with _SurfG+_ (PSE = PSE-Membrane + PSE-Cellwall + PSE-Lipoprotein)
+Some _inmembrane_ subclasses have been combined to directly compare with _SurfG+_ 
+(i.e. PSE = PSE-Membrane + PSE-Cellwall + PSE-Lipoprotein)
 </pre>
 
 > Table 1. Comparison of _inmembrane_ results with _SurfG+_
@@ -346,7 +347,7 @@ Jonquieres, R., Bierne, H., Fiedler, F., Gounon, P., Cossart, P., (1999)  Intera
 
 ﻿Kahsay RY, Gao G, Liao L. (2005)  An improved hidden Markov model for transmembrane protein detection and topology prediction and its applications to complete genomes. __Bioinformatics__ 21: 1853-1858.
 
-Masuda K, Matsuyama S-ichi, Tokuda H. (2002) Elucidation of the function of lipoprotein-sorting signals that determine membrane localization. __Proceedings of the National Academy of Sciences of the United States of America__  99(11):7390-5. <http://dx.doi.org/10.1073/pnas.112085599>
+Masuda K, Matsuyama S-ichi, Tokuda H. (2002) Elucidation of the function of lipoprotein-sorting signals that determine membrane localization. __PNAS__  99(11):7390-5. <http://dx.doi.org/10.1073/pnas.112085599>
 
 Mesnage, S., Fontaine, T., Mignot, T., Delepierre, M. et al., (2000) Bacterial SLH domain proteins are noncovalently anchored to the cell surface via a conserved mechanism involving wall polysaccharide pyruvylation. __EMBO J.__ 19, 4473–4484. <http://dx.doi.org/10.1093/emboj/19.17.4473>
 
