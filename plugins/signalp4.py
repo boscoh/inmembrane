@@ -23,7 +23,7 @@ def annotate(params, proteins):
     if line.startswith("#"):
       continue
     words = line.split()
-    seqid = helpers.parse_fasta_header(">"+words[0])[0]
+    seqid = helpers.parse_fasta_header(words[0])[0]
     proteins[seqid]['signalp_cleave_position'] = int(words[4])
     if (words[9] == "Y"):
       proteins[seqid]['is_signalp'] = True
