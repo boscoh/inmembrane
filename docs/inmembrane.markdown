@@ -171,7 +171,7 @@ If we use a dictionary to represent our data structure, then the main work in _i
         if line.startswith("#"):
           continue
         words = line.split()
-        seqid = helpers.parse_fasta_header(">"+words[0])[0]
+        seqid = helpers.parse_fasta_header(words[0])[0]
         if (words[9] == "Y"):
           proteins[seqid]['is_signalp'] = True
           proteins[seqid]['signalp_cleave_position'] = int(words[4])
