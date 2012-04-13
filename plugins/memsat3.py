@@ -117,8 +117,6 @@ def annotate(params, proteins):
     single_fasta = helpers.seqid_to_filename(seqid) + '.fasta'
     if not os.path.isfile(single_fasta):
       helpers.write_proteins_fasta(single_fasta, proteins, [seqid])
-      # seq = protein['seq']
-      # open(single_fasta, 'w').write(">%s\n%s\n" % (seqid, seq))
 
     memsat_out = single_fasta.replace('fasta', 'memsat')
     helpers.run('%s %s' % (params['memsat3_bin'], single_fasta), memsat_out)
