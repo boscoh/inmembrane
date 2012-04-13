@@ -217,6 +217,7 @@ def process(params):
   log_stderr("References have been written to %s \n"
              "# - please cite as appropriate." % 
              (params['citations']) )
+     
             
 if __name__ == "__main__":
   parser = OptionParser()
