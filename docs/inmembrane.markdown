@@ -2,17 +2,20 @@
 
 # __inmembrane__, a bioinformatic workflow for annotation of bacterial cell surface proteomes
 
-Andrew J. Perry and Bosco K. Ho
-_Department of Biochemistry, Monash University, Melbourne, Australia_
+Andrew J. Perry(1) and Bosco K. Ho(1,2)
+
+_(1) Department of Biochemistry, Monash University, Melbourne, Australia_  
+_(2) Monash eResearch Centre, Monash University, Melbourne, Australia_ 
 
 
 # Abstract 
 
 _inmembrane_ is a tool to predict the surface-exposed regions of membrane proteins in sets of bacterial protein sequences. We have implemented a protocol for determining surface exposed proteins in Gram-positive bacterial proteomes by interfacing with multiple predictors of subcellular localization and membrane protein topology. Through the use of a modern scripting language, _inmembrane_ provides an accessible code base and extensible architecture that is amenable to modification for related sequence annotation tasks. The program is hosted on the Github repository http://github.com/boscoh/inmembrane.
 
+
 # Background
 
-A common task in bioinformatics is to integrate the results of protein prediction programs to deduce complex properties of proteins. In studies of membrane proteomes, quick annotation of an experimentally detected set of the proteins can help highlight sequences of unexpected localization, and can alert researchers to possible contamination from other subcellular fractions. Ultimately, a concise summary of the properties of the detected membrane proteins in a particular proteomic dataset allows meaningful comparisons between different bacterial strains, species, and their responses in membrane remodelling to host and enviromental challenges.
+A common task in bioinformatics is to integrate the results of protein prediction programs to deduce complex properties of proteins. In studies of membrane proteomes, quick annotation of an experimentally detected set of the proteins can help highlight sequences of unexpected localization, and can alert researchers to possible contamination from other subcellular fractions. Ultimately, a concise summary of the properties of the detected membrane proteins in a particular proteomic dataset allows meaningful comparisons between different bacterial strains, species, and their responses in membrane remodelling to host and enviromental challenges (Figure 1).
 
 *****
 
@@ -33,9 +36,10 @@ Since the core algorithm in _SurfG+_ is relatively straightforward, we decided t
 
 ## Methods and Implementation
 
-_inmembrane_ is primarily designed to be run locally via the command line. The input is a set of sequences in FASTA format, the output is plain text, including a summary table and comma-separated-value (CSV) format suitable for import into spreadsheet software or scripted text processing.
+_inmembrane_ is primarily designed to be run locally via the command line. The input is a set of sequences in FASTA format, the output is plain text (Figure 2), including a summary table as well as an output file in comma-separated-value (CSV) format suitable for import into spreadsheet software or scripted text processing.
 
-****
+***
+
 ```
 lcl|AE004092.1_cdsid_AAK34689.1   PSE-Lipoprotein     lipop;signalp                                 AE004092.1_cdsid_AAK34689.1 [gene=lmb]
 lcl|AE004092.1_cdsid_AAK34690.1   PSE-Cellwall        hmm(Gram_pos_anchor,LPxTG);signalp;tmhmm(2)   AE004092.1_cdsid_AAK34690.1 [gene=SPy_2009]
@@ -49,7 +53,9 @@ lcl|AE004092.1_cdsid_AAK34697.1   SECRETED            signalp;tmhmm(1)          
 lcl|AE004092.1_cdsid_AAK34698.1   PSE-Membrane        tmhmm(1)                                      AE004092.1_cdsid_AAK34698.1 [gene=SPy_2026]
 lcl|AE004092.1_cdsid_AAK34699.1   CYTOPLASM(non-PSE)  .                                             AE004092.1_cdsid_AAK34699.1 [gene=SPy_2027]
 ```
+
 > Figure 2. Example of output
+
 
 ****
 
@@ -72,9 +78,10 @@ Lipoprotein signals are detected using LipoP (Agnieszka et al 2003), and signal 
 
 The prescence and topology of transmembrane segments in helical membrane proteins is predicted using TMHMM v2.0 (Robel et al, 2005) and/or MEMSAT3 (Jones, 2007). Since MEMSAT3 executes a PSI-BLAST search to gather homologous sequences it is considerably slower than TMHMM, and as such is turned off by default.
 
-_inmembrane_ collates the results of each analysis, and using the predicted topology of the intergral membrane proteins detected, predicts potentially surface-exposed loops following the algorithm used by SurfG+. By default, external terminal regions longer than 50 residues and external loops longer than 100 residues are considered to be potentially surface exposed. These values were previously experimentally derived based on membrane shaving experiements with _S. pyrogenes_ and may need modification to suit other species with different cell wall thickness (Barinov et al, 2009).
+_inmembrane_ collates the results of each analysis, and using the predicted topology of the intergral membrane proteins detected, predicts potentially surface-exposed loops following the algorithm used by SurfG+ (Figure 3). By default, external terminal regions longer than 50 residues and external loops longer than 100 residues are considered to be potentially surface exposed. These values were previously experimentally derived based on membrane shaving experiements with _S. pyrogenes_ and may need modification to suit other species with different cell wall thickness (Barinov et al, 2009).
 
 ******
+
 ```python
     if is_hmm_profile_match:
       category =  "PSE-Cellwall"
@@ -95,7 +102,8 @@ _inmembrane_ collates the results of each analysis, and using the predicted topo
       else:
         category = "CYTOPLASM(non-PSE)"
 ```
-> Figure 3. Main logic classifying subcellular localization and potential surface exposure for Gram-positive protein sequences, expressed in Python code. This algorithm was adapted from _SurfG+_. 
+
+> Figure 3. Main logic classifying subcellular localization and potential surface exposure for Gram-positive protein sequences, expressed in Python code. This algorithm was adapted from _SurfG+_. The function `has_surface_exposed_loop` evaluates whether the extracellular loops are sufficifiently long to be exposed out of the peptidoglycan layer. The rule adapted from _SurfG+_ is a minimum length of 50 amino acids for terminal loops, and 100 amino acids for internal loops.
 
 *******
 
@@ -105,14 +113,12 @@ _inmembrane_ collates the results of each analysis, and using the predicted topo
 
 BOMP, TMB-HUNT, TMBETADISC-RBF, SignalP, TatFind (Rose et al, 2002), LipoP (with additional detection of Asp+2 inner membrane retention signal), TMHMM.
 
-Optionally TMB-HUNT (Garrow et al, 2005) as an additional outer membrane ß-barrel classifier, and TMBETA-NET can be used to predict the number (and location) of transmembrane strands for these outer membrane proteins. These predictors are turned off by default since in practise we found the BOMP classification more reliable,
-and the TMBETA-NET (Gromiha et al, 2004) strand predictions prone to false positives for multidomain outer membrane proteins containing both a ß-barrel and an additional soluble domain.
+Optionally TMB-HUNT (Garrow et al, 2005) as an additional outer membrane ß-barrel classifier, and TMBETA-NET can be used to predict the number (and location) of transmembrane strands for these outer membrane proteins. These predictors are turned off by default since in practise we found the BOMP classification more reliable, and the TMBETA-NET (Gromiha et al, 2004) strand predictions prone to false positives for multidomain outer membrane proteins containing both a ß-barrel and an additional soluble domain.
 
 
 ### Future protocols
 
 __inmembrane__ is designed such that new workflows for annotation of membrane proteomes can be added relatively easily. Wrappers for programs that annotate a sequence with a particular feature can be added to `inmembrane/plugins/` following the example of existing plugins. The `inmembrane/plugin/signalp4.py` and `inmembrane/plugin/lipop1.py` plugins provide good templates for adoption and modification. In the simplest case, this means that if a superior method for signal peptide, transmembrane segment or lipoprotein prediction is developed, it will be straightforward to write a new plugin wrapping it for inclusion in the protocol, either as a parallel analysis or replacing one of the existing predictors. New _protocols_ can be added to the `inmembrane/protocols` directory, and selected for execution by changing _protocol_ parameter in the `inmembrane.config` file. Currently, we have implemented two protocols, _gram\_pos_, for prediction of PSE proteins in Gram-positive bacteria, and _gram\_neg_, for general annotation of Gram-positive subcellular localization.
-
 
 
 ## Discussion
@@ -130,7 +136,7 @@ As _inmembrane_ integrates the output of a large number of external dependencies
 
 In many bioinformatic programs, configuration information is dispersed throughout the header regions of multiple scripts and/or stored in environment variables, and users are asked to search through the program and modify the source code. While convenient for the original programmer, this can be frustrating and confusing even for expert users. A far better model is to isolate the configuration concerns to one clear place with sensible defaults. Following this model, _inmembrane_ reads configuration information from an explicit configuration file `inmembrane.config`, where a default version is auto-generated if it is not initally found.
 
-Since the configuration file for _inmembrane_ is itself a Python dictionary, users can write a short Python script that incorporates a specific configuration dictionary and executes _inmembrane_ directly. This provides a convenient record of each individual analysis, as well as a file that can be executed through a file-manager by double-clicking (an example is provided in the script `run_example.py`).
+Since the configuration file for _inmembrane_ is itself a Python dictionary, users can write a short Python script that incorporates a specific configuration dictionary and execute _inmembrane_ directly. This provides a convenient record of each individual analysis, as well as a file that can be executed through a file-manager by double-clicking (an example is provided in the script `run_example.py`).
 
 ### Scripting Languages 
 
@@ -146,7 +152,7 @@ In _inmembrane_, the standard Python dictionary is used to provide a flexible wa
 
 The main program data in _inmembrane_ is represented with a flat dictionary called `protein`, indexed by sequence identifers. Let's say our FASTA file contains the _Streptococcus pyogenes_ C5a peptidase sequence with the ID `'C5AP_STRPY'`. The properties of `C5AP_STRPY` would then be found in `protein['C5AP_STRPY']`, which is itself a dictionary. `protein['C5AP_STRPY']` contains any arbitary number of different properties, also accessed as key-value pairs. For instance, the sequence length of the `'C5AP_STRPY'` sequence would be stored in `protein['C5AP_STRPY']['sequence_length']`. This data structure can capture the results of most basic sequence analyses, where new properties are added to `protein` on the fly. The use of a dynamic flat dictionary avoids much of the boilerplate code involved with an OOP style programming.
 
-If we use a dictionary to represent our data structure, then the main work in _inmembrane_ of running other programs and processing their text output can be encapsulated into a simple function. For example with _SignalP_, we define a function `signalp.annotate(params, protein)` which takes the main protein data structure as input. The function runs the external SignalP binary, and then parses the text output. Text processing is very easy to write in Python and the extracting the minimum information required by our protocol from _SignalP_ output can be achieved with around 10 lines of code. 
+If we use a dictionary to represent our data structure, then the main work in _inmembrane_ of running other programs and processing their text output can be encapsulated into a simple function. For example with _SignalP_, we define a function `signalp.annotate(params, protein)` which takes the main protein data structure as input. The function runs the external SignalP binary, and then parses the text output. Text processing is very easy to write in Python and the extracting the minimum information required by our protocol from _SignalP_ output can be achieved with around 15 lines of code (Figure 4). 
 
 ***********
 
@@ -165,14 +171,15 @@ If we use a dictionary to represent our data structure, then the main work in _i
         if line.startswith("#"):
           continue
         words = line.split()
-        seqid = helpers.parse_fasta_header(">"+words[0])[0]
+        seqid = helpers.parse_fasta_header(words[0])[0]
         if (words[9] == "Y"):
           proteins[seqid]['is_signalp'] = True
           proteins[seqid]['signalp_cleave_position'] = int(words[4])
 
       return proteins
 ```    
-> Figure 4. Example of parsing code in the signalp4 plugin. The entire function responsible for processing _SignalP_ output.
+
+> Figure 4. Example of parsing code in the signalp4 plugin. The entire function responsible for processing _SignalP_ output. `helpers` is an _inmembrane_ module with utility functions. 
 
 ***********
 
@@ -184,7 +191,7 @@ Another example of cleaner code through dynamic programming is in the _HMMER_ pe
 
 ### Tests with Gram-positive bacteria
 
-The field of bioinformatics changes quickly, and in the few years between the release of SurfG+, some of the software used in SurfG+ is no longer redily available. As a result we could not use exactly the same versions of the binaries used in SurfG+. For instance _TMMOD_ is no longer released as a binary and SignalP has progressed to Version 4.0. Nevertheless, _inmembrane_ produces comparable results to SurfG+ for the 4 bacterial genomes orginally tested:
+The field of bioinformatics changes quickly, and in the few years between the release of SurfG+, some of the software used in SurfG+ is no longer readily available. As a result we could not use the same version of the binaries used in SurfG+. For instance _TMMOD_ is no longer released as a binary and SignalP has progressed to Version 4.0. Nevertheless, _inmembrane_ produces comparable results to SurfG+ for the 4 bacterial genomes orginally tested (Table 1). This can also be compared to PSORTb 3.0 classifcation of the organisms (Table 2).
 
 ***********
 
@@ -199,15 +206,17 @@ Membrane      236 239     315 332       357 358      298 303     244 264
 PSE           140 176     169 189       176 204      157 189     116 138                           
 Secreted       78 47       88 61         40 25        38 23       70 41                    
 Total        1697 1696   1862 1862     1821 1821    1755 1755   1562 1562
-</pre>
 
 Columns labelled 'S' are _SurfG+_ results and 'i' are _inmembrane_ results.
-Some _inmembrane_ subclasses have been combined to directly compare with SurfG+ 
-(ie, PSE = PSE-Membrane + PSE-Cellwall + PSE-Lipoprotein)
+Some _inmembrane_ subclasses have been combined to directly compare with _SurfG+_ 
+(i.e. PSE = PSE-Membrane + PSE-Cellwall + PSE-Lipoprotein)
+</pre>
+
+> Table 1. Comparison of _inmembrane_ results with _SurfG+_
 
 ***********
 
-This can be compared to PSortB 3.0 classifcation of the organisms.
+***********
 
 <pre>
                S.pyogenes L.acidophilus L.johnsonii L.gasseri L.bulgaricus
@@ -220,11 +229,15 @@ Unknown/multiple    5           8            11          3          5
 Total               1696        1862         1821        1755       1529
 </pre>
 
+> Table 2. _PSORTb 3.0_ analysis of the genomes used in the _SurfG+_ analysis.
+
+**********
+
 ### Interfacing with "web services" for further analysis
 
 From time to time, bioinformatics researchers will provide useful sequence analysis tools with a HTML form based front end designed for web browsers, but with no official machine readable web API, and no downloadable standalone version of their software. While researchers may neglect to provide these interfaces for a multitude of reasons, for end-users the lack of a standalone version or a web API makes automated use for large scale analyses, such as that carried out by _inmembrane_, somewhat awkward and inconvenient. Several of the published tools for the detection of outer membrane beta-barrel proteins we wished to use as part of the _inmembrane_ workflow only provide a browser based interface, and some only allow submission of a single protein sequence at one time. To solve this problem we chose to implement automated queries to these web intefaces using the _twill_ library (C. Titus Brown, http://twill.idyll.org/), with subsequent parsing of any HTML output using the _BeautifulSoup_ library (Leonard Richardson, http://www.crummy.com/software/BeautifulSoup/).
 
-When writing a wrapper for a new service, commands to interface with a web form can be easily tested directly on the Python commandline, or by using _twill_ itself in interactive mode. This allows for quick prototyping of new web scrapers, prior to implementation as an _inmembrane_ plugin.
+When writing a wrapper for a new service, commands to interface with a web form can be easily tested directly on the Python commandline, or by using _twill_ itself in interactive mode (Figure 5). This allows for quick prototyping of new web scrapers, prior to implementation as an _inmembrane_ plugin.
 
 ***********
 
@@ -267,7 +280,8 @@ Links:
 <html xmlns="http://www.w3.org/1999/xhtml">
 ..
 ```
-> Figure - An example of interfacing with the BOMP ß-barrel outer membrane protein predictor (Berven et al, 2004) web site using _twill_ on the Python interactive commandline. _twill_ essentially behaves like a headless web-browser. Lines with `>>>` denote inputs to the Python interactive command line, while other lines are output from _twill_ (1) First the appropriate commands from the _twill_ library are imported. (2) We navigate to the BOMP website, which silently downloads the HTML page and (3) show a summary of the forms on that page, including field names and input types. (4) We then use the `formfile` function to associate a local file with the `queryfile` FILE input field. Calling `submit()` (5) is equivalent to clicking the SUBMIT button defined in the form. After a short delay, an intermediate page is returned, and we can list the hyperlinks on this page using (6) showlinks(), and assign them to a variable (`links`, a Python list). We can then navigate to the appropriate result page (7) and assign the HTML text of this page to a variable (`out`) (8) for downstream parsing using BeautifulSoup. This type of interactive exploration can be easily expanded into an _inmembrane_ plugin to programmically interface with the web service.
+
+> Figure 5. An example of interfacing with the BOMP ß-barrel outer membrane protein predictor (Berven et al, 2004) web site using _twill_ on the Python interactive commandline. _twill_ essentially behaves like a headless web-browser. Lines with `>>>` denote inputs to the Python interactive command line, while other lines are output from _twill_ (1) First the appropriate commands from the _twill_ library are imported. (2) We navigate to the BOMP website, which silently downloads the HTML page and (3) show a summary of the forms on that page, including field names and input types. (4) We then use the `formfile` function to associate a local file with the `queryfile` FILE input field. Calling `submit()` (5) is equivalent to clicking the SUBMIT button defined in the form. After a short delay, an intermediate page is returned, and we can list the hyperlinks on this page using (6) showlinks(), and assign them to a variable (`links`, a Python list). We can then navigate to the appropriate result page (7) and assign the HTML text of this page to a variable (`out`) (8) for downstream parsing using BeautifulSoup. This type of interactive exploration can be easily expanded into an _inmembrane_ plugin to programmically interface with the web service.
 
 ***********
 
@@ -305,49 +319,50 @@ Agnieszka S. Juncker, Hanni Willenbrock, Gunnar Von Heijne, Søren Brunak, Henri
 
 Anders Krogh, Björn Larsson, Gunnar von Heijne and Erik L. L. Sonnhammer (2001) Predicting Transmembrane Protein Topology with a Hidden Markov Model: Application to Complete Genomes. __J. Mol. Biol.__ 305:567-580. <http://dx.doi.org/10.1006/jmbi.2000.4315>
 
-Bateman, A., Bycroft, M., The structure of a LysM domain from E. coli membrane-bound lytic murein transglycosylase D (MltD). __J. Mol. Biol.__ 2000, 299, 1113–1119. <http://dx.doi.org/10.1006/jmbi.2000.3778>
+Bateman, A., Bycroft, M., (2000) The structure of a LysM domain from E. coli membrane-bound lytic murein transglycosylase D (MltD). __J. Mol. Biol.__ 299:1113–1119. <http://dx.doi.org/10.1006/jmbi.2000.3778>
 
 Barinov A, Loux V, Hammani A, Nicolas P, Langella P, et al. (2009) Prediction of surface exposed proteins in Streptococcus pyogenes, with a potential application to other Gram-positive bacteria. __Proteomics__ 9: 61-73. <http://dx.doi.org/10.1002/pmic.200800195>
 
 Bassi S (2007) A Primer on Python for Life Science Researchers. __PLoS Comput Biol__ 3(11): e199. <http://dx.doi.org/10.1371/journal.pcbi.0030199>
 
-﻿Berven FS, Flikka K, Jensen HB, Eidhammer I (2004) BOMP: a program to predict integral beta-barrel outer membrane proteins encoded within genomes of Gram-negative bacteria. Nucleic acids research 32: W394-9. <http://dx.crossref.org/10.1093/nar/gkh351>
+﻿Berven FS, Flikka K, Jensen HB, Eidhammer I (2004) BOMP: a program to predict integral beta-barrel outer membrane proteins encoded within genomes of Gram-negative bacteria. __Nucleic acids research__ 32: W394-9. <http://dx.crossref.org/10.1093/nar/gkh351>
 
-Billion A., Ghai R., Chakraborty T. and Hain T. (2006) Augur—a computational pipeline for whole genome microbial surface protein prediction and classification. Bioinformatics (2006) 22 (22): 2819-2820.
+Billion A, Ghai R, Chakraborty T, Hain T. (2006) Augur—a computational pipeline for whole genome microbial surface protein prediction and classification. __Bioinformatics__ 22(22):2819-2820.
 
-Boekhorst, J., de Been, M. W., Kleerebezem, M., Siezen, R. J., Genome-wide detection and analysis of cell wall-bound proteins with LPxTG-like sorting motifs. __J. Bacteriol.__ 2005, 187, 4928–4934. <http://dx.doi.org/10.1128/​JB.187.14.4928-4934.2005>
+Boekhorst, J., de Been, M. W., Kleerebezem, M., Siezen, R. J., (2005) Genome-wide detection and analysis of cell wall-bound proteins with LPxTG-like sorting motifs. __J. Bacteriol.__ 187:4928–4934. <http://dx.doi.org/10.1128/​JB.187.14.4928-4934.2005>
 
-Foster, S. J., Cloning, expression, sequence analysis and biochemical characterization of an autolytic amidase of Bacillus subtilis 168 trpC2. __J. Gen. Microbiol.__ 1991, 137, 1987–1998. <http://dx.doi.org/10.1099/00221287-137-8-1987>
+Eddy SR. (2009) A new generation of homology search tools based on probabilistic inference, Genome Informatics. __PNAS__ 205-211. <http://dx.doi.org/10.1142/9781848165632_0019> <http://hmmer.org>
 
-Garrow, A.G., Agnew, A. and Westhead, D.R. TMB-Hunt: An amino acid composition based method to screen proteomes for beta-barrel transmembrane proteins. BMC Bioinformatics, 2005, 6: 56 <http://dx.doi.org/10.1186/1471-2105-6-56>
+Foster, S. J., (1991) Cloning, expression, sequence analysis and biochemical characterization of an autolytic amidase of Bacillus subtilis 168 trpC2. __J. Gen. Microbiol.__ 137:1987–1998. <http://dx.doi.org/10.1099/00221287-137-8-1987>
 
-Gromiha MM, Ahmad S, Suwa M. Neural network-based prediction of transmembrane beta-strand segments in outer membrane proteins. Journal of computational chemistry 2004 Apr;25(5):762-7. <http://dx.doi.org/10.1002/jcc.10386>
+Garrow, A.G., Agnew, A. and Westhead, D.R. (2005) TMB-Hunt: An amino acid composition based method to screen proteomes for beta-barrel transmembrane proteins. BMC Bioinformatics, 6: 56 <http://dx.doi.org/10.1186/1471-2105-6-56>
 
-Janecek, S., Svensson, B., Russell, R. R., Location of repeat elements in glucansucrases of Leuconostoc and Strepto- coccus species. __FEMS Microbiol. Lett.__ 2000, 192, 53–57. <http://dx.doi.org/10.1111/j.1574-6968.2000.tb09358.x>
+Gromiha MM, Ahmad S, Suwa M. (2004) Neural network-based prediction of transmembrane beta-strand segments in outer membrane proteins. __Journal of computational chemistry__ 25(5):762-7. <http://dx.doi.org/10.1002/jcc.10386>
 
-﻿Jones DT. Improving the accuracy of transmembrane protein topology prediction using evolutionary information. __Bioinformatics (Oxford, England)__ 2007 Mar;23(5):538-44. <http://dx.doi.org/10.1093/bioinformatics/btl677>
+Janecek, S., Svensson, B., Russell, R. R., (2000) Location of repeat elements in glucansucrases of Leuconostoc and Strepto- coccus species. __FEMS Microbiol. Lett.__ 192:53–57. <http://dx.doi.org/10.1111/j.1574-6968.2000.tb09358.x>
 
-Jonquieres, R., Bierne, H., Fiedler, F., Gounon, P., Cossart, P., Interaction between the protein InlB of Listeria mono- cytogenes and lipoteichoic acid: A novel mechanism of
-protein association at the surface of Gram-positive bacteria. __Mol.Microbiol.__ 1999, 34, 902–914. <http://dx.doi.org/10.1046/j.1365-2958.1999.01652.x>
+﻿Jones DT. (2007) Improving the accuracy of transmembrane protein topology prediction using evolutionary information. __Bioinformatics (Oxford, England)__ 23(5):538-44. <http://dx.doi.org/10.1093/bioinformatics/btl677>
 
-﻿Masuda K, Matsuyama S-ichi, Tokuda H. Elucidation of the function of lipoprotein-sorting signals that determine membrane localization. __Proceedings of the National Academy of Sciences of the United States of America__ 2002 May;99(11):7390-5. <http://dx.doi.org/10.1073/pnas.112085599>
+Jonquieres, R., Bierne, H., Fiedler, F., Gounon, P., Cossart, P., (1999)  Interaction between the protein InlB of Listeria mono- cytogenes and lipoteichoic acid: A novel mechanism of protein association at the surface of Gram-positive bacteria. __Mol.Microbiol.__ 34:902–914. <http://dx.doi.org/10.1046/j.1365-2958.1999.01652.x>
 
-Mesnage, S., Fontaine, T., Mignot, T., Delepierre, M. et al., Bacterial SLH domain proteins are noncovalently anchored to the cell surface via a conserved mechanism involving wall polysaccharide pyruvylation. __EMBO J.__ 2000, 19, 4473–4484. <http://dx.doi.org/10.1093/emboj/19.17.4473>
+﻿Kahsay RY, Gao G, Liao L. (2005)  An improved hidden Markov model for transmembrane protein detection and topology prediction and its applications to complete genomes. __Bioinformatics__ 21: 1853-1858.
 
-Miaomiao Zhou, Jos Boekhorst, Christof Francke and Roland J Siezen. (2008) LocateP: Genome-scale subcellular-location predictor for bacterial proteins. BMC Bioinformatics 2008, 9:173.
+Masuda K, Matsuyama S-ichi, Tokuda H. (2002) Elucidation of the function of lipoprotein-sorting signals that determine membrane localization. __PNAS__  99(11):7390-5. <http://dx.doi.org/10.1073/pnas.112085599>
 
-﻿Ou Y-YY, Gromiha MMM, Chen S-AA, Suwa M (2008) TMBETADISC-RBF: Discrimination of beta-barrel membrane proteins using RBF networks and PSSM profiles. Computational biology and chemistry. <http//dx.doi.org/10.1016/j.compbiolchem.2008.03.002>
+Mesnage, S., Fontaine, T., Mignot, T., Delepierre, M. et al., (2000) Bacterial SLH domain proteins are noncovalently anchored to the cell surface via a conserved mechanism involving wall polysaccharide pyruvylation. __EMBO J.__ 19, 4473–4484. <http://dx.doi.org/10.1093/emboj/19.17.4473>
+
+Ou Y-YY, Gromiha MMM, Chen S-AA, Suwa M (2008) TMBETADISC-RBF: Discrimination of beta-barrel membrane proteins using RBF networks and PSSM profiles. Computational biology and chemistry. <http//dx.doi.org/10.1016/j.compbiolchem.2008.03.002>
 
 Robel Y. Kahsay1, Guang Gao1 and Li Liao1. An improved hidden Markov model for transmembrane protein detection and topology prediction and its applications to complete genomes (2005) __Bioinformatics__ 21: 1853-1858.
 
-Eddy SR. A new generation of homology search tools based on probabilistic inference, Genome Informatics 2009 - Proceedings of the 20th International Conference. London: Imperial College Press; 2009 p. 205-211. <http://dx.doi.org/10.1142/9781848165632_0019> <http://hmmer.org>
+Rose RW, Brüser T, Kissinger JC, Pohlschröder M. (2002) Adaptation of protein secretion to extremely high salt concentrations by extensive use of the twin arginine translocation pathway. __Mol. Microbiol.__ 5: 943-950 <http://dx.doi.org/10.1046/j.1365-2958.2002.03090.x>
 
-Rose, R.W., T. Brüser,. J. C. Kissinger, and M. Pohlschröder. 2002. Adaptation of protein secretion to extremely high salt concentrations by extensive use of the twin arginine translocation pathway. Mol. Microbiol. 5: 943-950 <http://dx.doi.org/10.1046/j.1365-2958.2002.03090.x>
-
-Thomas Nordahl Petersen, Søren Brunak, Gunnar von Heijne and Henrik Nielsen. Nature Methods, 8:785-786 (2011). <http://dx.doi.org/10.1038/nmeth.1701>
+Petersen TN, Brunak S, von Heijne G, Nielsen H. (2011) __Nature Methods__, 8:785-786. <http://dx.doi.org/10.1038/nmeth.1701>
 
 Waligora, A. J., Hennequin, C., Mullany, P., Bourlioux, P. et al., Characterization of a cell surface protein of Clostridium difficile with adhesive properties. __Infect. Immun.__ 2001, 69, 2144–2153. <http://dx.doi.org/10.1128/​IAI.69.4.2144-2153.2001>
 
-Yu CS, Chen YC, Lu CH, Hwang JK: Prediction of protein subcellular localization. Proteins: Structure, Function and Bioinformatics 2006, 64:643-651.
+Yu CS, Chen YC, Lu CH, Hwang JK. (2006) Prediction of protein subcellular localization. __Proteins: Structure, Function and Bioinformatics__ 64:643-651.
 
 Yu NY, Wagner JR, Laird MR, Melli G, Rey S, Lo R, Dao P, Sahinalp SC, Ester M, Foster LJ, Brinkman FSL (2010) PSORTb 3.0: Improved protein subcellular localization prediction with refined localization subcategories and predictive capabilities for all prokaryotes, __Bioinformatics__ 26(13):1608-1615 <http://dx.doi.org/10.1093/bioinformatics/btq249>
+
+Zhou M, Boekhorst J, Francke C, Siezen RJ. (2008) LocateP: Genome-scale subcellular-location predictor for bacterial proteins. __BMC Bioinformatics__ 2008, 9:173.

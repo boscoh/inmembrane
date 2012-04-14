@@ -102,9 +102,8 @@ def annotate(params, proteins):
        number of each predicted outer loop segment;
   """
 
-  for prot_id in proteins:
-    protein = proteins[prot_id]
-    seq = protein['seq']
+  for seqid in proteins:
+    protein = proteins[seqid]
 
     # initialize the protein data structure
     protein.update({
@@ -115,9 +114,9 @@ def annotate(params, proteins):
     })
 
     # write seq to single fasta file
-    single_fasta = helpers.seqid_to_filename(prot_id) + '.fasta'
+    single_fasta = helpers.seqid_to_filename(seqid) + '.fasta'
     if not os.path.isfile(single_fasta):
-      open(single_fasta, 'w').write(">%s\n%s\n" % (prot_id, seq))
+      helpers.write_proteins_fasta(single_fasta, proteins, [seqid])
 
     memsat_out = single_fasta.replace('fasta', 'memsat')
     helpers.run('%s %s' % (params['memsat3_bin'], single_fasta), memsat_out)
