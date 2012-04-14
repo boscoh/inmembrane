@@ -68,8 +68,11 @@ default_params_str = """{
 #' helix_programs': ['tmhmm', 'memsat3'],
   'barrel_programs': ['bomp', 'tmbeta'],
 # 'barrel_programs': ['bomp', 'tmbeta', 'tmbhunt'],
-  'bomp_cutoff': 1,
-  'tmbhunt_cutoff': 0.5,
+  'bomp_clearly_cutoff': 3, # >= to this, always classify as an OM(barrel)
+  'bomp_maybe_cutoff': 1, # must also have a signal peptide to be OM(barrel)
+  'tmbhunt_clearly_cutoff': 0.95,
+  'tmbhunt_maybe_cutoff': 0.5,
+  'tmbetadisc_rbf_method': 'aadp', # aa, dp, aadp or pssm
   'memsat3_bin': 'runmemsat',
   'hmmsearch3_bin': 'hmmsearch',
   'hmm_profiles_dir': '%(hmm_profiles)s',

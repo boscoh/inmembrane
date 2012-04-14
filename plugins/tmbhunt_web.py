@@ -33,7 +33,7 @@ def annotate(params, proteins, \
   # TODO: automatically split large sets into multiple jobs
   #       TMB-HUNT will only take 10000 seqs at a time
   if len(proteins) >= 10000:
-    log_stderr("# TMB-HUNT(web): error, can't take more than 10,000 sequences.")
+    log_stderr("# ERROR: TMB-HUNT(web): can't take more than 10,000 sequences.")
     return
   
   # set the user-agent so web services can block us if they want ... :/

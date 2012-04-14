@@ -16,7 +16,7 @@ import twill
 from twill.commands import find, formfile, follow, fv, go, show, \
                              showforms, showlinks, submit, agent
 from BeautifulSoup import BeautifulSoup                             
-from helpers import log_stderr, parse_fasta_header
+from helpers import log_stderr, parse_fasta_header, dict_get
 
 def parse_tmbetadisc_output(output, proteins):
   """
@@ -56,6 +56,13 @@ def annotate(params, proteins, \
   Note that the default URL we use it different to the regular form used
   by web browsers, since we need to bypass some AJAX fun.
   """
+  # TODO: automatically split large sets into multiple jobs
+  #       since TMBETADISC seems to not like more than take 
+  #       ~5000 seqs at a time
+  if len(proteins) >= 5000:
+    log_stderr("# ERROR: TMBETADISC-RBF(web): tends to fail with > ~5000 sequences.")
+    return
+  
   # set the user-agent so web services can block us if they want ... :/
   python_version = sys.version.split()[0]
   agent("Python-urllib/%s (twill; inmembrane)" % python_version)
@@ -77,11 +84,25 @@ def annotate(params, proteins, \
   if __DEBUG__: showforms()
   formfile("1", "userfile", params["fasta"])
   fv("1", "format", "file")
-  # TODO: select method
+
+  # set the user defined method
+  method_map = {"aa":"Amino Acid Composition",
+                "dp":"Depipetide Composition",
+                "aadp":"Amino Acid & Depipetide Composition",
+                "pssm":"PSSM"}
+  if dict_get(params, 'tmbetadisc_rbf_method'):
+    try:
+      method = method_map[params['tmbetadisc_rbf_method']]
+    except KeyError:
+      log_stderr("# ERROR: Invalid setting from tmbetadisc_rbf_method. \
+                    Must be set to aa, dp, aadp or pssm.")
+      sys.exit()
+
   #fv("1", "select", "Amino Acid Composition")
   #fv("1", "select", "Depipetide Composition")
-  fv("1", "select", "Amino Acid & Depipetide Composition")
+  #fv("1", "select", "Amino Acid & Depipetide Composition")
   #fv("1", "select", "PSSM")
+  fv("1", "select", method)
   
   submit()
   
