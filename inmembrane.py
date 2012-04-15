@@ -61,25 +61,31 @@ default_params_str = """{
   'csv': '',
   'out_dir': '',
   'protocol': 'gram_pos', # 'gram_neg'
+  
+#### Signal peptide and transmembrane helix prediction
   'signalp4_bin': 'signalp',
   'lipop1_bin': 'LipoP',
   'tmhmm_bin': 'tmhmm',
+  'memsat3_bin': 'runmemsat',
   'helix_programs': ['tmhmm'],
-#' helix_programs': ['tmhmm', 'memsat3'],
-  'barrel_programs': ['bomp', 'tmbeta'],
-# 'barrel_programs': ['bomp', 'tmbeta', 'tmbhunt'],
+# 'helix_programs': ['tmhmm', 'memsat3'],
+  'terminal_exposed_loop_min': 50, # unused in gram_neg protocol
+  'internal_exposed_loop_min': 100, # try 30 for gram_neg
+  
+#### Sequence similarity and motif prediction
+  'hmmsearch3_bin': 'hmmsearch',
+  'hmm_profiles_dir': '%(hmm_profiles)s',
+  'hmm_evalue_max': 0.1,
+  'hmm_score_min': 10,
+  
+#### Outer membrane beta-barrel predictors
+  'barrel_programs': ['bomp', 'tmbetadisc-rbf','tmhunt'],
+# 'barrel_programs': ['bomp', 'tmbetadisc-rbf', 'tmbhunt', 'tmbeta'],
   'bomp_clearly_cutoff': 3, # >= to this, always classify as an OM(barrel)
   'bomp_maybe_cutoff': 1, # must also have a signal peptide to be OM(barrel)
   'tmbhunt_clearly_cutoff': 0.95,
   'tmbhunt_maybe_cutoff': 0.5,
   'tmbetadisc_rbf_method': 'aadp', # aa, dp, aadp or pssm
-  'memsat3_bin': 'runmemsat',
-  'hmmsearch3_bin': 'hmmsearch',
-  'hmm_profiles_dir': '%(hmm_profiles)s',
-  'hmm_evalue_max': 0.1,
-  'hmm_score_min': 10,
-  'terminal_exposed_loop_min': 50, # unused in gram_neg protocol
-  'internal_exposed_loop_min': 100, # try 30 for gram_neg
 }
 """
 

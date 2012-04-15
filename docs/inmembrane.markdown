@@ -76,7 +76,7 @@ motifs and the NLPC_P60 cell wall associated domain (Anantharaman & Aravind, 200
 
 Lipoprotein signals are detected using LipoP (Agnieszka et al 2003), and signal sequences are detected using SignalP (Thomas et al 2011), including detection of signal peptidase cleavage sites.
 
-The prescence and topology of transmembrane segments in helical membrane proteins is predicted using TMHMM v2.0 (Robel et al, 2005) and/or MEMSAT3 (Jones, 2007). Since MEMSAT3 executes a PSI-BLAST search to gather homologous sequences it is considerably slower than TMHMM, and as such is turned off by default.
+The presence and topology of transmembrane segments in helical membrane proteins is predicted using TMHMM v2.0 (Robel et al, 2005) and/or MEMSAT3 (Jones, 2007). Since MEMSAT3 executes a PSI-BLAST search to gather homologous sequences it is considerably slower than TMHMM, and as such is turned off by default.
 
 _inmembrane_ collates the results of each analysis, and using the predicted topology of the intergral membrane proteins detected, predicts potentially surface-exposed loops following the algorithm used by SurfG+ (Figure 3). By default, external terminal regions longer than 50 residues and external loops longer than 100 residues are considered to be potentially surface exposed. These values were previously experimentally derived based on membrane shaving experiements with _S. pyrogenes_ and may need modification to suit other species with different cell wall thickness (Barinov et al, 2009).
 
@@ -109,11 +109,13 @@ _inmembrane_ collates the results of each analysis, and using the predicted topo
 
 ### Gram-negative protocol
 
+In addition to the Gram-positive surface proteins protocol, have also implemented a protocol for collating subcellular localization and inner membrane topology predictions for Gram-negetive bacterial proteomes.
+
 >__TODO__
 
 BOMP, TMB-HUNT, TMBETADISC-RBF, SignalP, TatFind (Rose et al, 2002), LipoP (with additional detection of Asp+2 inner membrane retention signal), TMHMM.
 
-Optionally TMB-HUNT (Garrow et al, 2005) as an additional outer membrane ß-barrel classifier, and TMBETA-NET can be used to predict the number (and location) of transmembrane strands for these outer membrane proteins. These predictors are turned off by default since in practise we found the BOMP classification more reliable, and the TMBETA-NET (Gromiha et al, 2004) strand predictions prone to false positives for multidomain outer membrane proteins containing both a ß-barrel and an additional soluble domain.
+Optionally TMB-HUNT (Garrow et al, 2005) can be used as an additional outer membrane ß-barrel classifier, and TMBETA-NET can be used to predict the number (and location) of transmembrane strands for these outer membrane proteins. These predictors are turned off by default since in practise we found the BOMP classification more reliable, and the TMBETA-NET (Gromiha et al, 2004) strand predictions prone to false positives for multidomain outer membrane proteins containing both a ß-barrel and an additional soluble domain.
 
 
 ### Future protocols
