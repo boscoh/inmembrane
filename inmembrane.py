@@ -79,7 +79,7 @@ default_params_str = """{
   'hmm_score_min': 10,
   
 #### Outer membrane beta-barrel predictors
-  'barrel_programs': ['bomp', 'tmbetadisc-rbf','tmhunt'],
+  'barrel_programs': ['bomp', 'tmbetadisc-rbf','tmbhunt'],
 # 'barrel_programs': ['bomp', 'tmbetadisc-rbf', 'tmbhunt', 'tmbeta'],
   'bomp_clearly_cutoff': 3, # >= to this, always classify as an OM(barrel)
   'bomp_maybe_cutoff': 1, # must also have a signal peptide to be OM(barrel)
