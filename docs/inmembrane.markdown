@@ -109,13 +109,17 @@ _inmembrane_ collates the results of each analysis, and using the predicted topo
 
 ### Gram-negative protocol
 
-In addition to the Gram-positive surface proteins protocol, have also implemented a protocol for collating subcellular localization and inner membrane topology predictions for Gram-negetive bacterial proteomes.
+In addition to the Gram-positive surface proteins protocol, have also implemented a protocol for summarizing subcellular localization and topology predictions for Gram-negative bacterial proteomes. Gram-negative bacteria have both a cytoplasmic (inner) membrane, a periplasmic space, a peptidoglycan layer and an outer membrane decorated in lipopolysaccharide (Figure 1). Membrane proteins integral to the inner membrane contain hydrophobic helical transmembrane segments, analogous to the Gram-positive cytoplasmic membrane, while the proteins embedded in the outer membrane form ß-barrels composed of amphipathic ß-strands. Lipoproteins in Gram-negative bacteria can be associated with the inner or the outer membrane.
 
->__TODO__
+Potential signal sequences of the general (Sec) secretory pathway are predicted using SignalP. Twin-Arginine translocase (Tat) signals are predicted using TatFind (Rose et al, 2002) and a profile HMM built from the Prosite (Sigrist et al 2002) Tat sequence set ([PS51318](http://prosite.expasy.org/PS51318)). Transmembrane helicies and topologies of inner membrane proteins are predicted using TMHMM and optionally with MEMSAT3. As with the Gram-positive protocol, lipoproteins were predicted using LipoP, however the Gram-negative protocol additionally detects the "Asp+2" inner-membrane retention signal (__ref__) to differentiate between lipoproteins transported to the outer membrane (`LIPOPROTEIN(OM)`) and those retained on the periplasmic side of the inner membrane (`LIPOPROTEIN(IM)`). 
 
-BOMP, TMB-HUNT, TMBETADISC-RBF, SignalP, TatFind (Rose et al, 2002), LipoP (with additional detection of Asp+2 inner membrane retention signal), TMHMM.
+The inner integral membrane protein topology is analysed using the same 'potentially surface exposed' loops algorithm as used in the Gram-positive protocol, however in this case sequences are classified as `IM`, `IM(cyto)`, `IM(peri)` and `IM(cyto+peri)` to indicate proteins with long cytoplasmic and/or periplasmic loops or domains. Large periplasmic domains may be accessible to protease in shaving experiments where the outer membrane has been disrupted, such as in spheroplasts generated using outer membrane permeabilization agents. Unlike the Gram-positive plasma membrane, the Gram-negative inner membrane is not decorated with LPS and as such periplasmic loops and domains of intergral membrane proteins are expected to be more easily accessed by protease once the outer membrane is permeabilized. We have chosen a length of 30 residues as a conservative threshold (the `internal_exposed_loop_min` setting) for annotating cytoplasmic (`+cyto`) and periplasmic (`+peri`) loops or domains. This should be modified as required to suit the purpose of the user.
 
-Optionally TMB-HUNT (Garrow et al, 2005) can be used as an additional outer membrane ß-barrel classifier, and TMBETA-NET can be used to predict the number (and location) of transmembrane strands for these outer membrane proteins. These predictors are turned off by default since in practise we found the BOMP classification more reliable, and the TMBETA-NET (Gromiha et al, 2004) strand predictions prone to false positives for multidomain outer membrane proteins containing both a ß-barrel and an additional soluble domain.
+Outer membrane ß-barrel proteins are predicted using the BOMP (Berven et al, 2004), TMB-HUNT (Garrow et al, 2005) and TMBETADISC-RBF (Ou et al, 2008) web services. By default, high scoring sequences that are more likely to be true-positives are annotated as `OM(barrel)` and are not strictly required to have a predicted signal sequence (BOMP score >= 3 and TMBHUNT probability >= 0.95). Lower scoring sequences (1 < BOMP score >= 2 and 0.5 < TMBHUNT probability >= 0.94, all TMBETADISC-RBF positive predictions) must contain a predicted signal sequence to be annotated as an outer membrane barrel.
+
+We have also implemented an interface to TMBETA-NET (Gromiha et al, 2004) which can be used to annotate the predicted number (and location) of membrane spanning strands for outer membrane ß-barrels, however this method is disabled by default since it is prone to false positives for multidomain proteins where both a membrane ß-barrel and an additional soluble domain are present (Bagos et al 2005).
+
+Proteins containing a predicted N-terminal Sec or Tat signal sequence without internal transmembrane segments or a ß-barrel classification are annotated as `PERIPLASMIC/SECRETED`. If no membrane localization or signal sequence is detected, the protein is annotated at `CYTOPLASMIC`. Currently, the protocol does not explicitly detect localization for some secrected proteins without a signal sequence, such as those that contain Type 3 secretion signals or flagellar and pilus components.
 
 
 ### Future protocols
@@ -320,6 +324,8 @@ Any restrictions to use by non-academics: Use of _inmembrane_ itself is unrestri
 Agnieszka S. Juncker, Hanni Willenbrock, Gunnar Von Heijne, Søren Brunak, Henrik Nielsen, And Anders Krogh. (2003) Prediction of lipoprotein signal peptides in Gram-negative bacteria. __Protein Science__ 12:1652–1662. <http://dx.doi.org/10.1110/ps.0303703>
 
 Anders Krogh, Björn Larsson, Gunnar von Heijne and Erik L. L. Sonnhammer (2001) Predicting Transmembrane Protein Topology with a Hidden Markov Model: Application to Complete Genomes. __J. Mol. Biol.__ 305:567-580. <http://dx.doi.org/10.1006/jmbi.2000.4315>
+﻿
+Bagos PG, Liakopoulos TD, Hamodrakas SJ (2005) Evaluation of methods for predicting the topology of beta-barrel outer membrane proteins and a consensus prediction method. BMC bioinformatics 6: 7. <http://dx.doi.org/10.1186/1471-2105-6-7>.
 
 Bateman, A., Bycroft, M., (2000) The structure of a LysM domain from E. coli membrane-bound lytic murein transglycosylase D (MltD). __J. Mol. Biol.__ 299:1113–1119. <http://dx.doi.org/10.1006/jmbi.2000.3778>
 
@@ -355,11 +361,13 @@ Mesnage, S., Fontaine, T., Mignot, T., Delepierre, M. et al., (2000) Bacterial S
 
 Ou Y-YY, Gromiha MMM, Chen S-AA, Suwa M (2008) TMBETADISC-RBF: Discrimination of beta-barrel membrane proteins using RBF networks and PSSM profiles. Computational biology and chemistry. <http//dx.doi.org/10.1016/j.compbiolchem.2008.03.002>
 
+Petersen TN, Brunak S, von Heijne G, Nielsen H. (2011) __Nature Methods__, 8:785-786. <http://dx.doi.org/10.1038/nmeth.1701>
+
 Robel Y. Kahsay1, Guang Gao1 and Li Liao1. An improved hidden Markov model for transmembrane protein detection and topology prediction and its applications to complete genomes (2005) __Bioinformatics__ 21: 1853-1858.
 
 Rose RW, Brüser T, Kissinger JC, Pohlschröder M. (2002) Adaptation of protein secretion to extremely high salt concentrations by extensive use of the twin arginine translocation pathway. __Mol. Microbiol.__ 5: 943-950 <http://dx.doi.org/10.1046/j.1365-2958.2002.03090.x>
 
-Petersen TN, Brunak S, von Heijne G, Nielsen H. (2011) __Nature Methods__, 8:785-786. <http://dx.doi.org/10.1038/nmeth.1701>
+﻿Sigrist CJ a, Cerutti L, Hulo N, Gattiker A, Falquet L, et al. (2002) PROSITE: a documented database using patterns and profiles as motif descriptors. Briefings in bioinformatics 3: 265-74. <http://dx.doi.org/10.1093/bib/3.3.265>
 
 Waligora, A. J., Hennequin, C., Mullany, P., Bourlioux, P. et al., Characterization of a cell surface protein of Clostridium difficile with adhesive properties. __Infect. Immun.__ 2001, 69, 2144–2153. <http://dx.doi.org/10.1128/​IAI.69.4.2144-2153.2001>
 
