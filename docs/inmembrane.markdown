@@ -132,21 +132,21 @@ __inmembrane__ is designed such that new workflows for annotation of membrane pr
 ### Public Open Source Repository
 Perhaps the single most important step in improving code is to distribute it on a publically available open-source repository. We believe that the use of a dedicated repository provides many advantages over the typical strategy of hosting software on an academic server. For _inmembrane_, we chose to host the source code on Github, which provides excellent code-browsing facility, code history, download links, and robust well-defined URL links. Github provides excellent usage statistics to measure the impact of the software, which obviates the need for the dreaded login and registration pages.
 
-Most importantly, storing the code in a well-supported repository with a clear business model means the source code will remain accessible in the long term, something that historically most academic labs have shown they cannot provide. If you were to come across an abandonned project on Github, it is trivial to 'fork' the project, producing your own duplicated copy of the code which can be changed and improved. Rather than using a hybrid academic/commercial license as is common practise for bioinformatic packages, we have applied a liberal BSD license to _inmembrane_ to enable the widest possible resuse. 
+Most importantly, storing the code in a well-supported repository with a clear business model means the source code is likely to remain accessible in the long term, something that historically many academic labs have shown they cannot provide (Veretnik et al, 2008). If you were to come across an abandoned project on Github, it is trivial to 'fork' the project, producing your own duplicated copy of the code which can be changed and improved. To this end, we have applied a liberal BSD license to _inmembrane_ to enable the widest possible resuse.
 
 ### Program setup and workflow
 
-The heart of _inmembrane_ is simple: it takes FASTA sequences, sequentially runs the sequences through a number of sequence analysis programs (HMMER, LipoP, SignalP, TMHMM and optionally MEMSAT3), and generates the results in a text output. The bulk of the computation applied by _inmembrane_ itself lies in the parsing of the text output of the external programs and the post-processing business logic.
+The heart of _inmembrane_ is simple: it takes FASTA sequences, sequentially provides them as input to a number of external sequence analysis programs, processes their output and provides the combined annotations as plain text output. The bulk of the computation applied by _inmembrane_ itself lies in the parsing of the text output of the external programs and the post-processing business logic.
 
 As _inmembrane_ integrates the output of a large number of external dependencies, there are many potential points of failure. As such, _inmembrane_ saves all intermediate output into a results folder, and a comprehensive set of unit tests is provided to help diagnose issues with dependencies. Unfortunately, as some of the dependent executables of _inmembrane_ are only available on Linux, the full operation of _inmembrane_ is currently restricted to the Linux platform.
 
-In many bioinformatic programs, configuration information is dispersed throughout the header regions of multiple scripts and/or stored in environment variables, and users are asked to search through the program and modify the source code. While convenient for the original programmer, this can be frustrating and confusing even for expert users. A far better model is to isolate the configuration concerns to one clear place with sensible defaults. Following this model, _inmembrane_ reads configuration information from an explicit configuration file `inmembrane.config`, where a default version is auto-generated if it is not initally found.
+It is not uncommon for scientific software packages disperse configuration information throughout the header regions of multiple scripts and/or shell environment variables, and users are asked to search through the program and modify the source code. While convenient for the original programmer, this can be frustrating and confusing even for expert users. A far better model is to isolate the configuration concerns to one clear place with sensible defaults. Following this model, _inmembrane_ reads configuration information from an explicit configuration file `inmembrane.config`, where a default version is auto-generated if it is not initally found.
 
-Since the configuration file for _inmembrane_ is itself a Python dictionary, users can write a short Python script that incorporates a specific configuration dictionary and execute _inmembrane_ directly. This provides a convenient record of each individual analysis, as well as a file that can be executed through a file-manager by double-clicking (an example is provided in the script `run_example.py`).
+Since the configuration file for _inmembrane_ is itself a Python dictionary, expert users can write a short Python script that incorporates a specific configuration dictionary and execute _inmembrane_ directly. This provides a convenient record of each individual analysis, as well as a file that can be executed through a file-manager by double-clicking (an example is provided in the script `run_example.py`).
 
 ### Scripting Languages 
 
-The virtues of Python as a language for solving problems in life science research have been previously recognized (Bassi, 2007). One potential downside of Python is it's slower execution speed for computationally intensive tasks when compared with compiled languages or Java. Since _inmembrane_ delegates most of the computationally intensive tasks to external programs, the wrapping, text parsing and analysis code in Python does not become a bottleneck in the overall processing speed.
+The virtues of Python as a language for solving problems in life science research have been previously recognized (Bassi, 2007). One potential downside of Python is it's slower execution speed for computationally intensive tasks when compared with compiled languages, or just-in-time compiled languages such as Java. Since _inmembrane_ delegates most of the computationally intensive tasks to external programs, the wrapping, text parsing and analysis code in Python does not become a bottleneck in the overall processing speed.
 
 Programs written in Java often follow an object-oriented programming (OOP) approach. Although OOP provides advantages when architecting large enterprise systems, it's overuse for small projects can be a disadvantage. In the recommended Enterprise Java style of programming used in _SurfG+_, objects are created through several layers of abstract classes where each field in an object needs to be explicitly specified. To change a field in a data structure, there are at least 6 places in 3 different files where the code that needs to be changed, which severely restricts the ease of modification for those unfamiliar with the code base. Whilst this level of hierarchy is useful in programs that have highly interdependent data-structures, this is not the case for the bioinformatic analysis here and adds otherwise unneeded levels of complexity.
 
@@ -156,7 +156,7 @@ Using a modern scripting language such as Python results in cleaner code, where 
 
 In _inmembrane_, the standard Python dictionary is used to provide a flexible way to represent data and allow extremely simple parsing code to be written. The Python 'dictionary', which is conceptually similar to a 'hash table' or 'hash map' in other languages, consists of a set of key-value pairs, where keys and values can be any type of data structure - strings, integers, floats, or even other dictionaries. 
 
-The main program data in _inmembrane_ is represented with a flat dictionary called `protein`, indexed by sequence identifers. Let's say our FASTA file contains the _Streptococcus pyogenes_ C5a peptidase sequence with the ID `'C5AP_STRPY'`. The properties of `C5AP_STRPY` would then be found in `protein['C5AP_STRPY']`, which is itself a dictionary. `protein['C5AP_STRPY']` contains any arbitary number of different properties, also accessed as key-value pairs. For instance, the sequence length of the `'C5AP_STRPY'` sequence would be stored in `protein['C5AP_STRPY']['sequence_length']`. This data structure can capture the results of most basic sequence analyses, where new properties are added to `protein` on the fly. The use of a dynamic flat dictionary avoids much of the boilerplate code involved with an OOP style programming.
+The core data structure used by _inmembrane_ is a flat Python dictionary called `proteins`, indexed by sequence identifers. Let's say our FASTA file contains the _Streptococcus pyogenes_ C5a peptidase sequence with the ID `'C5AP_STRPY'`. The properties of `C5AP_STRPY` would then be found in `proteins['C5AP_STRPY']`, which is itself a dictionary. `protein['C5AP_STRPY']` contains any arbitary number of different properties, also accessed as key-value pairs. For instance, the sequence length of the `'C5AP_STRPY'` sequence would be stored in `proteins['C5AP_STRPY']['sequence_length']`. This data structure can capture the results of most basic sequence analyses, where new properties are added to `protein` on the fly. The use of a dynamic flat dictionary avoids much of the boilerplate code involved with an OOP style programming.
 
 If we use a dictionary to represent our data structure, then the main work in _inmembrane_ of running other programs and processing their text output can be encapsulated into a simple function. For example with _SignalP_, we define a function `signalp.annotate(params, protein)` which takes the main protein data structure as input. The function runs the external SignalP binary, and then parses the text output. Text processing is very easy to write in Python and the extracting the minimum information required by our protocol from _SignalP_ output can be achieved with around 15 lines of code (Figure 4). 
 
@@ -172,7 +172,7 @@ If we use a dictionary to represent our data structure, then the main work in _i
       cmd = '%(signalp4_bin)s -t %(signalp4_organism)s  %(fasta)s' % \
                  params
       helpers.run(cmd, signalp4_out)
-
+      
       for line in open(signalp4_out):
         if line.startswith("#"):
           continue
@@ -191,13 +191,13 @@ If we use a dictionary to represent our data structure, then the main work in _i
 
 As `signalp.annotate` cycles through the text output of _SignalP_, then for each protein, if a secretion signal is found, a new property is added: `protein['C5AP_STRPY']['is_signalp'] = True`. 
 
-We can thus abstract the main program loop as running a series of functions of the generic form `program.annotate(params, protein)`. This provides a simple API to extend new modules by simply adding new functions that annotates the `protein` dictionary. 
+We can thus abstract the main program loop as running a series of functions of the generic form `program.annotate(params, protein)`. This simple plugin API allows _inmembrane_ to be extended with new analysis modules that annotate the `protein` dictionary.
 
 Another example of cleaner code through dynamic programming is in the _HMMER_ peptide motif matching. Instead of hard-coding the sequence profiles search as in _SurfG+_, _inmembrane_ dynamically searches the `hmm_profiles_dir` directory for profiles to search against. Conveniently, new profiles can then be processed by simply dropping them into this directory.
 
 ### Tests with Gram-positive bacteria
 
-The field of bioinformatics changes quickly, and in the few years between the release of SurfG+, some of the software used in SurfG+ is no longer readily available. As a result we could not use the same version of the binaries used in SurfG+. For instance _TMMOD_ is no longer released as a binary and SignalP has progressed to Version 4.0. Nevertheless, _inmembrane_ produces comparable results to SurfG+ for the 4 bacterial genomes orginally tested (Table 1). This can also be compared to PSORTb 3.0 classifcation of the organisms (Table 2).
+The field of bioinformatics changes quickly, and in the few years since the release of SurfG+, some of it's dependencies have become no longer readily available. As a result we could not use the same version of the binaries used in SurfG+. For instance _TMMOD_ is no longer released as a binary and SignalP has progressed to Version 4.0. Nevertheless, _inmembrane_ produces comparable results to SurfG+ for the 4 bacterial genomes orginally tested (Table 1). This can also be compared to PSORTb 3.0 classifcation of the organisms (Table 2).
 
 ***********
 
@@ -367,7 +367,9 @@ Robel Y. Kahsay1, Guang Gao1 and Li Liao1. An improved hidden Markov model for t
 
 Rose RW, Brüser T, Kissinger JC, Pohlschröder M. (2002) Adaptation of protein secretion to extremely high salt concentrations by extensive use of the twin arginine translocation pathway. __Mol. Microbiol.__ 5: 943-950 <http://dx.doi.org/10.1046/j.1365-2958.2002.03090.x>
 
-﻿Sigrist CJ a, Cerutti L, Hulo N, Gattiker A, Falquet L, et al. (2002) PROSITE: a documented database using patterns and profiles as motif descriptors. Briefings in bioinformatics 3: 265-74. <http://dx.doi.org/10.1093/bib/3.3.265>
+Sigrist CJ a, Cerutti L, Hulo N, Gattiker A, Falquet L, et al. (2002) PROSITE: a documented database using patterns and profiles as motif descriptors. Briefings in bioinformatics 3: 265-74. <http://dx.doi.org/10.1093/bib/3.3.265>
+
+Veretnik S, Fink JL, Bourne PE: Computational biology resources lack persistence and usability. PLoS computational biology 2008, 4:e1000136. <http://dx.doi.org/10.1371/journal.pcbi.1000136>
 
 Waligora, A. J., Hennequin, C., Mullany, P., Bourlioux, P. et al., Characterization of a cell surface protein of Clostridium difficile with adhesive properties. __Infect. Immun.__ 2001, 69, 2144–2153. <http://dx.doi.org/10.1128/​IAI.69.4.2144-2153.2001>
 
