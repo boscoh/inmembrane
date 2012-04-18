@@ -113,7 +113,6 @@ def annotate(params, proteins, \
     if l.find("TMBETADISC-RBF-action.php?UniqueName=") != -1:
       result_url = l.split("'")[1]
 
-  # TODO: some sleep in here
   time.sleep(5)
   
   go(result_url)
