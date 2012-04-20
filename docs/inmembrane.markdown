@@ -197,28 +197,26 @@ Another example of cleaner code through dynamic programming is in the _HMMER_ pe
 
 ### Tests with Gram-positive bacteria
 
-The field of bioinformatics changes quickly, and in the few years since the release of SurfG+, some of it's dependencies have become no longer readily available. As a result we could not use the same version of the binaries used in SurfG+. For instance _TMMOD_ is no longer released as a binary and SignalP has progressed to Version 4.0. Nevertheless, _inmembrane_ produces comparable results to SurfG+ for the 4 bacterial genomes orginally tested (Table 1). This can also be compared to PSORTb 3.0 classifcation of the organisms (Table 2).
+The field of bioinformatics changes quickly, and in the few years since the release of SurfG+, some of it's dependencies have become no longer readily available. As a result we could not use the same version of the binaries used in SurfG+. For instance _TMMOD_ is no longer released as a binary and SignalP has progressed to Version 4.0. Nevertheless, _inmembrane_ produces comparable results to SurfG+ for the 4 bacterial genomes orginally tested (Table 1). This can also be compared to PSORTb 3.0 classification for the same organisms (Table 2).
 
 ***********
 
->__TODO__: Update this table to reflect slightly different numbers due to handling of N-terminal chops.
-
 <pre>
-             S.pyogenes L.acidophilus L.johnsonii   L.gasseri  L.bulgaricus
-Accession    AE004092    CP000033      AE017198      CP000413    CR954253
-Program       S    i       S   i         S   i        S   i       S   i
-Cytoplasmic  1243 1234   1290 1280     1248 1234    1262 1240   1132 1119                         
-Membrane      236 239     315 332       357 358      298 303     244 264                          
-PSE           140 176     169 189       176 204      157 189     116 138                           
-Secreted       78 47       88 61         40 25        38 23       70 41                    
-Total        1697 1696   1862 1862     1821 1821    1755 1755   1562 1562
+                    S.pyogenes L.acidophilus L.johnsonii   L.gasseri  L.bulgaricus
+Accession           AE004092    CP000033      AE017198      CP000413    CR954253
+Program              S    i      S    i        S    i       S     i      S     i
+CYTOPLASM(non-PSE)	1243 1234   1290 1280     1248 1234    1262  1240   1132  1119
+MEMBRANE(non-PSE)	 236  238    315  329      357  355    298    302    244   261
+PSE(total)     	     140  172    169  189      176  203    157    188    116   137
+SECRETED       	      78   52     88   64       40   29     38     25     70    45
+Total               1697 1696   1862 1862     1821 1821    1755  1755   1562  1562
 
 Columns labelled 'S' are _SurfG+_ results and 'i' are _inmembrane_ results.
 Some _inmembrane_ subclasses have been combined to directly compare with _SurfG+_ 
-(i.e. PSE = PSE-Membrane + PSE-Cellwall + PSE-Lipoprotein)
+(i.e. PSE(total) = PSE-Membrane + PSE-Cellwall + PSE-Lipoprotein)
 </pre>
 
-> Table 1. Comparison of _inmembrane_ results with _SurfG+_
+> Table 1. Comparison of _inmembrane_ Gram-positive protocol results with _SurfG+_
 
 ***********
 
@@ -226,6 +224,7 @@ Some _inmembrane_ subclasses have been combined to directly compare with _SurfG+
 
 <pre>
                S.pyogenes L.acidophilus L.johnsonii L.gasseri L.bulgaricus
+Accession       AE004092   CP000033      AE017198    CP000413  CR954253
 Cellwall            24          46           26          27         19
 Cytoplasmic         884         855          826         804        743
 Cytopl. Membrane    432         519          548         489        440
@@ -235,7 +234,7 @@ Unknown/multiple    5           8            11          3          5
 Total               1696        1862         1821        1755       1529
 </pre>
 
-> Table 2. _PSORTb 3.0_ analysis of the genomes used in the _SurfG+_ analysis.
+> Table 2. _PSORTb 3.0_ analysis of the genomes in Table 1 analysis, derived from PSORTdb. Direct comparison of classifications is difficult since _PSORTb_, _SurfG+_ and _inmembrane_ each annotate with different classes (for instance, the basic _PSORTb_ classification does not differentate between lipoproteins and cytoplasmic membrane proteins, and _SurfG+_ and _inmembrane_ do not include an "Unknown", but instead classify sequences without any detected features as cytoplasmic by default).
 
 **********
 
