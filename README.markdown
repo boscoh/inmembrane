@@ -51,6 +51,7 @@ The output of _inmembrane_ `gram_pos` protocol consists of four columns of outpu
 
 Here's an example:
 
+```
   SPy_0008  CYTOPLASM(non-PSE)  .                         SPy_0008 from AE004092
   SPy_0009  CYTOPLASM(non-PSE)  .                         SPy_0009 from AE004092
   SPy_0010  PSE-Membrane        tmhmm(1)                  SPy_0010 from AE004092
@@ -59,6 +60,7 @@ Here's an example:
   SPy_0015  PSE-Membrane        tmhmm(2)                  SPy_0015 from AE004092
   SPy_0016  MEMBRANE(non-PSE)   tmhmm(12)                 SPy_0016 from AE004092
   SPy_0019  SECRETED            signalp                   SPy_0019 from AE004092
+```
 
 - the first column is the SeqID which is the first token in the identifier line of the sequence in the FASTA file
 
