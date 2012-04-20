@@ -13,7 +13,7 @@ The editable parameters of _inmembrane_ are found in `inmembrane.config`, which 
 - the path location of the binaries for SignalP, LipoP, TMHMM, HMMSEARCH, and MEMSAT. This can be the full path, or just the binary name if it is on the system path environment. Use `which` to check. 
 - 'protocol' to indicate which analysis you want to use. Currently, we support:
     - `gram_pos` the analysis of surface-exposed proteins of Gram+ bacteria; 
-    - `gram_neg` the sub-cellular location of Gram- bacteria.
+    - `gram_neg` annotation of subcellular localization and inner membrane topology classification for Gram- bacteria
 - 'hmm_profiles_dir': the location of the HMMER profiles for any HMM peptide sequence motifs
 -  for HMMER, you can set the cutoffs for significance, the E-value 'hmm_evalue_max', and the score 'hmm_score_min'
 - the shortest length of a loop that sticks out of the peptidoglycan layer of a Gram+ bacteria. The SurfG+ determined this to be 50 amino acids for terminal loops, and twice that for internal loops, 100
@@ -47,26 +47,30 @@ or simply double-click `run_example.py` in a file-manager. You can change this b
 
 ## Output format
 
-The output of _inembrane_ consists of four columns of output. This is printed out on standard out and in a CSV file, which can be opened in EXCEL. The standard text output can be parsed using space delimiters (empty fields in the third column are indicated with a "."). Logging information are prefaced by a'#' character.
+The output of _inmembrane_ `gram_pos` protocol consists of four columns of output. This is printed to stdout and written as a CSV file, which can be opened in spreadsheet software such as EXCEL. The standard text output can be parsed using space delimiters (empty fields in the third column are indicated with a "."). Logging information are prefaced by a '#' character, and is sent to stderr.
 
 Here's an example:
 
-    SPy_0008   CYTOPLASM     .                   "SPy_0008 from AE004092"
-    SPy_0009   CYTOPLASM     .                   "SPy_0009 from AE004092"
-    SPy_0010   PSE           tmhmm(1)            "SPy_0010 from AE004092"
-    SPy_0012   PSE           hmm(GW1);signalp    "SPy_0012 from AE004092"
+  SPy_0008  CYTOPLASM(non-PSE)  .                         SPy_0008 from AE004092
+  SPy_0009  CYTOPLASM(non-PSE)  .                         SPy_0009 from AE004092
+  SPy_0010  PSE-Membrane        tmhmm(1)                  SPy_0010 from AE004092
+  SPy_0012  PSE-Cellwall        hmm(GW2|GW3|GW1);signalp  SPy_0012 from AE004092
+  SPy_0013  PSE-Membrane        tmhmm(1)                  SPy_0013 from AE004092
+  SPy_0015  PSE-Membrane        tmhmm(2)                  SPy_0015 from AE004092
+  SPy_0016  MEMBRANE(non-PSE)   tmhmm(12)                 SPy_0016 from AE004092
+  SPy_0019  SECRETED            signalp                   SPy_0019 from AE004092
 
 - the first column is the SeqID which is the first token in the identifier line of the sequence in the FASTA file
 
-- the second column is the prediction, it is CYTOPLASM, MEMBRANE, PSE, or SECRETED. A value of PSE (Potentially Surface Exposed) means that _inmembrane_ has predicted the protein to be surface exposed and will be found in a membrane-shaving experiment.
+- the second column is the prediction, it is CYTOPLASM(non-PSE), MEMBRANE(non-PSE), PSE-Cellwall, PSE-Membrane, PSE-Lipoprotein or SECRETED. Any 'PSE' (Potentially Surface Exposed) annotation means that based on the predicted topology, the protein is likely to be surface exposed and will be protease accessible in a membrane-shaving experiment.
 
-- the third line is a summary of features picked up by the other program:
-    - tmhmm(2) means 2 transmembrane helices were found
-    - hmm(GW1) means the GW1 motif was found in HMMER
-    - signalp means a secretion signal was found
-    - lipop means a Sp II secretion signal found with an appropriate CYS residue at the cleavage site, which will be attached to a phospholipid in the membrane
+- the third line is a summary of features detected by external tools:
+    - tmhmm(2) means 2 transmembrane helices were found by TMHMM
+    - hmm(GW2|GW3|GW1) means that the GW1, GW2 and GW3 motifs were found by HMMER hmmsearch
+    - signalp means a secretion signal was found SignalP
+    - lipop means a Sp II secretion signal found by LipoP with an appropriate CYS residue at the cleavage site, which will be attached to a phospholipid in the membrane
 
-- the rest of the line gives the full identifier of the sequence in the FASTA file. This is enclosed by quotation marks "" in the CSV file.
+- the rest of the line gives the full identifier of the sequence in the FASTA file.
 
 
 ## Installing dependencies
