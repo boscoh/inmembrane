@@ -74,40 +74,51 @@ def post_process_protein(params, protein):
   is_tatfind = dict_get(protein, 'is_tatfind')
   is_lipop = dict_get(protein, 'is_lipop')
   
-  # in terms of most sublocalization logic, a Tat signal is essentially the 
-  # same as a Sec (signalp) signal. We use is_signal_pept to denote that 
-  # either is present.
-  is_signal_pept = False
+  # in terms of most sublocalization logic, a Tat signal is similar to a 
+  # Sec (signalp) signal. We use has_signal_pept to denote that either 
+  # is present.
+  has_signal_pept = False
   if is_signalp or is_tatfind or \
      ("Tat_PS51318" in dict_get(protein, 'hmmsearch')):
-    is_signal_pept = True
+    has_signal_pept = True
   
-  # first just annotate barrel predictors
-  barrel_detected = False
-  if (dict_get(protein, 'bomp') >= params['bomp_cutoff']):
-    details += ['bomp']
-    barrel_detected = True
-  if dict_get(protein, 'tmbhunt_prob') >= params['tmbhunt_cutoff']:
-    details += ['tmbhunt']
-    barrel_detected = True
-  if dict_get(protein, 'is_tmbetadisc_rbf') == True:
+  # annotate the barrels - high scoring bomp hits don't require a 
+  # signal peptide, low scoring ones do
+  has_barrel = False
+  bomp_score = dict_get(protein, 'bomp')
+  if (bomp_score >= params['bomp_clearly_cutoff']) or \
+     (has_signal_pept and bomp_score >= params['bomp_maybe_cutoff']):
+    
+    details += ['bomp(%i)' % (bomp_score)]
+    has_barrel = True
+    
+  tmbhunt_prob = dict_get(protein, 'tmbhunt_prob')
+  if (tmbhunt_prob >= params['tmbhunt_clearly_cutoff']) or \
+     (has_signal_pept and tmbhunt_prob >= params['tmbhunt_maybe_cutoff']):
+    details += ['tmbhunt(%.2f)' % (tmbhunt_prob)]
+    has_barrel = True
+    
+  if has_signal_pept and dict_get(protein, 'is_tmbetadisc_rbf') == True:
     details += ['tmbetadisc-rbf']
-    barrel_detected = True
-  
+    has_barrel = True
+    
+  if has_barrel:
+    category = 'OM(barrel)'
+    
   # we only regard the barrel prediction as a true positive
   # if a signal peptide is also present
-  is_barrel = False
-  if is_signal_pept and barrel_detected:
-    category = 'OM(barrel)'
-    is_barrel = True
+#  is_barrel = False
+#  if has_signal_pept and has_barrel: # TODO and num_tms <= 1:
+#    category = 'OM(barrel)'
+#    is_barrel = True
     
   # set number of predicted OM barrel strands in details
-  if is_barrel and \
+  if has_barrel and \
       dict_get(protein, 'tmbeta_strands'):
     num_strands = len(protein['tmbeta_strands'])
     details += ['tmbeta_strands(%i)' % (num_strands)]
   
-  if is_signal_pept and not is_lipop:
+  if has_signal_pept and not is_lipop:
     # we use the SignalP signal peptidase cleavage site for Tat signals 
     chop_nterminal_peptide(protein,  protein['signalp_cleave_position'])
   
@@ -124,24 +135,24 @@ def post_process_protein(params, protein):
   if is_hmm_profile_match:
     details += ["hmm(%s)" % "|".join(protein['hmmsearch'])]
 
-  if has_tm_helix(protein) and not is_barrel:
+  if has_tm_helix(protein) and not has_barrel:
     for program in params['helix_programs']:
       n = len(protein['%s_helices' % program])
-      details += [program + "(%d);" % n]
+      details += [program + "(%d)" % n]
     
     category = "IM"
     if long_in_periplasm(protein):
       category += "+peri"
     if long_in_cytoplasm(protein):
       category += "+cyto"
-  elif not is_barrel:
+  elif not has_barrel:
     if is_lipop:
       if dict_get(protein, 'lipop_im_retention_signal'):
         category = "LIPOPROTEIN(IM)"
       else:
         category = "LIPOPROTEIN(OM)"
       pass
-    elif (is_signal_pept):
+    elif (has_signal_pept):
       category = "PERIPLASMIC/SECRETED"
     else:
       category = "CYTOPLASM"

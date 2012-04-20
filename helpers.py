@@ -102,14 +102,14 @@ def parse_fasta_header(header):
     tokens = header.split('|')
     # "gi|ginumber|gb|accession bla bla" becomes "gi|ginumber"
     seqid = "%s|%s" % (tokens[0], tokens[1].split()[0])
-    desc = tokens[-1:][0].strip()
+    name = tokens[-1:][0].strip()
   # otherwise just split on spaces & hope for the best
   else:
     tokens = header.split()
     seqid = tokens[0]
-    desc = header[0:-1].strip()
+    name = header[0:-1].strip()
   
-  return seqid, desc
+  return seqid, name
   
 
 def seqid_to_filename(seqid):

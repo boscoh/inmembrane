@@ -47,8 +47,8 @@ class TestTmbetadisc_rbf(unittest.TestCase):
       },
     }
 
-    import helpers
-    helpers.print_proteins(self.proteins)
+    #import helpers
+    #helpers.print_proteins(self.proteins)
     
     self.assertEqual(self.proteins, self.expected_output)
 
