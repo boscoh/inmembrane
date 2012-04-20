@@ -107,17 +107,58 @@ _inmembrane_ collates the results of each analysis, and using the predicted topo
 
 *******
 
+### Tests with Gram-positive bacteria
+
+The field of bioinformatics changes quickly, and in the few years since the release of SurfG+, some of it's dependencies have become no longer readily available. As a result we could not use the same version of the binaries used in SurfG+. For instance _TMMOD_ is no longer released as a binary and SignalP has progressed to Version 4.0. Nevertheless, _inmembrane_ produces comparable results to SurfG+ for the 4 bacterial genomes orginally tested (Table 1). This can also be compared to PSORTb 3.0 classification for the same organisms (Table 2).
+
+***********
+
+<pre>
+                    S.pyogenes L.acidophilus L.johnsonii   L.gasseri  L.bulgaricus
+Accession           AE004092    CP000033      AE017198      CP000413    CR954253
+Program              S    i      S    i        S    i       S     i      S     i
+CYTOPLASM(non-PSE)	1243 1234   1290 1280     1248 1234    1262  1240   1132  1119
+MEMBRANE(non-PSE)	 236  238    315  329      357  355    298    302    244   261
+PSE(total)     	     140  172    169  189      176  203    157    188    116   137
+SECRETED       	      78   52     88   64       40   29     38     25     70    45
+Total               1697 1696   1862 1862     1821 1821    1755  1755   1562  1562
+
+Columns labelled 'S' are _SurfG+_ results and 'i' are _inmembrane_ results.
+Some _inmembrane_ subclasses have been combined to directly compare with _SurfG+_ 
+(i.e. PSE(total) = PSE-Membrane + PSE-Cellwall + PSE-Lipoprotein)
+</pre>
+
+> Table 1. Comparison of _inmembrane_ Gram-positive protocol results with _SurfG+_
+
+***********
+
+***********
+
+<pre>
+               S.pyogenes L.acidophilus L.johnsonii L.gasseri L.bulgaricus
+Accession       AE004092   CP000033      AE017198    CP000413  CR954253
+Cellwall            24          46           26          27         19
+Cytoplasmic         884         855          826         804        743
+Cytopl. Membrane    432         519          548         489        440
+Extracellular       28          32           16          13         15
+Unknown             323         402          394         419        307
+Unknown/multiple    5           8            11          3          5
+Total               1696        1862         1821        1755       1529
+</pre>
+
+> Table 2. _PSORTb 3.0_ analysis of the genomes in Table 1 analysis, derived from PSORTdb. Direct comparison of classifications is difficult since _PSORTb_, _SurfG+_ and _inmembrane_ each annotate with different classes (for instance, the basic _PSORTb_ classification does not differentate between lipoproteins and cytoplasmic membrane proteins, and _SurfG+_ and _inmembrane_ do not include an "Unknown", but instead classify sequences without any detected features as cytoplasmic by default).
+
+**********
+
 ### Gram-negative protocol
 
 In addition to the Gram-positive surface protocol, have also implemented a protocol for summarizing subcellular localization and topology predictions for Gram-negative bacterial proteomes. Gram-negative bacteria have both a cytoplasmic (inner) membrane, a periplasmic space, a peptidoglycan layer and an outer membrane decorated in lipopolysaccharide (Figure 1). Membrane proteins integral to the inner membrane contain hydrophobic helical transmembrane segments, analogous to the Gram-positive cytoplasmic membrane, while the proteins embedded in the outer membrane form ß-barrels composed of amphipathic ß-strands. Lipoproteins in Gram-negative bacteria can be associated with the inner or the outer membrane.
 
 Potential signal sequences of the general (Sec) secretory pathway are predicted using SignalP. Twin-Arginine translocase (Tat) signals are predicted using TatFind (Rose et al, 2002) and a profile HMM built from the Prosite (Sigrist et al 2002) Tat sequence set ([PS51318](http://prosite.expasy.org/PS51318)). Transmembrane helicies and topologies of inner membrane proteins are predicted using TMHMM and optionally with MEMSAT3. As with the Gram-positive protocol, lipoproteins were predicted using LipoP, however the Gram-negative protocol additionally detects the "Asp+2" inner-membrane retention signal (__ref__) to differentiate between lipoproteins transported to the outer membrane (`LIPOPROTEIN(OM)`) and those retained on the periplasmic side of the inner membrane (`LIPOPROTEIN(IM)`). 
 
-The topology of integral inner membrane proteins analysed using the same 'potentially surface exposed' loops algorithm used in the Gram-positive protocol, however in this case sequences are classified as `IM`, `IM(cyto)`, `IM(peri)` and `IM(cyto+peri)` to indicate proteins with long cytoplasmic and/or periplasmic loops or domains. Experimentally, large periplasmic domains may be accessible to protease shaving when the outer membrane has been disrupted, such as in spheroplasts generated using outer membrane permeabilization agents. Unlike the Gram-positive plasma membrane, the Gram-negative inner membrane is not decorated with LPS and as such periplasmic loops and domains of intergral membrane proteins are expected to be more easily accessed by protease once the outer membrane is permeabilized. We have chosen a length of 30 residues as a conservative threshold (the `internal_exposed_loop_min` setting) for annotating cytoplasmic (`+cyto`) and periplasmic (`+peri`) loops or domains. This should be modified as required to suit the purpose of the user.
+The topology of integral inner membrane proteins analysed using the same 'potentially surface exposed' loops algorithm as the Gram-positive protocol, however in this case sequences are classified as `IM`, `IM(cyto)`, `IM(peri)` and `IM(cyto+peri)` to indicate proteins with long cytoplasmic and/or periplasmic loops or domains. Experimentally, large periplasmic domains may be accessible to protease shaving when the outer membrane has been disrupted, such as in spheroplasts generated using outer membrane permeabilization agents. Unlike the Gram-positive plasma membrane, the Gram-negative inner membrane is not decorated with LPS and as such periplasmic loops and domains of intergral membrane proteins are expected to be more easily accessed by protease once the outer membrane is permeabilized. We have chosen a length of 30 residues as a conservative threshold (the `internal_exposed_loop_min` setting) for annotating cytoplasmic (`+cyto`) and periplasmic (`+peri`) loops or domains. This should be modified as required to suit the purpose of the user.
 
-Outer membrane ß-barrel proteins are predicted using the BOMP (Berven et al, 2004), TMB-HUNT (Garrow et al, 2005) and TMBETADISC-RBF (Ou et al, 2008) web services. By default, high scoring sequences that are more likely to be true-positives are annotated as `OM(barrel)` and are not strictly required to have a predicted signal sequence (BOMP score >= 3 and TMBHUNT probability >= 0.95). Lower scoring sequences (1 < BOMP score >= 2 and 0.5 < TMBHUNT probability >= 0.94, and all TMBETADISC-RBF positive predictions) must contain a predicted signal sequence to be annotated as an outer membrane barrel.
-
-We have also implemented an interface to TMBETA-NET (Gromiha et al, 2004) which can be used to annotate the predicted number (and location) of membrane spanning strands for outer membrane ß-barrels, however this method is disabled by default since it is prone to false positives for multidomain proteins where both a membrane ß-barrel and an additional soluble domain are present (Bagos et al 2005).
+Outer membrane ß-barrel proteins are predicted using the BOMP (Berven et al, 2004), TMB-HUNT (Garrow et al, 2005) and TMBETADISC-RBF (Ou et al, 2008) web services. By default, high scoring sequences that are more likely to be true-positives are annotated as `OM(barrel)` and are not strictly required to have a predicted signal sequence (BOMP score >= 3 and TMBHUNT probability >= 0.95). Lower scoring sequences (1 < BOMP score >= 2 and 0.5 < TMBHUNT probability >= 0.94, and all TMBETADISC-RBF positive predictions) must contain a predicted signal sequence to be annotated as an outer membrane barrel. We have also implemented an interface to TMBETA-NET (Gromiha et al, 2004) which can be used to annotate the predicted number (and location) of membrane spanning strands for outer membrane ß-barrels, however this method is disabled by default since it is prone to false positives for multidomain proteins where both a membrane ß-barrel and an additional soluble domain are present (Bagos et al 2005).
 
 Proteins containing a predicted N-terminal Sec or Tat signal sequence without internal transmembrane segments or a ß-barrel classification are annotated as `PERIPLASMIC/SECRETED`. If no membrane localization or signal sequence is detected, the protein is annotated at `CYTOPLASMIC`. Currently, the protocol does not explicitly detect localization for some secrected proteins without a signal sequence, such as those that contain Type 3 secretion signals or flagellar and pilus components.
 
@@ -195,48 +236,6 @@ We can thus abstract the main program loop as running a series of functions of t
 
 Another example of cleaner code through dynamic programming is in the _HMMER_ peptide motif matching. Instead of hard-coding the sequence profiles search as in _SurfG+_, _inmembrane_ dynamically searches the `hmm_profiles_dir` directory for profiles to search against. Conveniently, new profiles can then be processed by simply dropping them into this directory.
 
-### Tests with Gram-positive bacteria
-
-The field of bioinformatics changes quickly, and in the few years since the release of SurfG+, some of it's dependencies have become no longer readily available. As a result we could not use the same version of the binaries used in SurfG+. For instance _TMMOD_ is no longer released as a binary and SignalP has progressed to Version 4.0. Nevertheless, _inmembrane_ produces comparable results to SurfG+ for the 4 bacterial genomes orginally tested (Table 1). This can also be compared to PSORTb 3.0 classification for the same organisms (Table 2).
-
-***********
-
-<pre>
-                    S.pyogenes L.acidophilus L.johnsonii   L.gasseri  L.bulgaricus
-Accession           AE004092    CP000033      AE017198      CP000413    CR954253
-Program              S    i      S    i        S    i       S     i      S     i
-CYTOPLASM(non-PSE)	1243 1234   1290 1280     1248 1234    1262  1240   1132  1119
-MEMBRANE(non-PSE)	 236  238    315  329      357  355    298    302    244   261
-PSE(total)     	     140  172    169  189      176  203    157    188    116   137
-SECRETED       	      78   52     88   64       40   29     38     25     70    45
-Total               1697 1696   1862 1862     1821 1821    1755  1755   1562  1562
-
-Columns labelled 'S' are _SurfG+_ results and 'i' are _inmembrane_ results.
-Some _inmembrane_ subclasses have been combined to directly compare with _SurfG+_ 
-(i.e. PSE(total) = PSE-Membrane + PSE-Cellwall + PSE-Lipoprotein)
-</pre>
-
-> Table 1. Comparison of _inmembrane_ Gram-positive protocol results with _SurfG+_
-
-***********
-
-***********
-
-<pre>
-               S.pyogenes L.acidophilus L.johnsonii L.gasseri L.bulgaricus
-Accession       AE004092   CP000033      AE017198    CP000413  CR954253
-Cellwall            24          46           26          27         19
-Cytoplasmic         884         855          826         804        743
-Cytopl. Membrane    432         519          548         489        440
-Extracellular       28          32           16          13         15
-Unknown             323         402          394         419        307
-Unknown/multiple    5           8            11          3          5
-Total               1696        1862         1821        1755       1529
-</pre>
-
-> Table 2. _PSORTb 3.0_ analysis of the genomes in Table 1 analysis, derived from PSORTdb. Direct comparison of classifications is difficult since _PSORTb_, _SurfG+_ and _inmembrane_ each annotate with different classes (for instance, the basic _PSORTb_ classification does not differentate between lipoproteins and cytoplasmic membrane proteins, and _SurfG+_ and _inmembrane_ do not include an "Unknown", but instead classify sequences without any detected features as cytoplasmic by default).
-
-**********
 
 ### Interfacing with web services
 
@@ -293,11 +292,9 @@ Links:
 In it's simplest from, a web service API is essentially an agreement between a service provider and their end-users on a machine readable, predictable and stable interface. Since 'screen scraping' as a method of interfacing with a sequence analysis tool does not use a well defined API with an implicit guarantee of stability, it can be prone to breakage when the format of the job submission or results page is changed, even slightly. While we believe that the approach taken by _twill_ and the robust parsing provided by _BeautifulSoup_ will prevent many upstream changes breaking these wrappers, inevitably breakage will occur. In this case, the simplicity and ease of modifiability of these wrappers then becomes a key feature that allows expert users to fix them if and when it is required.
 
 
-
 # Conclusion
 
-
-_inmembrane_ provides a clean bioinformatic pipeline to analyze proteomes for proteins that are exposed out of the membrane. It has been written in a style of programming intended to enhance readability of the code. It has also been designed to be easily extensible and we sincerely hope that _inmembrane_ will be modified and improved by other researchers. We welcome other researchers to join us on Github.
+_inmembrane_ provides a clean bioinformatic pipeline to analyze proteomes for proteins that are exposed out of the membrane. Testing has shown that the results derived from the _inmembrane_ Gram-positive protocol are comparable to previously published analysis. The _inmembrane_ software has been written in a style of programming intended to enhance readability and extensibility of the code, and we sincerely hope that _inmembrane_ will be modified and improved by other researchers. We welcome other researchers to join us on Github.
 
 
 # Availability and requirements
