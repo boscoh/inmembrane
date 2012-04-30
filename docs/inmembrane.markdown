@@ -19,7 +19,7 @@ A common task in bioinformatics is to integrate the results of protein predictio
 
 *****
 
-![Figure 1. Membrane topologies](images/membrane_topologies.png "Figure 1. Membrane topologies")
+![Figure 1. Membrane topologies](images/membrane_topologies.png?raw=true "Figure 1. Membrane topologies")
 
 > Figure 1. Topologies represented in Gram-negative bacterial inner membrane include (left to right) polytopic transmembrane proteins, monotopic transmembrane proteins and lipoproteins on the periplasmic side of the membrane which are anchored via a lipid moeity covalently attached to the N-terminal cysteine ("CD", where "D" denotes an Asp outer membrane avoidance signal at position 2 (Masuda et al 2002)). The outer membrane also contains lipoproteins, usually on the inner leaflet exposed to the periplasm, however unlike the inner membrane the outer membrane contains ß-barrel membrane proteins ("beta"), some with large extracellular domains exposed on the surface. Akin to the Gram-negative inner membrane, the Gram-positive inner membrane contains mono and polytopic transmembrane proteins and lipoproteins. Gram-positive bacteria also display surface proteins associated covalently or non-covalently with the cell wall peptidoglycan layer via a number of "surface motifs", such as the LPxTG, LysM. Some proteins are also secreted into the extracellular milieu. A subset of Gram-positive bacteria (the Acinetobacterace) have also been shown to contain ß-barrel membrane proteins in their plasma membrane.
 
@@ -64,7 +64,7 @@ _inmembrane_ collates the results of each analysis, and using the predicted topo
 
 ******
 
-![Figure 3. Gram-positive bacteria workflow](images/surfg_workflow.png "Figure 3. Gram-positive bacteria workflow")
+![Figure 3. Gram-positive bacteria workflow](images/surfg_workflow.png?raw=true "Figure 3. Gram-positive bacteria workflow")
 
 > Figure 3. Main logic classifying subcellular localization and potential surface exposure for Gram-positive protein sequences, expressed in Python code. This algorithm was adapted from _SurfG+_. The function `has_surface_exposed_loop` evaluates whether the extracellular loops are sufficifiently long to be exposed out of the peptidoglycan layer. The rule adapted from _SurfG+_ is a minimum length of 50 amino acids for terminal loops, and 100 amino acids for internal loops.
 
@@ -166,7 +166,7 @@ If we use a dictionary to represent our data structure, then the main work in _i
 
 ***********
 
-![Figure 4. Parsing SignalP](images/annotate_signalp.png "Figure 4. Parsing SignalP")
+![Figure 4. Parsing SignalP](images/annotate_signalp.png?raw=true "Figure 4. Parsing SignalP")
 
 > Figure 4. Example of parsing code in the signalp4 plugin. The entire function responsible for processing _SignalP_ output. `helpers` is an _inmembrane_ module with utility functions. 
 
@@ -187,7 +187,7 @@ When writing a wrapper for a new service, commands to interface with a web form 
 
 ***********
 
-![Figure 5. Twill example](images/twill_example.png "Figure 5. Twill example")
+![Figure 5. Twill example](images/twill_example.png?raw=true "Figure 5. Twill example")
 
 > Figure 5. An example of interfacing with the BOMP ß-barrel outer membrane protein predictor (Berven et al, 2004) web site using _twill_ on the Python interactive commandline. _twill_ essentially behaves like a headless web-browser. Lines with `>>>` denote inputs to the Python interactive command line, while other lines are output from _twill_ (1) First the appropriate commands from the _twill_ library are imported. (2) We navigate to the BOMP website, which silently downloads the HTML page and (3) show a summary of the forms on that page, including field names and input types. (4) We then use the `formfile` function to associate a local file with the `queryfile` FILE input field. Calling `submit()` (5) is equivalent to clicking the SUBMIT button defined in the form. After a short delay, an intermediate page is returned, and we can list the hyperlinks on this page using (6) showlinks(), and assign them to a variable (`links`, a Python list). We can then navigate to the appropriate result page (7) and assign the HTML text of this page to a variable (`out`) (8) for downstream parsing using BeautifulSoup. This type of interactive exploration can be easily expanded into an _inmembrane_ plugin to programmically interface with the web service.
 
