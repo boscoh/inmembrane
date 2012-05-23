@@ -40,7 +40,7 @@ _inmembrane_ is primarily designed to be run locally via the command line. The i
 
 ***
 
-![Figure 2](images/output?raw=true "Figure 2. Example output")
+![Figure 2](images/output.png?raw=true "Figure 2. Example output")
 
 > Figure 2. Example of output
 
