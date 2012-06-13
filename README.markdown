@@ -6,7 +6,7 @@ _inmembrane_ is a pipeline for proteome annotation to predict if a protein is ex
 
 Dowload the latest version of _inmembrane_ from the github repository: <https://github.com/boscoh/inmembrane/zipball/master>. 
 
-This package includes tests, examples, data files, docs and a few included libraries ([Beautiful Soup](http://www.crummy.com/software/BeautifulSoup/), [mechanize](http://wwwsearch.sourceforge.net/mechanize) and [twill](http://twill.idyll.org/)).
+This package includes tests, examples, data files, docs and a few included libraries ([Beautiful Soup](http://www.crummy.com/software/BeautifulSoup/), [mechanize](http://wwwsearch.sourceforge.net/mechanize) and [twill](http://twill.idyll.org/)) and [Suds](https://fedorahosted.org/suds/) [(see footnote below) (*)](#python_libraries). 
 
 The editable parameters of _inmembrane_ are found in `inmembrane.config`, which is always located in the same directory as the main script. If no such file exists, a default `inmembrane.config` will be generated. The parameters are: 
 
@@ -24,6 +24,7 @@ We provide a number of unit tests for _inmembrane_:
     python runtest.py
 
 As _inmembrane_ has a lot of dependencies, these tests are really useful in working out if the dependencies are installed in a way that is compatible with _inmembrane_. Since not all the binaries are needed, not all tests (and corresponding dependencies) are required for _inmembrane_ to work.
+
 
 ## Execution
 
@@ -117,6 +118,9 @@ Only one of TMHMM or MEMSAT3 are required, but users that want to compare transm
  - 'datadir' is the the path to the MEMSAT3 data directory )
 
 Note the the 'runmemsat' script refers to PSIPRED v2, but it means MEMSAT3 - PSIPRED is not required.
+
+#### Python libraries
+<a id="python_libraries"></a>(*) We provide a few third party Python libraries ( [Beautiful Soup](http://www.crummy.com/software/BeautifulSoup/), [mechanize](http://wwwsearch.sourceforge.net/mechanize) and [twill](http://twill.idyll.org/)) and [Suds](https://fedorahosted.org/suds/) ) in the inmembrane distribution so there is one less hoop to jump through for installation. If you are an expert user who would, for some reason, like to use your own system copies of these libraries (eg those installed via apt-get or pip install), you can simply rename or delete the approriate library directories in the inmembrane distribution.
 
 ## Modification guide
 
