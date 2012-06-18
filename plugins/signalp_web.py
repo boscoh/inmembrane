@@ -22,8 +22,10 @@ if __DEBUG__:
   logging.getLogger('suds.client').setLevel(logging.DEBUG)
 
 def annotate(params, proteins, \
-             url = 'http://www.cbs.dtu.dk/ws/SignalP4/SignalP4_4_0_ws0.wsdl', \
+             #url = 'http://www.cbs.dtu.dk/ws/SignalP4/SignalP4_4_0_ws0.wsdl', \
+             url = 'http://www.cbs.dtu.dk/ws/SignalP/SignalP_3_1_ws0.wsdl', \
              force=False):
+             
   
   # TODO: automatically split large sets into multiple jobs
   #       since the SignalP webservice will take a maximum of
@@ -57,9 +59,12 @@ def annotate(params, proteins, \
     seq.id = seqid
     seq.seq = proteins[seqid]['seq']
   
-    # organism can be 'euk', 'gram+', 'gram-'
+    # organism can be 'euk', 'gram+', 'siganlgram-'
     request.organism = params['signalp4_organism']
-    request.method = 'best'
+    # default for SignalP 4.0
+    #request.method = 'best'
+    # default for SignalP 3.1
+    #request.method = 'nn+hmm'
     request.sequencedata.sequence.append(seq)
   
     response = client.service.runService(request)
@@ -77,6 +82,15 @@ def annotate(params, proteins, \
     time.sleep(10 + (retries*2))
     retries += 1
     sys.stderr.write(".")
+    
+    # if something goes wrong, note it and skip SignalP
+    # by returning
+    if response.status == "REJECTED" or \
+       response.status == "UNKNOWN JOBID" or \
+       response.status == "QUEUE DOWN":
+      log_stderr("SignalP(web) failed: '%s'" % (response.status))
+      return proteins
+      
   sys.stderr.write(" done !\n")
     
   #fetchResults
@@ -87,7 +101,13 @@ def annotate(params, proteins, \
   # end of signal-nn
   
   citation["name"] = result[0].method + " " + result[0].version
-  
+    
+  # TODO: the better way to do this would be to save the entire SOAP
+  #       response returned by client.last_received() and then parse
+  #       that upon plugin invocation (above) using suds.sax
+  #       This way we save everything in the analysis, not just
+  #       the details we are interested in right now
+  signalp_dict = {}
   for res in result.ann:
     seqid = res.sequence.id
     # range.end - this is the first residue of the mature protein if
@@ -102,6 +122,8 @@ def annotate(params, proteins, \
       proteins[seqid]['is_signalp'] = False
       
     # for caching in the outfile
+    if seqid not in signalp_dict:
+      signalp_dict[seqid] = {}
     signalp_dict[seqid]['is_signalp'] = proteins[seqid]['is_signalp']
     signalp_dict[seqid]['signalp_cleave_position'] = \
       proteins[seqid]['signalp_cleave_position']
@@ -113,12 +135,3 @@ def annotate(params, proteins, \
   
   return proteins
 
-"""  
-if __name__ == "__main__":
-  import sys
-  import helpers
-  from inmembrane import get_params
-  proteins = helpers.create_proteins_dict(sys.argv[1])[1]
-  params = get_params()
-  print annotate(params, proteins)
-"""
