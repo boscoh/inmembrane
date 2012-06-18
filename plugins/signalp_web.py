@@ -37,16 +37,17 @@ def annotate(params, proteins, \
   # grab the cached results of present
   outfile = "signalp_web.out"
   if not force and os.path.isfile(outfile):
-    log_stderr("# -> skipped: %s already exists" % out)
+    log_stderr("# -> skipped: %s already exists" % outfile)
     fh = open(outfile, 'r')
-    annot = json.loads(fh.read())
+    annots = json.loads(fh.read())
     fh.close()
     for seqid in annots:
       proteins[seqid]['is_signalp'] = annots[seqid]['is_signalp']
       proteins[seqid]['signalp_cleave_position'] = \
         annots[seqid]['signalp_cleave_position']
-        
-      return proteins
+    
+    citation['name'] = annots[seqid]['program_name']
+    return proteins
   
   log_stderr("# SignalP(web), %s > %s" % (params['fasta'], outfile))
   
@@ -127,8 +128,10 @@ def annotate(params, proteins, \
     signalp_dict[seqid]['is_signalp'] = proteins[seqid]['is_signalp']
     signalp_dict[seqid]['signalp_cleave_position'] = \
       proteins[seqid]['signalp_cleave_position']
-  
+    signalp_dict[seqid]['program_name'] = citation['name']
+    
   # we store the minimal stuff in JSON format
+  
   fh = open(outfile, 'w')
   fh.write(json.dumps(signalp_dict, separators=(',',':\n')))
   fh.close()    

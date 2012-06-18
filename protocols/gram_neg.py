@@ -7,8 +7,12 @@ from helpers import dict_get, eval_surface_exposed_loop, \
 def get_annotations(params):
   params['signalp4_organism'] = 'gram-'
   
-  annotations = ['signalp4', 
-                 'lipop1',
+  if not params['signalp4_bin'] or params['signalp4_bin'] == 'signalp_web':
+    annotations = ['signalp_web']
+  else:
+    annotations = ['signalp4']
+    
+  annotations += ['lipop1',
                  'tatfind_web']
   
   if 'bomp' in dict_get(params, 'barrel_programs'):

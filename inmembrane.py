@@ -64,6 +64,7 @@ default_params_str = """{
   
 #### Signal peptide and transmembrane helix prediction
   'signalp4_bin': 'signalp',
+# 'signalp4_bin': 'signalp_web',
   'lipop1_bin': 'LipoP',
   'tmhmm_bin': 'tmhmm',
   'memsat3_bin': 'runmemsat',

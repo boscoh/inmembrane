@@ -18,8 +18,12 @@ def get_annotations(params):
 
   params['signalp4_organism'] = 'gram+'
   
-  annotations = ['signalp4', 
-                 'lipop1', 
+  if not params['signalp4_bin'] or params['signalp4_bin'] == 'signalp_web':
+    annotations = ['signalp_web']
+  else:
+    annotations = ['signalp4']
+    
+  annotations += ['lipop1', 
                  'hmmsearch3']
 
   if dict_get(params, 'helix_programs'):
