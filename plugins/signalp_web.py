@@ -16,16 +16,14 @@ from suds.bindings import binding
 import logging
 from helpers import log_stderr
 
-if __DEBUG__:
-  logging.basicConfig(level=logging.INFO)
-  # soap messages (in&out) and http headers
-  logging.getLogger('suds.client').setLevel(logging.DEBUG)
-
 def annotate(params, proteins, \
              #url = 'http://www.cbs.dtu.dk/ws/SignalP4/SignalP4_4_0_ws0.wsdl', \
              url = 'http://www.cbs.dtu.dk/ws/SignalP/SignalP_3_1_ws0.wsdl', \
              force=False):
-             
+  if __DEBUG__:
+    logging.basicConfig(level=logging.INFO)
+    # soap messages (in&out) and http headers
+    logging.getLogger('suds.client').setLevel(logging.DEBUG)             
   
   # TODO: automatically split large sets into multiple jobs
   #       since the SignalP webservice will take a maximum of
@@ -67,9 +65,10 @@ def annotate(params, proteins, \
     # default for SignalP 3.1
     #request.method = 'nn+hmm'
     request.sequencedata.sequence.append(seq)
-  
-    response = client.service.runService(request)
     sys.stderr.write(".")
+    
+  response = client.service.runService(request)
+
   sys.stderr.write("\n")
   
   #pollQueue
