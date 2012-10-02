@@ -20,7 +20,7 @@ from helpers import log_stderr
 def annotate(params, proteins, \
              #url = 'http://www.cbs.dtu.dk/ws/SignalP4/SignalP4_4_0_ws0.wsdl', \
              url = 'http://www.cbs.dtu.dk/ws/SignalP/SignalP_3_1_ws0.wsdl', \
-             batchsize = 500, \
+             batchsize = 2000, \
              force=False):
   if __DEBUG__:
     logging.basicConfig(level=logging.INFO)
