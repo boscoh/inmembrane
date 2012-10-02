@@ -21,8 +21,7 @@ from helpers import log_stderr
 def annotate(params, proteins, \
              #url = 'http://www.cbs.dtu.dk/ws/LipoP/LipoP_1_0_ws0.wsdl', \
              # we host our own fixed version of the WDSL for the moment
-             url = "https://raw.github.com/boscoh/inmembrane/master/\
-                            plugins/extra/LipoP_1_0_ws0.wsdl", \
+             url = "http://raw.github.com/boscoh/inmembrane/master/plugins/extra/LipoP_1_0_ws0.wsdl", \
              force=False):
   if __DEBUG__:
     logging.basicConfig(level=logging.INFO)
