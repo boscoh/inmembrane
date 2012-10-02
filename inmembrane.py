@@ -63,9 +63,10 @@ default_params_str = """{
   'protocol': 'gram_pos', # 'gram_neg'
   
 #### Signal peptide and transmembrane helix prediction
-  'signalp4_bin': 'signalp',
-# 'signalp4_bin': 'signalp_web',
-  'lipop1_bin': 'LipoP',
+  'signalp4_bin': 'signalp_web',
+# 'signalp4_bin': 'signalp',
+  'lipop1_bin': 'lipop_web',
+# 'lipop1_bin': 'LipoP',
   'tmhmm_bin': 'tmhmm',
   'memsat3_bin': 'runmemsat',
   'helix_programs': ['tmhmm'],
