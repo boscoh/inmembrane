@@ -97,7 +97,8 @@ def annotate(params, proteins, \
   done_job = client.factory.create('fetchResult.job')
   done_job.jobid = response.jobid
   result = client.service.fetchResult(done_job)
-  
+  #log_stderr(str(result))
+
   # end of signal-nn
   
   citation["name"] = result[0].method + " " + result[0].version
@@ -110,17 +111,21 @@ def annotate(params, proteins, \
   signalp_dict = {}
   for res in result.ann:
     seqid = res.sequence.id
-    # range.end - this is the first residue of the mature protein if
-    #  there is a cleavage site
-    cleavage_site = int(res.annrecords.annrecord[0].range.end)
-    proteins[seqid]['signalp_cleave_position'] = cleavage_site
-    # from 'comment', "Y" or "N noTm" or "N TM" where "Y" means signal peptide
-    signal_yn = res.annrecords[0][0].comment[0]
-    if signal_yn == "Y":
-      proteins[seqid]['is_signalp'] = True
+    if len(res.annrecords) > 0:
+      # range.end - this is the first residue of the mature protein if
+      #  there is a cleavage site
+      cleavage_site = int(res.annrecords.annrecord[0].range.end)
+      proteins[seqid]['signalp_cleave_position'] = cleavage_site
+      # from 'comment', "Y" or "N noTm" or "N TM" where "Y" means signal peptide
+      signal_yn = res.annrecords[0][0].comment[0]
+      if signal_yn == "Y":
+        proteins[seqid]['is_signalp'] = True
+      else:
+        proteins[seqid]['is_signalp'] = False
     else:
+      proteins[seqid]['signalp_cleave_position'] = 0
       proteins[seqid]['is_signalp'] = False
-      
+          
     # for caching in the outfile
     if seqid not in signalp_dict:
       signalp_dict[seqid] = {}
