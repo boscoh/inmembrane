@@ -5,15 +5,20 @@ from helpers import dict_get, eval_surface_exposed_loop, \
 
     
 def get_annotations(params):
+  annotations = []
   params['signalp4_organism'] = 'gram-'
   
   if not params['signalp4_bin'] or params['signalp4_bin'] == 'signalp_web':
-    annotations = ['signalp_web']
+    annotations += ['signalp_web']
   else:
-    annotations = ['signalp4']
-    
-  annotations += ['lipop1',
-                 'tatfind_web']
+    annotations += ['signalp4']
+  
+  if not params['lipop1_bin'] or params['lipop1_bin'] == 'lipop_web':
+    annotations += ['lipop_web']
+  else:
+    annotations += ['lipop1']
+  
+  annotations += ['tatfind_web']
   
   if 'bomp' in dict_get(params, 'barrel_programs'):
     annotations.append('bomp_web')
