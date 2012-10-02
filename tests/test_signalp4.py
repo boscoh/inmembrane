@@ -36,7 +36,7 @@ class TestSignalp(unittest.TestCase):
     for seqid in self.expected_output:
       self.assertEqual(
           self.expected_output[seqid], self.proteins[seqid]['is_signalp'])
-
+    self.assertEqual(self.proteins[u'sp|B7LNW7']['signalp_cleave_position'], 22)
     os.chdir(save_dir)
 
 

@@ -37,6 +37,7 @@ class TestLipoP(unittest.TestCase):
     for seqid in self.expected_output:
       self.assertEqual(
           self.expected_output[seqid], self.proteins[seqid]['is_lipop'])
+    self.assertEqual(self.proteins[u'tr|Q9HYX8']['lipop_cleave_position'], 19)
     self.assertIn('lipop_im_retention_signal', self.proteins[u'tr|Q9HYX8'])
     self.assertTrue(self.proteins[u'tr|Q9HYX8']['lipop_im_retention_signal'])
     os.chdir(save_dir)

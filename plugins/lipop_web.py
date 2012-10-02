@@ -136,13 +136,23 @@ def annotate(params, proteins, \
     # init as if no lipop hit, may be reset below
     proteins[seqid]['is_lipop'] = False
     proteins[seqid]['lipop_cleave_position'] = 0
+    proteins[seqid]['lipop_im_retention_signal'] = False
     if len(res.annrecords) > 0:
       # range.end - this is the first residue (Cys) of the mature protein if
       #  there is a SpII cleavage site
       for annrec in res.annrecords.annrecord:
         if annrec.feature == "CleavII":
-          proteins[seqid]['lipop_cleave_position'] = int(annrec.range.end)
+          proteins[seqid]['lipop_cleave_position'] = int(annrec.range.begin)
           proteins[seqid]['is_lipop'] = True
+          
+          # check for an E.coli style inner membrane retention signal
+          # Asp+2 to cleavage site. There are other apparent retention 
+          # signals in E. coli and other gram- bacteria in addition to
+          # the Asp+2 which we don't detect here (yet).
+          # (Yamaguchi et al, 1988; Tokuda and Matsuyama, 2005 [review])
+          plus_two = proteins[seqid]['lipop_cleave_position']+1
+          if proteins[seqid]['seq'][plus_two] == 'D':
+            proteins[seqid]['lipop_im_retention_signal'] = True
   
     # for caching in the outfile
     if seqid not in lipop_dict:
@@ -150,6 +160,8 @@ def annotate(params, proteins, \
     lipop_dict[seqid]['is_lipop'] = proteins[seqid]['is_lipop']
     lipop_dict[seqid]['lipop_cleave_position'] = \
       proteins[seqid]['lipop_cleave_position']
+    lipop_dict[seqid]['lipop_im_retention_signal'] = \
+      proteins[seqid]['lipop_im_retention_signal']
     lipop_dict[seqid]['program_name'] = citation['name']
 
   # we store the minimal stuff in JSON format

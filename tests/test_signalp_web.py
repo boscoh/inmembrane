@@ -25,7 +25,7 @@ class TestSignalp(unittest.TestCase):
     self.params['signalp4_organism'] = 'gram+'
     self.seqids, self.proteins = \
         inmembrane.create_proteins_dict(self.params['fasta'])
-    plugins.signalp4_web.annotate(self.params, self.proteins)
+    plugins.signalp_web.annotate(self.params, self.proteins)
 
     self.expected_output = {
         u'SPy_0252': True, 
@@ -36,7 +36,7 @@ class TestSignalp(unittest.TestCase):
     for seqid in self.expected_output:
       self.assertEqual(
           self.expected_output[seqid], self.proteins[seqid]['is_signalp'])
-
+    self.assertEqual(self.proteins[u'sp|B7LNW7']['signalp_cleave_position'], 22)
     os.chdir(save_dir)
 
 

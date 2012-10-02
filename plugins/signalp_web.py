@@ -112,9 +112,9 @@ def annotate(params, proteins, \
   for res in result.ann:
     seqid = res.sequence.id
     if len(res.annrecords) > 0:
-      # range.end - this is the first residue of the mature protein if
+      # range.end - this is the last residue of the signal peptide if
       #  there is a cleavage site
-      cleavage_site = int(res.annrecords.annrecord[0].range.end)
+      cleavage_site = int(res.annrecords.annrecord[0].range.end+1)
       proteins[seqid]['signalp_cleave_position'] = cleavage_site
       # from 'comment', "Y" or "N noTm" or "N TM" where "Y" means signal peptide
       signal_yn = res.annrecords[0][0].comment[0]
