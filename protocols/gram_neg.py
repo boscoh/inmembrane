@@ -127,8 +127,9 @@ def post_process_protein(params, protein):
     num_strands = len(protein['tmbeta_strands'])
     details += ['tmbeta_strands(%i)' % (num_strands)]
   
-  if has_signal_pept and not is_lipop:
-    # we use the SignalP signal peptidase cleavage site for Tat signals 
+  if has_signal_pept and not is_lipop and \
+    (dict_get(protein, 'signalp_cleave_position')):
+    # we use the SignalP signal peptidase cleavage site for Tat signals
     chop_nterminal_peptide(protein,  protein['signalp_cleave_position'])
   
   if is_tatfind:

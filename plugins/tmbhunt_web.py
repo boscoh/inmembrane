@@ -66,16 +66,18 @@ def annotate(params, proteins, \
 
   # small jobs will lead us straight to the results, big jobs
   # go via a 'waiting' page which we skip past if we get it
+  job_id = None
   try:
     # we see this with big jobs
     result_table_url = follow("http://www.bioinformatics.leeds.ac.uk/~andy/betaBarrel/AACompPred/tmp/tmp_output.*.html")
+    job_id = result_table_url.split('tmp_output')[-1:][0].split('.')[0]
   except:
     # small jobs take us straight to the html results table
     pass
 
   # parse the job_id from the url, since due to a bug in
   # TMB-HUNT the link on the results page from large jobs is wrong
-  job_id = follow("Full results").split('/')[-1:][0].split('.')[0]
+  if not job_id: job_id = follow("Full results").split('/')[-1:][0].split('.')[0]
   log_stderr("# TMB-HUNT(web) job_id is: %s <http://www.bioinformatics.leeds.ac.uk/~andy/betaBarrel/AACompPred/tmp/tmp_output%s.html>" % (job_id, job_id))
   
   # polling until TMB-HUNT finishes
