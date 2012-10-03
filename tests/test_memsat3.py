@@ -13,7 +13,7 @@ class TestMemsat3(unittest.TestCase):
   def setUp(self):
     self.dir = os.path.join(module_dir, 'memsat3')
 
-  def test_annotate(self):
+  def test_memsat3(self):
     save_dir = os.getcwd()
     os.chdir(self.dir)
 
