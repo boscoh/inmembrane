@@ -27,12 +27,11 @@
 # DAMAGE.
 
 import sys
-import sys
 import os
 import shutil
 
 import inmembrane
-import inmembrane.helpers
+#from inmembrane import helpers
 from inmembrane.helpers import *
 # will load all plugins in the plugins/ directory
 from inmembrane.plugins import *
@@ -229,12 +228,12 @@ if __name__ == "__main__":
   from optparse import OptionParser
   parser = OptionParser()
   (options, args) = parser.parse_args()
-  params = inmembrane.helpers.get_params()
+  params = get_params()
   if ('fasta' not in params or not params['fasta']) and not args:
     print description
     parser.print_help()
     sys.exit(1)
   if 'fasta' not in params or not params['fasta']:
     params['fasta'] = args[0]
-  inmembrane.helpers.process(params)
+  process(params)
 
