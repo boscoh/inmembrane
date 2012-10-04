@@ -4,6 +4,7 @@ PACKAGE = "inmembrane"
 NAME = ""
 DESCRIPTION = ""
 AUTHOR = "Andrew Perry & Bosco Ho"
+AUTHOR_EMAIL = "ajperry@pansapiens.com"
 URL = "http://github.com/boscoh/inmembrane"
 VERSION = __import__(PACKAGE).__version__
 
@@ -11,16 +12,23 @@ setup(
     name='inmembrane',
     version=VERSION,
     author=AUTHOR,
+    author_email=AUTHOR_EMAIL,
     url=URL,
     description=DESCRIPTION,
-    packages=['plugins','protocols','tests'],
-    package_data={'protocols': ['*/*'],
-                  'tests': ['*/*'],
-                  'plugins': ['*/*'], },
-    scripts=['inmembrane.py', 'run_example.py','run_tests.py'] + ['helpers.py'],
+    packages=['inmembrane','inmembrane.plugins',
+              'inmembrane.protocols','inmembrane.tests'],
+    package_data={'inmembrane': ['protocols/*/*', 
+                                 'tests/*/*', 
+                                 'plugins/*/*'], },
+    scripts=['bin/inmembrane.py', 'bin/inmembrane_example.py','bin/inmembrane_tests.py'],
     # README, examples & docs are included via MANIFEST.in
     license='BSD',
     long_description=open('README.markdown').read(),
+    install_requires=[
+        "suds >= 0.4",
+        "BeautifulSoup >= 3.2.1",
+        "twill >= 0.9",
+    ],
     classifiers=[
         "Development Status :: 5 - Production/Stable",
         "Environment :: Console",
