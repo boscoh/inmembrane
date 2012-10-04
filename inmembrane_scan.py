@@ -49,7 +49,7 @@ collates the results.
 
 
 # figure out absoulte directory for inmembrane scripts
-module_dir = os.path.abspath(os.path.dirname(__file__))
+module_dir = os.path.abspath(os.path.dirname(inmembrane.__file__))
 
 
 default_params_str = """{
