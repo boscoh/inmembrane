@@ -1,15 +1,15 @@
 from distutils.core import setup
 
 PACKAGE = "inmembrane"
-NAME = ""
-DESCRIPTION = ""
+DESCRIPTION = "a bioinformatic sequence pipeline for proteome annotation \
+to predict if a protein is exposed on the surface of a bacteria."
 AUTHOR = "Andrew Perry & Bosco Ho"
 AUTHOR_EMAIL = "ajperry@pansapiens.com"
 URL = "http://github.com/boscoh/inmembrane"
 VERSION = __import__(PACKAGE).__version__
 
 setup(
-    name='inmembrane',
+    name=PACKAGE,
     version=VERSION,
     author=AUTHOR,
     author_email=AUTHOR_EMAIL,
