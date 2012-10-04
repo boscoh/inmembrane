@@ -1,7 +1,7 @@
 from distutils.core import setup
 
 PACKAGE = "inmembrane"
-DESCRIPTION = "a bioinformatic sequence pipeline for proteome annotation \
+DESCRIPTION = "A bioinformatic pipeline for proteome annotation \
 to predict if a protein is exposed on the surface of a bacteria."
 AUTHOR = "Andrew Perry & Bosco Ho"
 AUTHOR_EMAIL = "ajperry@pansapiens.com"
