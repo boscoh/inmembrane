@@ -149,10 +149,10 @@ Here's an example::
 -  the rest of the line gives the full identifier of the sequence
    in the FASTA file.
 
+.. _dependencies:
 
 Installing dependencies
 -----------------------
-.. _dependencies:
 
 While *inmembrane* only requires a local installation of HMMER 3.0
 and can used web services for TMHMM, SignalP, LipoP and various
