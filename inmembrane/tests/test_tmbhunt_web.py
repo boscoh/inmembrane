@@ -2,23 +2,23 @@ import os
 import unittest
 import sys
 
-# hack to allow tests to find inmembrane in directory above
-module_dir = os.path.abspath(os.path.dirname(__file__))
-sys.path.insert(0, os.path.join(module_dir, '..'))
-
-import inmembrane 
-import inmembrane.plugins as plugins
+import inmembrane
+import inmembrane.tests
+from inmembrane import helpers
+from inmembrane.plugins import tmbhunt_web
 
 class TestTmbhunt(unittest.TestCase):
   def setUp(self):
-    self.dir = os.path.join(module_dir, 'tmbhunt')
+    self.dir = os.path.join(
+       os.path.abspath(
+       os.path.dirname(inmembrane.tests.__file__)), 'tmbhunt')
 
   def test_tmbhunt(self):
     save_dir = os.getcwd()
     os.chdir(self.dir)
 
-    inmembrane.silence_log(True)
-    inmembrane.clean_directory('.', ['input.fasta'])
+    helpers.silence_log(True)
+    helpers.clean_directory('.', ['input.fasta'])
      
     self.params = inmembrane.get_params()
     self.params['fasta'] = "input.fasta"
@@ -45,12 +45,12 @@ class TestTmbhunt(unittest.TestCase):
         }
     }
     self.seqids, \
-    self.proteins = inmembrane.create_proteins_dict(self.params['fasta'])
+    self.proteins = helpers.create_proteins_dict(self.params['fasta'])
 
     # run TMB-HUNT
-    self.output = plugins.tmbhunt_web.annotate(self.params, self.proteins, force=True)
+    self.output = tmbhunt_web.annotate(self.params, self.proteins, force=True)
     #print self.expected_output
-    #print self.output
+    #helpers.print_proteins(self.output)
     for seqid in self.expected_output:
       self.assertIn(seqid, self.expected_output)
       if seqid in self.output:

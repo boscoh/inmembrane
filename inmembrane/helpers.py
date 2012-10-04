@@ -2,11 +2,11 @@
 # Common helper functions for inmembrane
 #
 
+import inmembrane
 import os, subprocess, sys
 import textwrap
 
 LOG_SILENT = False
-
 
 def dict_get(this_dict, prop):
   """

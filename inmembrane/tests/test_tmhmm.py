@@ -2,31 +2,34 @@ import os
 import unittest
 import sys
 
-# hack to allow tests to find inmembrane in directory above
-module_dir = os.path.abspath(os.path.dirname(__file__))
-sys.path.insert(0, os.path.join(module_dir, '..'))
+import inmembrane
+import inmembrane.tests
+from inmembrane import helpers
+from inmembrane.plugins import tmhmm
 
 import inmembrane 
 import inmembrane.plugins as plugins
 
 class TestTmhmm(unittest.TestCase):
   def setUp(self):
-    self.dir = os.path.join(module_dir, 'tmhmm')
+    self.dir = os.path.join(
+       os.path.abspath(
+       os.path.dirname(inmembrane.tests.__file__)), 'tmhmm')
 
   def test_tmhmm(self):
     save_dir = os.getcwd()
     os.chdir(self.dir)
 
-    inmembrane.silence_log(True)
-    inmembrane.clean_directory('.', ['input.fasta'])
+    helpers.silence_log(True)
+    helpers.clean_directory('.', ['input.fasta'])
      
     self.params = inmembrane.get_params()
     self.params['fasta'] = "input.fasta"
     self.seqids, self.proteins = \
-        inmembrane.create_proteins_dict(self.params['fasta'])
-    plugins.tmhmm.annotate(self.params, self.proteins)
+        helpers.create_proteins_dict(self.params['fasta'])
+    tmhmm.annotate(self.params, self.proteins)
 
-    # inmembrane.print_proteins(self.proteins)
+    # helpers.print_proteins(self.proteins)
     
     self.expected_output = {
        'SPy_1392': {

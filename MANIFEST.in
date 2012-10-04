@@ -1,3 +1,4 @@
 recursive-include examples *
 recursive-include docs *
 include README.markdown
+include inmembrane_example.py

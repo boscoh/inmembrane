@@ -17,17 +17,17 @@ print description
 
 from optparse import OptionParser
 optparser = OptionParser()
-optparser.add_option("-n", "--no-network",
+optparser.add_option("-n", "--tests-no-network",
                      action="store_true", dest="no_network", default=False,
                      help="don't run tests that require a network connection")
 (options, args) = optparser.parse_args()
 # unusual hack to remove our custom flags, since unittest expects it's own set
 if "-n" in sys.argv:
   sys.argv.remove("-n")
-if "--no-network" in sys.argv:
-  sys.argv.remove("--no-network")
+if "--tests-no-network" in sys.argv:
+  sys.argv.remove("--tests-no-network")
   
-module_dir = os.path.abspath(os.path.dirname(__file__))
+module_dir = os.path.abspath(os.path.dirname(inmembrane.__file__))
 file_tag = os.path.join(module_dir, 'tests', 'test*.py')
 test_names = [ \
     os.path.basename(f)[:-3] for f in glob.glob(file_tag)]
@@ -35,7 +35,7 @@ test_names = [ \
 tests_to_run = []
 for test_name in test_names:
   if not (options.no_network and (test_name[-4:] == "_web")):
-    exec('from tests.%s import *' % test_name)
+    exec('from inmembrane.tests.%s import *' % test_name)
     tests_to_run.append(test_name)
 
 log_stderr("Will run: " + ", ".join(tests_to_run))
