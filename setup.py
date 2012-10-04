@@ -23,7 +23,7 @@ setup(
     scripts=['inmembrane_scan.py'],
     # README, examples & docs are included via MANIFEST.in
     license='BSD',
-    long_description=open('README.markdown').read(),
+    long_description=open('README.rst').read(),
     install_requires=[
         "suds >= 0.4",
         "BeautifulSoup >= 3.2.1",

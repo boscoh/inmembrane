@@ -87,7 +87,7 @@ def post_process_protein(params, protein):
   # is present.
   has_signal_pept = False
   if is_signalp or is_tatfind or \
-     ("Tat_PS51318" in dict_get(protein, 'hmmsearch')):
+     (('hmmsearch' in protein) and "Tat_PS51318" in protein['hmmsearch']):
     has_signal_pept = True
   
   # annotate the barrels - high scoring bomp hits don't require a 
