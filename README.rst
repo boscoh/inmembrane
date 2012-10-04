@@ -168,15 +168,30 @@ is written to interoperate with.
 
 Required dependencies, and their versions:
 
-
+-  HMMER 3.0
 -  TMHMM 2.0 *or* MEMSAT3
 -  SignalP 4.0
 -  LipoP 1.0
--  HMMER 3.0
 
 These instructions have been tailored for Debian-based systems, in
 particular Ubuntu 11.10. Each of these dependencies are licensed
 free to academic users.
+
+HMMER 3.0
+^^^^^^^^^
+
+On Ubuntu (and other Debian-derived) Linux distributions::
+
+  $ sudo apt-get install hmmer
+
+should be enough.
+
+Alternatively:
+
+-  Download HMMER 3.0 from http://hmmer.janelia.org/software.
+-  The HMMER user guide describes how to install it. For the
+   pre-compiled packages, this is as simple as putting the binaries on
+   your PATH.
 
 TMHMM 2.0
 ^^^^^^^^^
@@ -198,15 +213,6 @@ SignalP 4.0
    the academic license. The software will be emailed to you.
 -  Follow the installation instructions at
    http://www.cbs.dtu.dk/services/doc/signalp-4.0.readme.
-
-HMMER 3.0
-^^^^^^^^^
-
-
--  Download HMMER 3.0 from http://hmmer.janelia.org/software.
--  The HMMER user guide describes how to install it. For the
-   pre-compiled packages, this is as simple as putting the binaries on
-   your PATH.
 
 LipoP 1.0
 ^^^^^^^^^
