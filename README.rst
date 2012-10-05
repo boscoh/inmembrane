@@ -51,7 +51,7 @@ are correctly installed, or exposing any broken / offline web services
 required for a particular analysis.
 
 Installation and Configuration
-------------------------------
+==============================
 
 The latest stable release of *inmembrane* can be installed via 
 pip, or the bleeding edge from Github.
@@ -104,7 +104,7 @@ The parameters are:
    transmembrane-helix prediction programs you want to use
 
 Output format
--------------
+=============
 
 The output of *inmembrane* ``gram_pos`` protocol consists of four
 columns of output. This is printed to stdout and written as a CSV
@@ -153,7 +153,7 @@ Here's an example::
 .. _dependencies:
 
 Installing dependencies
------------------------
+=======================
 
 While *inmembrane* only requires a local installation of HMMER 3.0
 and can used web services for TMHMM, SignalP, LipoP and various
@@ -179,7 +179,7 @@ particular Ubuntu 11.10. Each of these dependencies are licensed
 free to academic users.
 
 HMMER 3.0
-^^^^^^^^^
+---------
 
 On Ubuntu (and other Debian-derived) Linux distributions::
 
@@ -195,7 +195,7 @@ Alternatively:
    your PATH.
 
 TMHMM 2.0
-^^^^^^^^^
+---------
 
 Only one of TMHMM or MEMSAT3 are required, but users that want to
 compare transmembrane segment predictions can install both.
@@ -205,7 +205,7 @@ compare transmembrane segment predictions can install both.
    http://www.cbs.dtu.dk/cgi-bin/nph-sw_request?tmhmm.
 
 SignalP 4.0
-^^^^^^^^^^^
+-----------
 
 
 -  Download SignalP 4.0
@@ -216,7 +216,7 @@ SignalP 4.0
    http://www.cbs.dtu.dk/services/doc/signalp-4.0.readme.
 
 LipoP 1.0
-^^^^^^^^^
+---------
 
 
 -  Download LipoP 1.0 from
@@ -224,7 +224,7 @@ LipoP 1.0
    installation proceedure is similar to that for SignalP.
 
 MEMSAT3
-^^^^^^^
+-------
 
 
 -  Download MEMSAT3 from
@@ -257,7 +257,7 @@ MEMSAT3
 MEMSAT3 - PSIPRED is NOT required).
 
 Python libraries
-^^^^^^^^^^^^^^^^
+----------------
 
 *inmembrane* depends on the following Python libraries (
 `Beautiful Soup <http://www.crummy.com/software/BeautifulSoup/>`_,
@@ -267,7 +267,7 @@ Python libraries
 installing these for you automatically.
 
 Modification guide
-------------------
+==================
 
 It is a fact of life for bioinformatics that new versions of basic
 tools changes output formats and API. We believe that it is an
@@ -285,8 +285,8 @@ code as concise as possible. Specifically, by using the native
 Python dictionary, which allows an enormous amout of flexibility,
 we can collate the results of various analyses with very little code.
 
-**inmembrane** development style guide:
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+inmembrane development style guide:
+-----------------------------------
 
 Here are some guidelines for understanding and extending the code.
 
