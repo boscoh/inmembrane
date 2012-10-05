@@ -20,7 +20,7 @@ setup(
     package_data={'inmembrane': ['protocols/*/*', 
                                  'tests/*/*', 
                                  'plugins/*/*'], },
-    scripts=['inmembrane_scan.py'],
+    scripts=['inmembrane_scan'],
     # README, examples & docs are included via MANIFEST.in
     license='BSD',
     long_description=open('README.rst', 'rt').read(),

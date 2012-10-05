@@ -9,9 +9,9 @@ be surface exposed based on predicted subcellular localization signals and
 membrane topology. Currently protocols have been implemented for gram+ and
 gram- bacterial proteomes.
 
-Typical usage is via the script ``inmembrane_scan.py``, eg::
+Typical usage is via the script ``inmembrane_scan``, eg::
 
-    $ inmembrane_scan.py mysequences.fasta
+    $ inmembrane_scan mysequences.fasta
 
 
 The provided sequences 
@@ -44,7 +44,7 @@ keys.
 You can also test the functionality of the analysis plugins
 that are part of *inmembrane* by typing::
 
-    $ inmembrane_scan.py --test
+    $ inmembrane_scan --test
 
 This can be useful for determining which binary dependences
 are correctly installed, or exposing any broken / offline web services
