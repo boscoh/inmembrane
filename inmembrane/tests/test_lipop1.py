@@ -7,25 +7,14 @@ import inmembrane.tests
 from inmembrane import helpers
 from inmembrane.plugins import lipop1
 
-class TestLipoP(unittest.TestCase):
-  def setUp(self):
-      self.dir = os.path.join(
-         os.path.abspath(
-         os.path.dirname(inmembrane.tests.__file__)), 'lipop1')
+from inmembrane.tests.PluginTestBase import PluginTestBase
 
-  def test_lipop(self):
-    save_dir = os.getcwd()
-    os.chdir(self.dir)
+class TestLipoP(PluginTestBase):
+  _plugin_name = "lipop1"
 
-    helpers.silence_log(True)
-    helpers.clean_directory('.', ['input.fasta'])
-   
-    self.params = inmembrane.get_params()
+  def test_lipop1(self):
     if not self.params['lipop1_bin']:
       self.params['lipop1_bin'] = 'LipoP'
-    self.params['fasta'] = "input.fasta"
-    self.seqids, self.proteins = \
-        helpers.create_proteins_dict(self.params['fasta'])
 
     lipop1.annotate(self.params, self.proteins)
 
@@ -42,8 +31,6 @@ class TestLipoP(unittest.TestCase):
     self.assertEqual(self.proteins[u'tr|Q9HYX8']['lipop_cleave_position'], 19)
     self.assertIn('lipop_im_retention_signal', self.proteins[u'tr|Q9HYX8'])
     self.assertTrue(self.proteins[u'tr|Q9HYX8']['lipop_im_retention_signal'])
-    os.chdir(save_dir)
-
 
 if __name__ == '__main__':
   unittest.main()

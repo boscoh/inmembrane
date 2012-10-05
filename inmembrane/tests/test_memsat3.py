@@ -7,23 +7,12 @@ import inmembrane.tests
 from inmembrane import helpers
 from inmembrane.plugins import memsat3
 
-class TestMemsat3(unittest.TestCase):
-  def setUp(self):
-    self.dir = os.path.join(
-       os.path.abspath(
-       os.path.dirname(inmembrane.tests.__file__)), 'memsat3')
+from inmembrane.tests.PluginTestBase import PluginTestBase
 
+class TestMemsat3(PluginTestBase):
+  _plugin_name = "memsat3"
+  
   def test_memsat3(self):
-    save_dir = os.getcwd()
-    os.chdir(self.dir)
-
-    helpers.silence_log(True)
-    helpers.clean_directory('.', ['input.fasta'])
-    
-    self.params = inmembrane.get_params()
-    self.params['fasta'] = "input.fasta"
-    self.seqids, self.proteins = \
-        helpers.create_proteins_dict(self.params['fasta'])
     memsat3.annotate(self.params, self.proteins)
 
     self.expected_output = {
@@ -61,9 +50,6 @@ class TestMemsat3(unittest.TestCase):
       for prop in self.expected_output[seqid]:
         self.assertEqual(
           self.expected_output[seqid][prop], self.proteins[seqid][prop])
-
-    os.chdir(save_dir)
-
 
 if __name__ == '__main__':
   unittest.main()

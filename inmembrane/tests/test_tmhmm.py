@@ -10,23 +10,12 @@ from inmembrane.plugins import tmhmm
 import inmembrane 
 import inmembrane.plugins as plugins
 
-class TestTmhmm(unittest.TestCase):
-  def setUp(self):
-    self.dir = os.path.join(
-       os.path.abspath(
-       os.path.dirname(inmembrane.tests.__file__)), 'tmhmm')
+from inmembrane.tests.PluginTestBase import PluginTestBase
 
+class TestTmhmm(PluginTestBase):
+  _plugin_name = "tmhmm"
+  
   def test_tmhmm(self):
-    save_dir = os.getcwd()
-    os.chdir(self.dir)
-
-    helpers.silence_log(True)
-    helpers.clean_directory('.', ['input.fasta'])
-     
-    self.params = inmembrane.get_params()
-    self.params['fasta'] = "input.fasta"
-    self.seqids, self.proteins = \
-        helpers.create_proteins_dict(self.params['fasta'])
     tmhmm.annotate(self.params, self.proteins)
 
     # helpers.print_proteins(self.proteins)
@@ -65,9 +54,6 @@ class TestTmhmm(unittest.TestCase):
       for prop in self.expected_output[seqid]:
         self.assertEqual(
           self.expected_output[seqid][prop], self.proteins[seqid][prop])
-
-    os.chdir(save_dir)
-
 
 if __name__ == '__main__':
   unittest.main()

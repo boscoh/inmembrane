@@ -7,21 +7,12 @@ import inmembrane.tests
 from inmembrane import helpers
 from inmembrane.plugins import tmbhunt_web
 
-class TestTmbhunt(unittest.TestCase):
-  def setUp(self):
-    self.dir = os.path.join(
-       os.path.abspath(
-       os.path.dirname(inmembrane.tests.__file__)), 'tmbhunt')
+from inmembrane.tests.PluginTestBase import PluginTestBase
 
-  def test_tmbhunt(self):
-    save_dir = os.getcwd()
-    os.chdir(self.dir)
-
-    helpers.silence_log(True)
-    helpers.clean_directory('.', ['input.fasta'])
-     
-    self.params = inmembrane.get_params()
-    self.params['fasta'] = "input.fasta"
+class TestTmbhunt(PluginTestBase):
+  _plugin_name = "tmbhunt_web"
+  
+  def test_tmbhunt_web(self):
     self.expected_output = {
         'gi|107836852': {
             'tmbhunt_prob': 0.955956, 
@@ -44,8 +35,6 @@ class TestTmbhunt(unittest.TestCase):
             'tmbhunt': False
         }
     }
-    self.seqids, \
-    self.proteins = helpers.create_proteins_dict(self.params['fasta'])
 
     # run TMB-HUNT
     self.output = tmbhunt_web.annotate(self.params, self.proteins, force=True)
@@ -55,9 +44,6 @@ class TestTmbhunt(unittest.TestCase):
       self.assertIn(seqid, self.expected_output)
       if seqid in self.output:
         self.assertEqual(self.expected_output[seqid], self.output[seqid])
-
-    os.chdir(save_dir)
-
 
 if __name__ == '__main__':
   unittest.main()

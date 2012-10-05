@@ -12,15 +12,11 @@ from inmembrane.tests.PluginTestBase import PluginTestBase
 class TestSignalp(PluginTestBase):
   _plugin_name = "signalp4"
 
-  def test_signalp(self):
-  
-    self.params = inmembrane.get_params()
+  def test_signalp4(self):
     if not self.params['signalp4_bin']:
       self.params['signalp4_bin'] = 'signalp'
     self.params['fasta'] = "input.fasta"
     self.params['signalp4_organism'] = 'gram+'
-    self.seqids, self.proteins = \
-        helpers.create_proteins_dict(self.params['fasta'])
     signalp4.annotate(self.params, self.proteins)
 
     self.expected_output = {

@@ -1,4 +1,4 @@
-import os, tempfile, shutil
+import os
 import unittest
 import sys
 
@@ -12,12 +12,8 @@ from inmembrane.tests.PluginTestBase import PluginTestBase
 class TestSignalp(PluginTestBase):
   _plugin_name = "signalp_web"
 
-  def test_signalp(self):    
-    self.params = inmembrane.get_params()
-    self.params['fasta'] = "input.fasta"
+  def test_signalp_web(self):
     self.params['signalp4_organism'] = 'gram+'
-    self.seqids, self.proteins = \
-        helpers.create_proteins_dict(self.params['fasta'])
     signalp_web.annotate(self.params, self.proteins)
 
     self.expected_output = {

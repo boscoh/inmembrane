@@ -7,24 +7,12 @@ import inmembrane.tests
 from inmembrane import helpers
 from inmembrane.plugins import tmbeta_net_web
 
-class TestTmbetanet(unittest.TestCase):
-  def setUp(self):
-    self.dir = os.path.join(
-       os.path.abspath(
-       os.path.dirname(inmembrane.tests.__file__)), 'tmbeta_net')
+from inmembrane.tests.PluginTestBase import PluginTestBase
 
+class TestTmbetanet(PluginTestBase):
+  _plugin_name = "tmbeta_net_web"
+  
   def test_tmbeta_net_web(self):
-    save_dir = os.getcwd()
-    os.chdir(self.dir)
-
-    helpers.silence_log(True)
-    helpers.clean_directory('.', ['input.fasta'])
-     
-    self.params = inmembrane.get_params()
-    self.params['fasta'] = "input.fasta"
-    self.seqids, self.proteins = \
-        helpers.create_proteins_dict(self.params['fasta'])
-
     # run TMBETA-NET
     self.output = tmbeta_net_web.annotate(self.params, self.proteins, force=True)
     
@@ -51,9 +39,6 @@ class TestTmbetanet(unittest.TestCase):
             [90, 122], [145, 165], [172, 179]]
     }
     self.assertEqual(self.expected_output, self.output)
-
-    os.chdir(save_dir)
-
 
 if __name__ == '__main__':
   unittest.main()

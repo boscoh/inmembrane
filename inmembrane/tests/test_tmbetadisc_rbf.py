@@ -7,23 +7,12 @@ import inmembrane.tests
 from inmembrane import helpers
 from inmembrane.plugins import tmbetadisc_rbf_web
 
-class TestTmbetadisc_rbf(unittest.TestCase):
-  def setUp(self):
-    self.dir = os.path.join(
-       os.path.abspath(
-       os.path.dirname(inmembrane.tests.__file__)), 'tmbetadisc_rbf')
+from inmembrane.tests.PluginTestBase import PluginTestBase
 
-  def test_tmbetadisc_rbf(self):
-    save_dir = os.getcwd()
-    os.chdir(self.dir)
-
-    helpers.silence_log(True)
-    helpers.clean_directory('.', ['input.fasta'])
-    
-    self.params = inmembrane.get_params()
-    self.params['fasta'] = "input.fasta"
-    self.seqids, self.proteins = \
-        helpers.create_proteins_dict(self.params['fasta'])
+class TestTmbetadisc_rbf(PluginTestBase):
+  _plugin_name = "tmbetadisc_rbf_web"
+  
+  def test_tmbetadisc_rbf_web(self): 
     tmbetadisc_rbf_web.annotate(self.params, self.proteins)
     
     self.expected_output = {
@@ -62,9 +51,6 @@ class TestTmbetadisc_rbf(unittest.TestCase):
     #helpers.print_proteins(self.proteins)
     
     self.assertEqual(self.proteins, self.expected_output)
-
-    os.chdir(save_dir)
-
 
 if __name__ == '__main__':
   unittest.main()
