@@ -7,19 +7,13 @@ import inmembrane.tests
 from inmembrane import helpers
 from inmembrane.plugins import signalp4
 
-class TestSignalp(unittest.TestCase):
-  def setUp(self):
-    self.dir = os.path.join(
-       os.path.abspath(
-       os.path.dirname(inmembrane.tests.__file__)), 'signalp4')
+from inmembrane.tests.PluginTestBase import PluginTestBase
+
+class TestSignalp(PluginTestBase):
+  _plugin_name = "signalp4"
 
   def test_signalp(self):
-    save_dir = os.getcwd()
-    os.chdir(self.dir)
-
-    helpers.silence_log(True)
-    helpers.clean_directory('.', ['input.fasta'])
-    
+  
     self.params = inmembrane.get_params()
     if not self.params['signalp4_bin']:
       self.params['signalp4_bin'] = 'signalp'
@@ -39,8 +33,6 @@ class TestSignalp(unittest.TestCase):
       self.assertEqual(
           self.expected_output[seqid], self.proteins[seqid]['is_signalp'])
     self.assertEqual(self.proteins[u'sp|B7LNW7']['signalp_cleave_position'], 22)
-    os.chdir(save_dir)
-
 
 if __name__ == '__main__':
   unittest.main()

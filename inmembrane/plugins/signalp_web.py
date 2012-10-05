@@ -115,7 +115,7 @@ def annotate(params, proteins, \
       if len(res.annrecords) > 0:
         # range.end - this is the last residue of the signal peptide if
         #  there is a cleavage site
-        cleavage_site = int(res.annrecords.annrecord[0].range.end+1)
+        cleavage_site = int(res.annrecords.annrecord[0].range.end)
         if cleavage_site == 1: cleavage_site = 0
         proteins[seqid]['signalp_cleave_position'] = cleavage_site
         # from 'comment', "Y" or "N noTm" or "N TM" where "Y" means signal peptide

@@ -1,4 +1,4 @@
-import os
+import os, tempfile, shutil
 import unittest
 import sys
 
@@ -7,19 +7,12 @@ import inmembrane.tests
 from inmembrane import helpers
 from inmembrane.plugins import signalp_web
 
-class TestSignalp(unittest.TestCase):
-  def setUp(self):
-    self.dir = os.path.join(
-       os.path.abspath(
-       os.path.dirname(inmembrane.tests.__file__)), 'signalp4')
+from inmembrane.tests.PluginTestBase import PluginTestBase
 
-  def test_signalp(self):
-    save_dir = os.getcwd()
-    os.chdir(self.dir)
+class TestSignalp(PluginTestBase):
+  _plugin_name = "signalp_web"
 
-    helpers.silence_log(True)
-    helpers.clean_directory('.', ['input.fasta'])
-    
+  def test_signalp(self):    
     self.params = inmembrane.get_params()
     self.params['fasta'] = "input.fasta"
     self.params['signalp4_organism'] = 'gram+'
@@ -37,9 +30,7 @@ class TestSignalp(unittest.TestCase):
       self.assertEqual(
           self.expected_output[seqid], self.proteins[seqid]['is_signalp'])
     self.assertEqual(self.proteins[u'sp|B7LNW7']['signalp_cleave_position'], 22)
-    os.chdir(save_dir)
-
-
+    
 if __name__ == '__main__':
   unittest.main()
   
