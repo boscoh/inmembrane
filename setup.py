@@ -17,6 +17,7 @@ setup(
     description=DESCRIPTION,
     packages=['inmembrane','inmembrane.plugins',
               'inmembrane.protocols','inmembrane.tests'],
+    # NOTE: some packaging filters are also in MANIFEST.in
     package_data={'inmembrane': ['protocols/*/*', 
                                  'tests/*/*', 
                                  'plugins/*/*'], },
