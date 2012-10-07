@@ -21,10 +21,14 @@ class TestLipoP(PluginTestBase):
         u'SPy_0317': True,
         u'tr|Q9HYX8' : True,
     }
-    
+
+    #print self.expected_output
+    #print
+    #print self.proteins
+
     for seqid in self.expected_output:
       self.assertEqual(
-          self.expected_output[seqid]['is_lipop'], self.proteins[seqid]['is_lipop'])
+          self.expected_output[seqid], self.proteins[seqid]['is_lipop'])
     self.assertEqual(self.proteins[u'tr|Q9HYX8']['lipop_cleave_position'], 19)
     self.assertIn('lipop_im_retention_signal', self.proteins[u'tr|Q9HYX8'])
     self.assertTrue(self.proteins[u'tr|Q9HYX8']['lipop_im_retention_signal'])
