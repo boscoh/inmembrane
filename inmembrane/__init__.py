@@ -1,4 +1,4 @@
-__version__ = "0.9-rc3"
+__version__ = "0.91"
 import helpers
 
 import os, shutil
