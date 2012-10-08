@@ -16,6 +16,9 @@ class TestTmhmm(PluginTestBase):
   _plugin_name = "tmhmm"
   
   def test_tmhmm(self):
+    if not self.params['tmhmm_bin']:
+      self.params['tmhmm_bin'] = 'tmhmm'
+    
     tmhmm.annotate(self.params, self.proteins)
 
     # helpers.print_proteins(self.proteins)
