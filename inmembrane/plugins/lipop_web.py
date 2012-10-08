@@ -111,7 +111,8 @@ def annotate(params, proteins, \
       # by returning
       if response.status == "REJECTED" or \
          response.status == "UNKNOWN JOBID" or \
-         response.status == "QUEUE DOWN":
+         response.status == "QUEUE DOWN" or \
+         response.status == "FAILED":
         log_stderr("LipoP(web) failed: '%s'" % (response.status))
         return proteins
         

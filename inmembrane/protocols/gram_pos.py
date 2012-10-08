@@ -31,7 +31,10 @@ def get_annotations(params):
 
   if dict_get(params, 'helix_programs'):
     if 'tmhmm' in params['helix_programs']:
-      annotations.append('tmhmm')
+      if not params['tmhmm_bin'] or params['tmhmm_bin'] == 'tmhmm_web':
+        annotations.append('tmhmm_web')
+      else:
+        annotations.append('tmhmm')
     if 'memsat3' in params['helix_programs']:
       annotations.append('memsat3')
 
