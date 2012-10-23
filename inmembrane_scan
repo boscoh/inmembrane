@@ -50,7 +50,8 @@ collates the results.
 if __name__ == "__main__":
   from optparse import OptionParser
   usage = "usage: %prog [options] [sequences.fasta]"
-  parser = OptionParser(usage=usage)
+  parser = OptionParser(usage=usage, \
+                        version="%prog "+inmembrane.__version__+"\n",)
   parser.add_option("-t", "--test",
                      action="store_true", dest="run_tests", default=False,
                     help="Run tests checking the each plugin works as expected.\
