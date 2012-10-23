@@ -81,7 +81,7 @@ def annotate(params, proteins, \
       
       # workaround: removes any non-alphanumeric character (except '_') and adds
       # a unique number to the start to ensure every id is unique after mangling
-      newseqid = `seqcount`+re.sub(r'[^.\w]', "", seqid)
+      newseqid = `seqcount`+re.sub(r'[^\w]', "", seqid)
       seqcount += 1
       lipop_seq_id_mapping[newseqid] = seqid
       seq.id = newseqid

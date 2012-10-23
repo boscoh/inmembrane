@@ -10,7 +10,7 @@ citation = {'ref': u"Anders Krogh, Björn Larsson, Gunnar von Heijne and Erik "
           
 __DEBUG__ = False
 
-import sys, os, time, json
+import sys, os, time, json, re
 from suds.client import Client
 from suds.bindings import binding 
 import logging
@@ -57,10 +57,24 @@ def annotate(params, proteins, \
     client = Client(url, cache=None)
     request=client.factory.create('runService.parameters')
     
+    # this is a horrible horrible workaround to account for the fact that
+    # the lipop SOAP service returns null results if there is are certain
+    # non-alphanumeric characters in the sequence id provided. horrible.
+    tmhmm_seq_id_mapping = {}
+    seqcount = 0
+    
     sys.stderr.write("# ")
     for seqid in seqid_batch:
       seq = client.factory.create('runService.parameters.sequencedata.sequence')
-      seq.id = seqid
+
+      # workaround: removes any non-alphanumeric character (except '_') and adds
+      # a unique number to the start to ensure every id is unique after mangling
+      newseqid = `seqcount`+re.sub(r'[^\w]', "", seqid)
+      seqcount += 1
+      tmhmm_seq_id_mapping[newseqid] = seqid
+      #seq.id = seqid
+      seq.id = newseqid
+
       seq.seq = proteins[seqid]['seq']
       request.sequencedata.sequence.append(seq)
       sys.stderr.write(".")
@@ -102,7 +116,8 @@ def annotate(params, proteins, \
     citation["name"] = result[0].method + " " + result[0].version
       
     for res in result.ann:
-      seqid = res.sequence.id
+      #seqid = res.sequence.id
+      seqid = tmhmm_seq_id_mapping[res.sequence.id]
       if 'tmhmm_helices' not in proteins[seqid]:
         proteins[seqid].update({
           'tmhmm_helices':[],
