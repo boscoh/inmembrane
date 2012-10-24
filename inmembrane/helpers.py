@@ -215,52 +215,6 @@ def chop_nterminal_peptide(protein, i_cut):
             del sses[i]
             
 
-def eval_surface_exposed_loop(
-    sequence_length, n_transmembrane_region, outer_loops, 
-    terminal_exposed_loop_min, internal_exposed_loop_min):
-  """
-  This is the key algorithm in SurfG+ to identify Potentially Surface
-  Exposed proteins. It evaluates all loops that poke out of the periplasmic
-  side of the Gram+ bacterial membrane and tests if the loops are long
-  enough to stick out of the peptidoglycan layer to be cleaved by proteases
-  in a cell-shaving experiment.
-
-  Returns True if any outer loop, or the N- or C-terminii are
-  longer than the given thresholds.
-  """
-
-  if n_transmembrane_region == 0:
-    # treat protein as one entire exposed loop
-    return sequence_length >= terminal_exposed_loop_min
-
-  if not outer_loops:
-    return False
-
-  loop_len = lambda loop: abs(loop[1]-loop[0]) + 1
-
-  # if the N-terminal loop sticks outside
-  if outer_loops[0][0] == 1:
-    nterminal_loop = outer_loops[0]
-    del outer_loops[0]
-    if loop_len(nterminal_loop) >= terminal_exposed_loop_min:
-      return True
-
-  # if the C-terminal loop sticks outside
-  if outer_loops:
-    if outer_loops[-1][-1] == sequence_length:
-      cterminal_loop = outer_loops[-1]
-      del outer_loops[-1]
-      if loop_len(cterminal_loop) >= terminal_exposed_loop_min:
-        return True
-
-  # test remaining outer loops for length
-  for loop in outer_loops:
-    if loop_len(loop) >= internal_exposed_loop_min:
-      return True
-
-  return False
-
-
 def clean_directory(top, excluded_files):
   """
   Deletes an entire directory tree, equivalent to rm -rf <top>, 

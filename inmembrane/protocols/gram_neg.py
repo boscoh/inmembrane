@@ -1,6 +1,5 @@
 import os
-from inmembrane.helpers import dict_get, eval_surface_exposed_loop, \
-                    chop_nterminal_peptide, log_stderr
+from inmembrane.helpers import dict_get, chop_nterminal_peptide, log_stderr
 
     
 def get_annotations(params):
