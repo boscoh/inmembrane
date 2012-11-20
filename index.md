@@ -1,42 +1,51 @@
-Need a change.
 
-#### Problem
+#### What is _inmembrane_?
 
-You have a bunch of protein sequences in fasta form. Your organism has not been well studied, and you'd like to see if any of them are likely to be exposed on the cell surface. 
+_inmembrane_ is a program to predict if a protein is likely to be surface-exposed in a bacterial cell. It is designed to be relatively easy to install, with several different options to help you run all external binaries on your system.
+
+#### How can we help you?
+
+We envisage _inmembrane_ being of use in three ways:
+
+1. You want to do a quirk and dirty annotation of your proteome for cell-surface exposure in order to cross-check your experiment. Keep reading on this page.
+
+2. You want to play around with different ways of cell localization assignment. Check out our parameterization guide.
+
+3. You want to make your own bioinformatic work-flow, and would like to use _inmembrane_ as a useful Python starting point. Have a look at our programming model, paper, and API guide.
+
 
 #### Combining analyses into a workflow
 
-Actually, it's quite easy to predict surface-exposure by combining the results of several _other_ prediction programs. However, to do this will require some kind of work-flow to combine all the results of the required prediction programs, such as helix predictors and lipo-protein predictiors.
+The cell-surface exposure algorithm is taken from the paper (). It is a straightforward case of a simple work-flow defined over a number of external binaries that do:
 
-There are several general approaches to develop bioinformatic workflows for protein sequence analysis, many of them requiring a high-level of expertise for installation. Here, we provide a Python-based solution that relies on web-based services, that we believe represents an easy, transparent, and extensible approach.
+- transmembrane helix prediction,
+- lipoprotein prediction,
+- secretion signal prediction
+- cell-wall binding motif prediction
+
+Although there exists several generic bioinformatic workflow packages, the deduction of cell-surface exposure from the results of these programs is a little more involved. Here, we have written this in a Python package, and in a manner that is extensible, and potentially repackageable for other bioinformatic analysis. 
 
 #### Ease of use
 
-We've taken the pain of installing all the external binaries by hooking into the web-based versions of these programs. Installing local binaries is painful, and sensitive to platform inconsistencies. By focusing on web-basesd services, we can eliminate a lot of this pain.
-
-#### Why would you use this?
-
-We see primarilty three types of users:
-
-1) You want to do a quirk and dirty annotation of your proteome and get a prediction of cell-surface exposure. Perhaps this is a run-once only script.
-
-2) You want to play around with different ways of cell localization assignment. 
-
-3) You want to make your own bioinformatic work-flow, and would like a useful starting point.
+We have specifically chosen Python for the overall ease of use, and readability. Read our paper for more details. One of the most difficult aspects of installing a workflow like this is the installation of multiple external binaries. We have made a large effort to incorporate web-based modules, which in most cases, should significantly simplify the process of installation.
 
 #### How to install?
 
-Well, to install the program, you'll have to have 
+Well, to install the program, you'll have to have install
 
-* Python
-* pip: 
-* HMMER: make sure this is available on the command-line
+ - Python: it should be on most systems, but if not, go to <http://www.python.org>
+ - pip: <http://pypi.python.org/pypi/pip>
+ - HMMER: this is the only bioinformatic software that definitely needs to be installed <http://hmmer.janelia.org/software>
 
-Once these are installed on your system, to install _inmembrane_, you should be able to do this:
+Once these are installed on your system, you should be able to do this to install _inmembrane_:
 
     >>> pip install inmembrane
 
-Once installed, inmembrane can be run from the command line, assuming you have an internet connection:
+#### Running _inmembrane_
+
+Let's say you have all the protein sequences you want to analyze in a FASTA text file called `proteome.fasta`.
+
+Inmembrane can be run from the command line, assuming you have an internet connection, and all the web-sites _inmembrane_ relies on are up:
 
     >>> inmembrane_scan proteome.fasta
 

@@ -86,53 +86,88 @@
 
       <div class="row-fluid marketing">
         <div class="span12">
-<h4>Problem</h4>
-<p>You have a bunch of protein sequences in fasta form. Your organism has not been well studied, and you'd like to see if any of them are likely to be exposed on the cell surface. 
+<h4>What is <em>inmembrane</em>?</h4>
+<p><em>inmembrane</em> is a program to predict if a protein is likely to be surface-exposed in a bacterial cell. It is designed to be relatively easy to install, with several different options to help you run all external binaries on your system.
 </p>
+
+<h4>How can we help you?</h4>
+<p>We envisage <em>inmembrane</em> being of use in three ways:
+</p>
+<ol>
+ <li><p>You want to do a quirk and dirty annotation of your proteome for cell-surface exposure in order to cross-check your experiment. Keep reading on this page.
+</p>
+
+ </li>
+
+ <li><p>You want to play around with different ways of cell localization assignment. Check out our parameterization guide.
+</p>
+
+ </li>
+
+ <li><p>You want to make your own bioinformatic work-flow, and would like to use <em>inmembrane</em> as a useful Python starting point. Have a look at our programming model, paper, and API guide.
+</p>
+
+ </li>
+</ol>
 
 <h4>Combining analyses into a workflow</h4>
-<p>Actually, it's quite easy to predict surface-exposure by combining the results of several <em>other</em> prediction programs. However, to do this will require some kind of work-flow to combine all the results of the required prediction programs, such as helix predictors and lipo-protein predictiors.
-</p>
-<p>There are several general approaches to develop bioinformatic workflows for protein sequence analysis, many of them requiring a high-level of expertise for installation. Here, we provide a Python-based solution that relies on web-based services, that we believe represents an easy, transparent, and extensible approach.
-</p>
-
-<h4>Ease of use</h4>
-<p>We've taken the pain of installing all the external binaries by hooking into the web-based versions of these programs. Installing local binaries is painful, and sensitive to platform inconsistencies. By focusing on web-basesd services, we can eliminate a lot of this pain.
-</p>
-
-<h3>Why would you use this?</h3>
-<p>We see primarilty three types of users:
-</p>
-<p>1) You want to do a quirk and dirty annotation of your proteome and get a prediction of cell-surface exposure. Perhaps this is a run-once only script.
-</p>
-<p>2) You want to play around with different ways of cell localization assignment. 
-</p>
-<p>3) You want to make your own bioinformatic work-flow, and would like a useful starting point.
-</p>
-
-<h4>How to install?</h4>
-<p>Well, to install the program, you'll have to have 
+<p>The cell-surface exposure algorithm is taken from the paper (). It is a straightforward case of a simple work-flow defined over a number of external binaries that do:
 </p>
 <ul>
  <li>
-     Python
+     transmembrane helix prediction,
  </li>
 
  <li>
-     pip: 
+     lipoprotein prediction,
  </li>
 
  <li>
-     HMMER: make sure this is available on the command-line
+     secretion signal prediction
+ </li>
+
+ <li>
+     cell-wall binding motif prediction
  </li>
 </ul>
-<p>Once these are installed on your system, to install <em>inmembrane</em>, you should be able to do this:
+<p>Although there exists several generic bioinformatic workflow packages, the deduction of cell-surface exposure from the results of these programs is a little more involved. Here, we have written this in a Python package, and in a manner that is extensible, and potentially repackageable for other bioinformatic analysis. 
+</p>
+
+<h4>Ease of use</h4>
+<p>We have specifically chosen Python for the overall ease of use, and readability. Read our paper for more details. One of the most difficult aspects of installing a workflow like this is the installation of multiple external binaries. We have made a large effort to incorporate web-based modules, which in most cases, should significantly simplify the process of installation.
+</p>
+
+<h4>How to install?</h4>
+<p>Well, to install the program, you'll have to have install
+</p>
+<ul>
+ <li>
+     Python: it should be on most systems, but if not, go to <a href="http://www.python.org">http://www.python.org</a>
+ </li>
+
+ <li>
+     pip: <a href="http://pypi.python.org/pypi/pip">http://pypi.python.org/pypi/pip</a>
+ </li>
+
+ <li>
+     HMMER: this is the only bioinformatic software that definitely needs to be installed <a href="http://hmmer.janelia.org/software">http://hmmer.janelia.org/software</a>
+ </li>
+</ul>
+<p>Once these are installed on your system, you should be able to do this to install <em>inmembrane</em>:
 </p>
 <pre><code>&gt;&gt;&gt; pip install inmembrane
-</code></pre><p>Once installed, inmembrane can be run from the command line, assuming you have an internet connection:
+</code></pre>
+<h4>Running <em>inmembrane</em></h4>
+<p>Let's say you have all the protein sequences you want to analyze in a FASTA text file called <code>proteome.fasta</code>.
+</p>
+<p>Inmembrane can be run from the command line, assuming you have an internet connection, and all the web-sites <em>inmembrane</em> relies on are up:
 </p>
 <pre><code>&gt;&gt;&gt; inmembrane_scan proteome.fasta
 </code></pre><p>The results will be written to proteome.csv, which can be opened by Microsoft Excel.
+</p>
+
+<h4>Interpreting output</h4>
+<p>The program is to predict the 
 </p>
 
 <h4>The parameters in the program</h4>
