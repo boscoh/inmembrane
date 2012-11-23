@@ -1,16 +1,17 @@
 import sys
 import os
 import markdown
+import re
 
-
-def do(fname):
-  text_md = open(fname).read()
-  text_html = markdown.markdown(text_md)
-  template = open('template.html').read()
-  html = template % { 'insert': text_html }
-  html_fname = os.path.splitext(fname)[0] + '.html'
+def do(template_fname):
+  html = open(template_fname).read()
+  for match in re.findall(r'{{.*}}', html):
+    fname = match[2:-2]
+    text_md = open(fname).read()
+    text_html = '\n' + markdown.markdown(text_md) + '\n'
+    html = html.replace(match, text_html)
+  html_fname = template_fname.replace('.template', '')
   open(html_fname, 'w').write(html)
-  os.system('open ' + html_fname)
 
 
 if __name__ == '__main__':
