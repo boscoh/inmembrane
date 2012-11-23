@@ -7,7 +7,10 @@ def do(template_fname):
   html = open(template_fname).read()
   for match in re.findall(r'{{.*}}', html):
     fname = match[2:-2]
-    text_md = open(fname).read()
+    if os.path.isfile(fname):
+      text_md = open(fname).read()
+    else:
+      text_md = ""
     text_html = '\n' + markdown.markdown(text_md) + '\n'
     html = html.replace(match, text_html)
   html_fname = template_fname.replace('.template', '')

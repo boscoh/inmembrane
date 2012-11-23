@@ -69,7 +69,8 @@
       <div class="masthead">
         <ul class="nav nav-pills pull-right">
           <li class="active"><a href="#">Home</a></li>
-          <li><a href="#">About</a></li>
+          <li><a href="customization.html">Customization</a></li>
+          <li><a href="api.html">API</a></li>
         </ul>
         <h3 class="muted">inmembrane</h3>
       </div>
@@ -85,7 +86,7 @@
       <hr>
 
       <div class="row-fluid marketing">
-        <div class="span6">
+        <div class="span12">
 
 <h2>Getting it to Work</h2>
 
@@ -222,118 +223,6 @@ SPy_0019  SECRETED            signalp                   SPy_0019 from AE004092
      The description of the protein taken from the FASTA file.
  </li>
 </ol>
-
-        </div>
-        <div class="span6">
-
-<h2>Messing around with the parameters</h2>
-
-<h4>The parameters in the program</h4>
-<p>All adjustable parameters of the running of <em>inmembrane</em> have been collected in a parameters file, which is typically stored in the <code>inmembrane.config</code>. 
-</p>
-<p>On the first use of the program, when no such <code>inmembrane.config</code> is found, a default <code>inmembrane.config</code> will be generated. Existing <code>inmembrane.config</code> will be read and interpreted.
-</p>
-
-<h3>General parameters</h3>
-<p>These are the general parameters to the program, representing the top-down organization of the work-flow. 
-</p>
-<p>A fasta program is the input, following one of currently two different protocols - one for Gram+ bacteria, and one for Gram- bacteria. The results are saved to a csv file as an output.
-</p>
-<ul>
- <li>
-     'fasta': the pathname of the fasta file holding the sequences
- </li>
-
- <li>
-     'protocol': switches between different protocols for analysising the proteomes
- </li>
-
- <li>
-     'csv': the name of the output file in CSV (Excel-compatible) format. Defaults to a file using the same filename as 'fasta'
- </li>
-</ul>
-<p>For potential debugging, it's important that all intermediate files are saved, and they are saved in: 
-</p>
-<ul>
- <li>
-     'out_dir': the directory where all intermediate output files are located
- </li>
-</ul>
-
-<h3>Optional binaries</h3>
-<ul>
- <li>
-     'signalp4_bin', 'lipop1_bin', 'tmhmm_bin', 'memsat3_bin': the full pathname of the binaries used for the analysis. If empty, it is not run, and the web version is used instead
- </li>
-</ul>
-
-<h4>transmembrane helix predictors</h4>
-<ul>
- <li>
-     'helix_programs': a choice of which transmembrane-helix predictors are used. Currently, the program loops over all designated helix predictors and chooses the longest predicted loops.
- </li>
-</ul>
-
-<h4>key parameters to determine surface-exposure</h4>
-<ul>
- <li>
-     'terminal_exposed_loop_min': this is the length in terms of amino acids given to define an external loop of a protein to be long enough to stick out of the bacterial cell-wall to be considered surface-epxosed
- </li>
-
- <li>
-     'internal_exposed_loop_min': similarly to above, except is double the length as internal loops need to go up, and down again, for continuity with the rest of the protein.
- </li>
-</ul>
-
-<h4>HMMER parameters for signal proteins for cell-wall attachment</h4>
-<ul>
- <li>
-     'hmmsearch3_bin': the binary for HMMER
- </li>
-
- <li>
-     'hmm_profiles_dir': the directory that holds the HMMER profiles for cell-wall signals
- </li>
-
- <li>
-     'hmm_evalue_max': the maximum expectation value cutoff for acceptable prediction in HMMER
- </li>
-
- <li>
-     'hmm_score_min': the minimum score cutoff for acceptatble prediction in HMMER
- </li>
-</ul>
-
-<h4>&beta;-barrel predictors</h4>
-<ul>
- <li>
-     'barrel_programs': list of programs to do &amp;beta-barel ['bomp', 'tmbetadisc-rbf'],
- </li>
-
- <li>
-     'bomp_clearly_cutoff': 3, # &gt;= to this, always classify as an OM(barrel)
- </li>
-
- <li>
-     'bomp_maybe_cutoff': 1, # must also have a signal peptide to be OM(barrel)
- </li>
-
- <li>
-     'tmbhunt_clearly_cutoff': 0.95,
- </li>
-
- <li>
-     'tmbhunt_maybe_cutoff': 0.5,
- </li>
-
- <li>
-     'tmbetadisc_rbf_method': 'aadp', # aa, dp, aadp or pssm
- </li>
-</ul>
-<hr />
-
-
-<h2>Programming philosophy</h2>
 
         </div>
       </div>
