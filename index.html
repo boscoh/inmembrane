@@ -86,6 +86,8 @@
 
       <div class="row-fluid marketing">
         <div class="span12">
+<h2>Getting it to Work</h2>
+
 <h4>What is <em>inmembrane</em>?</h4>
 <p><em>inmembrane</em> is a program to predict if a protein is likely to be surface-exposed in a bacterial cell. It is designed to be relatively easy to install, with several different options to help you run all external binaries on your system.
 </p>
@@ -111,7 +113,7 @@
 </ol>
 
 <h4>Combining analyses into a workflow</h4>
-<p>The cell-surface exposure algorithm is taken from the paper (). It is a straightforward case of a simple work-flow defined over a number of external binaries that do:
+<p>The cell-surface exposure algorithm is taken from the paper (Barinove et al. 2009. Proteomics 9:61-73). It is a straightforward case of a simple work-flow defined over a number of external binaries that do:
 </p>
 <ul>
  <li>
@@ -163,17 +165,77 @@
 <p>Inmembrane can be run from the command line, assuming you have an internet connection, and all the web-sites <em>inmembrane</em> relies on are up:
 </p>
 <pre><code>&gt;&gt;&gt; inmembrane_scan proteome.fasta
-</code></pre><p>The results will be written to proteome.csv, which can be opened by Microsoft Excel.
+</code></pre><p>The results will be written to proteome.csv, which can be opened by Microsoft Excel. 
 </p>
 
 <h4>Interpreting output</h4>
-<p>The program is to predict the 
+<p>It should look something like this: 
 </p>
+<pre><code>SPy_0008  CYTOPLASM(non-PSE)  .                         SPy_0008 from AE004092
+SPy_0010  PSE-Membrane        tmhmm(1)                  SPy_0010 from AE004092
+SPy_0012  PSE-Cellwall        hmm(GW2|GW3|GW1);signalp  SPy_0012 from AE004092
+SPy_0016  MEMBRANE(non-PSE)   tmhmm(12)                 SPy_0016 from AE004092
+SPy_0019  SECRETED            signalp                   SPy_0019 from AE004092
+</code></pre><p>There are 4 columns to the result: 
+</p>
+<ol>
+ <li>
+     The sequence identifier (seqid) is the first word in the id line of the FASTA file
+ </li>
+
+ <li>
+     The cell-localization category:<ul>
+ <li>
+     PSE: means Potentially Surface Exposed, this can arise from<ul>
+ <li>
+     transmembrane helical protein with long longs
+ </li>
+
+ <li>
+     lipoprotein attached to the lipid layer
+ </li>
+
+ <li>
+     protein with motif that attaches to the glycan cell-wall
+ </li>
+</ul>
+
+ </li>
+
+ <li>
+     SECRETED: contains a secretion signal
+ </li>
+
+ <li>
+     CYTOPLASM: basically none of the above
+ </li>
+</ul>
+
+ </li>
+
+ <li>
+     Summary of the results from the external bioinformatic programs. In this case, we have hits from <code>tmhmm</code>, <code>hmm</code>, and <code>signalp</code>
+ </li>
+
+ <li>
+     The description of the protein taken from the FASTA file.
+ </li>
+</ol>
+<hr />
+
+
+<h2>Messing around with the parameters</h2>
 
 <h4>The parameters in the program</h4>
-<p>Here are the parameters in the program, as indicated in the <code>inmembrane.config</code> file and in the get_params() function of the API. 
+<p>All adjustable parameters of the running of <em>inmembrane</em> have been collected in a parameters file, which is typically stored in the <code>inmembrane.config</code>. 
 </p>
-<p><em>general parameters</em>
+<p>On the first use of the program, when no such <code>inmembrane.config</code> is found, a default <code>inmembrane.config</code> will be generated. Existing <code>inmembrane.config</code> will be read and interpreted.
+</p>
+
+<h3>General parameters</h3>
+<p>These are the general parameters to the program, representing the top-down organization of the work-flow. 
+</p>
+<p>A fasta program is the input, following one of currently two different protocols - one for Gram+ bacteria, and one for Gram- bacteria. The results are saved to a csv file as an output.
 </p>
 <ul>
  <li>
@@ -181,33 +243,36 @@
  </li>
 
  <li>
-     'csv': the name of the output file in CSV (Excel-compatible) format. Defaults to a file using the same filename as 'fasta'
+     'protocol': switches between different protocols for analysising the proteomes
  </li>
 
+ <li>
+     'csv': the name of the output file in CSV (Excel-compatible) format. Defaults to a file using the same filename as 'fasta'
+ </li>
+</ul>
+<p>For potential debugging, it's important that all intermediate files are saved, and they are saved in: 
+</p>
+<ul>
  <li>
      'out_dir': the directory where all intermediate output files are located
  </li>
-
- <li>
-     'protocol': switches between different protocols for analysising the proteomes
- </li>
 </ul>
-<p><em>optional binaries</em>
-</p>
+
+<h3>Optional binaries</h3>
 <ul>
  <li>
      'signalp4_bin', 'lipop1_bin', 'tmhmm_bin', 'memsat3_bin': the full pathname of the binaries used for the analysis. If empty, it is not run, and the web version is used instead
  </li>
 </ul>
-<p><em>transmembrane helix predictors</em>
-</p>
+
+<h4>transmembrane helix predictors</h4>
 <ul>
  <li>
      'helix_programs': a choice of which transmembrane-helix predictors are used. Currently, the program loops over all designated helix predictors and chooses the longest predicted loops.
  </li>
 </ul>
-<p><em>key parameters to determine surface-exposure</em>
-</p>
+
+<h4>key parameters to determine surface-exposure</h4>
 <ul>
  <li>
      'terminal_exposed_loop_min': this is the length in terms of amino acids given to define an external loop of a protein to be long enough to stick out of the bacterial cell-wall to be considered surface-epxosed
@@ -217,8 +282,8 @@
      'internal_exposed_loop_min': similarly to above, except is double the length as internal loops need to go up, and down again, for continuity with the rest of the protein.
  </li>
 </ul>
-<p><em>HMMER parameters for signal proteins for cell-wall attachment</em>
-</p>
+
+<h4>HMMER parameters for signal proteins for cell-wall attachment</h4>
 <ul>
  <li>
      'hmmsearch3_bin': the binary for HMMER
@@ -236,8 +301,8 @@
      'hmm_score_min': the minimum score cutoff for acceptatble prediction in HMMER
  </li>
 </ul>
-<p>&beta;<em>-barrel predictors</em>
-</p>
+
+<h4>&beta;-barrel predictors</h4>
 <ul>
  <li>
      'barrel_programs': list of programs to do &amp;beta-barel ['bomp', 'tmbetadisc-rbf'],
@@ -263,8 +328,10 @@
      'tmbetadisc_rbf_method': 'aadp', # aa, dp, aadp or pssm
  </li>
 </ul>
+<hr />
 
-<h4>Advanced Users</h4>
+
+<h2>Programming philosophy</h2>
         </div>
       </div>
 

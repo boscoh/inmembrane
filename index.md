@@ -1,3 +1,4 @@
+## Getting it to Work
 
 #### What is _inmembrane_?
 
@@ -16,7 +17,7 @@ We envisage _inmembrane_ being of use in three ways:
 
 #### Combining analyses into a workflow
 
-The cell-surface exposure algorithm is taken from the paper (). It is a straightforward case of a simple work-flow defined over a number of external binaries that do:
+The cell-surface exposure algorithm is taken from the paper (Barinove et al. 2009. Proteomics 9:61-73). It is a straightforward case of a simple work-flow defined over a number of external binaries that do:
 
 - transmembrane helix prediction,
 - lipoprotein prediction,
@@ -49,44 +50,76 @@ Inmembrane can be run from the command line, assuming you have an internet conne
 
     >>> inmembrane_scan proteome.fasta
 
-The results will be written to proteome.csv, which can be opened by Microsoft Excel.
+The results will be written to proteome.csv, which can be opened by Microsoft Excel. 
 
 #### Interpreting output
 
-The program is to predict the 
+It should look something like this: 
+
+    SPy_0008  CYTOPLASM(non-PSE)  .                         SPy_0008 from AE004092
+    SPy_0010  PSE-Membrane        tmhmm(1)                  SPy_0010 from AE004092
+    SPy_0012  PSE-Cellwall        hmm(GW2|GW3|GW1);signalp  SPy_0012 from AE004092
+    SPy_0016  MEMBRANE(non-PSE)   tmhmm(12)                 SPy_0016 from AE004092
+    SPy_0019  SECRETED            signalp                   SPy_0019 from AE004092
+
+There are 4 columns to the result: 
+
+1. The sequence identifier (seqid) is the first word in the id line of the FASTA file
+2. The cell-localization category:
+    - PSE: means Potentially Surface Exposed, this can arise from
+        - transmembrane helical protein with long longs
+        - lipoprotein attached to the lipid layer
+        - protein with motif that attaches to the glycan cell-wall
+    - SECRETED: contains a secretion signal
+    - CYTOPLASM: basically none of the above
+3. Summary of the results from the external bioinformatic programs. In this case, we have hits from `tmhmm`, `hmm`, and `signalp`
+4. The description of the protein taken from the FASTA file.
+
+----
+
+## Messing around with the parameters
 
 #### The parameters in the program
 
-Here are the parameters in the program, as indicated in the `inmembrane.config` file and in the get_params() function of the API. 
+All adjustable parameters of the running of _inmembrane_ have been collected in a parameters file, which is typically stored in the `inmembrane.config`. 
 
-_general parameters_
+On the first use of the program, when no such `inmembrane.config` is found, a default `inmembrane.config` will be generated. Existing `inmembrane.config` will be read and interpreted.
+
+### General parameters
+
+These are the general parameters to the program, representing the top-down organization of the work-flow. 
+
+A fasta program is the input, following one of currently two different protocols - one for Gram+ bacteria, and one for Gram- bacteria. The results are saved to a csv file as an output.
 
 - 'fasta': the pathname of the fasta file holding the sequences
-- 'csv': the name of the output file in CSV (Excel-compatible) format. Defaults to a file using the same filename as 'fasta'
-- 'out_dir': the directory where all intermediate output files are located
 - 'protocol': switches between different protocols for analysising the proteomes
+- 'csv': the name of the output file in CSV (Excel-compatible) format. Defaults to a file using the same filename as 'fasta'
 
-_optional binaries_
+For potential debugging, it's important that all intermediate files are saved, and they are saved in: 
+
+- 'out_dir': the directory where all intermediate output files are located
+
+### Optional binaries
 
 - 'signalp4_bin', 'lipop1_bin', 'tmhmm_bin', 'memsat3_bin': the full pathname of the binaries used for the analysis. If empty, it is not run, and the web version is used instead
 
-_transmembrane helix predictors_
+#### transmembrane helix predictors
 
 - 'helix_programs': a choice of which transmembrane-helix predictors are used. Currently, the program loops over all designated helix predictors and chooses the longest predicted loops.
 
-_key parameters to determine surface-exposure_
+#### key parameters to determine surface-exposure
 
 - 'terminal_exposed_loop_min': this is the length in terms of amino acids given to define an external loop of a protein to be long enough to stick out of the bacterial cell-wall to be considered surface-epxosed
 - 'internal_exposed_loop_min': similarly to above, except is double the length as internal loops need to go up, and down again, for continuity with the rest of the protein.
 
-_HMMER parameters for signal proteins for cell-wall attachment_
+#### HMMER parameters for signal proteins for cell-wall attachment
 
 - 'hmmsearch3_bin': the binary for HMMER
 - 'hmm_profiles_dir': the directory that holds the HMMER profiles for cell-wall signals
 - 'hmm_evalue_max': the maximum expectation value cutoff for acceptable prediction in HMMER
 - 'hmm_score_min': the minimum score cutoff for acceptatble prediction in HMMER
 
-&beta;_-barrel predictors_
+#### &beta;-barrel predictors
 
 - 'barrel_programs': list of programs to do &beta-barel ['bomp', 'tmbetadisc-rbf'],
 - 'bomp_clearly_cutoff': 3, # >= to this, always classify as an OM(barrel)
@@ -95,5 +128,7 @@ _HMMER parameters for signal proteins for cell-wall attachment_
 - 'tmbhunt_maybe_cutoff': 0.5,
 - 'tmbetadisc_rbf_method': 'aadp', # aa, dp, aadp or pssm
 
-#### Advanced Users
+----
+
+## Programming philosophy
 
