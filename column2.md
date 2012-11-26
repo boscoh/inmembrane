@@ -22,9 +22,17 @@ For potential debugging, it's important that all intermediate files are saved, a
 
 ### Optional binaries
 
+One of the problems that _inmembrane_ tackles is the complexity of using and installing multiple binaries. In older programs, the only option was to install local binaires of the external programs. This raises problems involved with getting the binary for the right platform, compilation with the right tools, and installation in the correct file system. In contrast, many of these tools now provide a web-interface. In _inmembrane_, we have added facilities to use the web service, whether through a RESTful interface, or through a SOAP interface, when provided.
+
+Consequently, the parameters for the binaries are needed, where _inmembrane_ will attempt to run the program in the default directory, or if a full-path name is given, _inmembrane_ can run the binary in the correct location. 
+
+In order to turn off the local binary option, if in a *_bin parameter is given the empty string, the local binary step will be skipped and the web version will be used instead.
+
 - 'signalp4_bin', 'lipop1_bin', 'tmhmm_bin', 'memsat3_bin': the full pathname of the binaries used for the analysis. If empty, it is not run, and the web version is used instead
 
 #### transmembrane helix predictors
+
+A key part of surface exposure prediction requires the prediction of transmembrane helix. Once the helices are predicted, then the intervening loops can be used to predict actual surface exposure. There is no dominant transmembrane helix predictor, and thus _inmembrane_ has been written to allow pluggable options for transmembrane helix prediction.
 
 - 'helix_programs': a choice of which transmembrane-helix predictors are used. Currently, the program loops over all designated helix predictors and chooses the longest predicted loops.
 
