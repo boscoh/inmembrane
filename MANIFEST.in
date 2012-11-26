@@ -1,5 +1,0 @@
-include examples/surfg/AE004092.*
-recursive-include docs *
-exclude docs/inmembrane.doc
-include README.rst
-include inmembrane_example.py
