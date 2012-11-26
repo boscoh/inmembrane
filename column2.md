@@ -6,6 +6,44 @@ All adjustable parameters of the running of _inmembrane_ have been collected in 
 
 On the first use of the program, when no such `inmembrane.config` is found, a default `inmembrane.config` will be generated. Existing `inmembrane.config` will be read and interpreted.
 
+The default parameters are as following, they will be explained in sections below:
+
+    {
+      'fasta': '',
+      'csv': '',
+      'out_dir': '',
+      'protocol': 'gram_pos', # 'gram_neg'
+      
+    #### Signal peptide and transmembrane helix prediction
+      'signalp4_bin': '',
+    # 'signalp4_bin': 'signalp',
+      'lipop1_bin': '',
+    # 'lipop1_bin': 'LipoP',
+      'tmhmm_bin': '',
+    #  'tmhmm_bin': 'tmhmm',
+      'memsat3_bin': 'runmemsat',
+      'helix_programs': ['tmhmm'],
+    # 'helix_programs': ['tmhmm', 'memsat3'],
+      'terminal_exposed_loop_min': 50, # unused in gram_neg protocol
+      'internal_exposed_loop_min': 100, # try 30 for gram_neg
+      
+    #### Sequence similarity and motif prediction
+      'hmmsearch3_bin': 'hmmsearch',
+      'hmm_profiles_dir': '%(hmm_profiles)s',
+      'hmm_evalue_max': 0.1,
+      'hmm_score_min': 10,
+      
+    #### Outer membrane beta-barrel predictors
+      'barrel_programs': ['bomp', 'tmbetadisc-rbf'],
+    # 'barrel_programs': ['bomp', 'tmbetadisc-rbf', 'tmbhunt', 'tmbeta'],
+      'bomp_clearly_cutoff': 3, # >= to this, always classify as an OM(barrel)
+      'bomp_maybe_cutoff': 1, # must also have a signal peptide to be OM(barrel)
+      'tmbhunt_clearly_cutoff': 0.95,
+      'tmbhunt_maybe_cutoff': 0.5,
+      'tmbetadisc_rbf_method': 'aadp', # aa, dp, aadp or pssm
+    }
+
+
 ### General parameters
 
 These are the general parameters to the program, representing the top-down organization of the work-flow. 

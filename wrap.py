@@ -3,8 +3,18 @@ import os
 import markdown
 import re
 
-def do(template_fname):
-  html = open(template_fname).read()
+
+usage = """
+Converts HTML template files (using .wrap) extension
+with a simple tag {{tag.md}} for markdown file
+includes.
+
+Usage: python wrap.py *html.wrap
+"""
+
+
+def do(wrap_fname):
+  html = open(wrap_fname).read()
   for match in re.findall(r'{{.*}}', html):
     fname = match[2:-2]
     if os.path.isfile(fname):
@@ -13,9 +23,17 @@ def do(template_fname):
       text_md = ""
     text_html = '\n' + markdown.markdown(text_md) + '\n'
     html = html.replace(match, text_html)
-  html_fname = template_fname.replace('.template', '')
+  html_fname = wrap_fname.replace('.wrap', '')
   open(html_fname, 'w').write(html)
+  print "Made", os.path.abspath(html_fname)
 
 
 if __name__ == '__main__':
-  [do(f) for f in sys.argv[1:]]
+  if len(sys.argv) < 2:
+    print usage
+  else:
+    for f in sys.argv[1:]:
+      if f.endswith('wrap'):
+        do(f)
+      else:
+        print "Processes html templates with .wrap extension"
