@@ -79,7 +79,9 @@
 
       <div class="row-fluid marketing">
         <div class="span12">
-{{column2.md}}
+         
+         {{customization.md}}
+
         </div>
       </div>
 

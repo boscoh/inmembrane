@@ -87,7 +87,9 @@
 
       <div class="row-fluid marketing">
         <div class="span12">
-{{column1.md}}
+
+          {{index.md}}
+
         </div>
       </div>
 
