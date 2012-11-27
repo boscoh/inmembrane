@@ -106,6 +106,8 @@
 </p>
 <p>Each plugin interfaces with an external binary, whether through a local or web-based API. The fasta sequence is processed, and the output is read, parsed, and ultimately, new properties are used to fill <code>proteins</code>.
 </p>
+<p>The output of the program is printed to stdout in tab delimited format. As well, the output is always written as a Comma Separated Values file. As most of the users of the <em>inmembrane</em> are likely biologists, CSV is used as it is a standard file format that can be used in Microsoft Excel, which most biologists are familiar with. Text files are not easily handled.
+</p>
 
 <h3>The protocol</h3>
 <p>One of the abstractions made in <em>inmembrane</em> is to separate the main loop and the plugins so that <em>inmembrane</em> can accommodate the two primary protocols (one for Gram+ and one for Gram--). The choice of protocol is taken from the parameters file <code>inmembrane.config</code>. The relevant protocol is stored in a python module with the same name as the protocol in the <code>protocols</code> sub-directory.
@@ -122,25 +124,19 @@
 <h3>Plugins</h3>
 <p>External programs are organized around each plugin. The structure of plugin is straightforward: they are python modules stored in the <code>plugins</code> directory. The name of the module reflects the name of the program as stored in the <code>inmembrane.config</code>. 
 </p>
-<p>There is a function in the plugin that is called <code>annotate</code>. <code>annotate</code> always takes a <code>params</code> directory as the first parameter, and <code>protein</code> as the second parameter. There may be other parameters for the web-based version. All calls to the plugins are recognized by the module name, which can be called by <code>eval</code> within Python
+<p>There is a function in the plugin that is called <code>annotate</code>. <code>annotate</code> always takes a <code>params</code> directory as the first parameter, and <code>protein</code> as the second parameter. There may be other parameters for the web-based version. All calls to the plugins are recognized by the module name, which can be called by <code>eval</code> within Python.
+</p>
+<p>An important element of every plugin is the parsing of the results of the binary - either text processing of an output file or stdout, or HTML-scraping of the web-page output. Given that Python has excellent text-processing facilities, the files are generally parsed directly in either the main <code>annotate</code> function or an auxillary reusable function. The text files are generally sequential table-like output and so a simple iteration of the output lines is in general sufficient to process the output.
+</p>
+<p>As <em>inmembrane</em> is a glue program that builds on the work of many excellent programs, <em>inmembrane</em> takes care to make sure credit is given. As such citations for each program are considered essential parts of the plugin, and they are stored directly in the source file, and are extracted, and displayed every time the program is run.
 </p>
 
-<h3>Logging</h3>
-<p>stderr, and or output
+<h3>Logging, temorary output and debugging</h3>
+<p>A standard approach to intermediate file is taken to standardize the process of building plugins. First STDERR is used to output program information. In order to be compatible with pure text file, program output and diagnostics are always prefaced with a # character. Because STDERR is used, this makes it easy to turn on/off the DEBUG mode, which simply redirects the STDERR output.
 </p>
-
-<h3>Ouptut CSV</h3>
-
-<h3>chop_nterminal peptide</h3>
-
-<h3>Temprorary output</h3>
-<p>Use of dictionary important loss of confusion
+<p>Give that many programs will be used, often with their own meangerie of output files, <code>inmembrane</code> always creates an intermediate output directory using the basename of the input FASTA file. A copy of the FASTA file is copied into this directory, and all subsequent calculations are made in this directory. The copy of the FASTA file is always called <code>input.fasta</code> so that subsequent OS commands can be standaradized.
 </p>
-
-<h3>Citations</h3>
-
-<h3>Plugins</h3>
-<p>wrap binaries in terms of plugins
+<p>As the main data structure is the standard Python dictionary <code>proteins</code>, this structure can easily be printed out using the <code>pprint</code> module in Python
 </p>
 
           
