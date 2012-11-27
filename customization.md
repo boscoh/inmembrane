@@ -1,4 +1,4 @@
-# Customization of _inmembrane_ parameters
+# Customization of _inmembrane_ 
 
 All adjustable parameters of the running of _inmembrane_ have been collected in a parameters file, which is typically stored in the `inmembrane.config`. On the first use of the program, when no such `inmembrane.config` is found, a default `inmembrane.config` will be generated, otherwise existing `inmembrane.config` will be used.
 
