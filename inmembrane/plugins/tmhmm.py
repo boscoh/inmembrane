@@ -36,9 +36,11 @@ def annotate(params, proteins):
 
   tmhmm_out = 'tmhmm.out'
   run('%(tmhmm_bin)s %(fasta)s' % params, tmhmm_out)
+  return parse_tmhmm(open('tmhmm.out').read(), proteins)
 
+def parse_tmhmm(text, proteins, id_mapping=[]):
   seqid = None
-  for i_line, l in enumerate(open(tmhmm_out)):
+  for i_line, l in enumerate(text.split('\n')):
     if i_line == 0:
       continue
     words = l.split()
@@ -51,6 +53,10 @@ def annotate(params, proteins):
       seqid = parse_fasta_header(words[0])[0]
     if seqid is None:
       continue
+
+    # re-map from a safe_seqid to the original seqid
+    if id_mapping:
+      seqid = id_mapping[seqid]
 
     # initialize fields in proteins[seqid]
     if 'tmhmm_helices' not in proteins[seqid]:
