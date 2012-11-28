@@ -33,8 +33,9 @@ class TestHmmsearch3(PluginTestBase):
     }
 
     #helpers.print_proteins(self.proteins)
-    
-    self.assertEqual(self.proteins, self.expected_output)
+    for seqid in self.proteins:
+      self.assertEqual(self.proteins[seqid]['hmmsearch'], 
+                       self.expected_output[seqid]['hmmsearch'])
 
 if __name__ == '__main__':
   unittest.main()
