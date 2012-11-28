@@ -21,7 +21,9 @@ def get_annotations(params):
   else:
     annotations += ['signalp4']
   
-  if not params['lipop1_bin'] or params['lipop1_bin'] == 'lipop_web':
+  if not params['lipop1_bin'] or params['lipop1_bin'] == 'lipop_scrape_web':
+    annotations += ['lipop_scrape_web']
+  elif params['lipop1_bin'] == 'lipop_web':
     annotations += ['lipop_web']
   else:
     annotations += ['lipop1']
@@ -168,13 +170,17 @@ def post_process_protein(params, protein):
   def exposed_loop_extent(protein):
     extents = []
     for program in params['helix_programs']:
-      extents.append(max_exposed_loop(
-          protein['sequence_length'], 
-          len(protein['%s_helices' % (program)]), 
-          protein['%s_outer_loops' % (program)], 
-          params['terminal_exposed_loop_min'], 
-          params['internal_exposed_loop_min']))
-    return max(extents)
+      if program+'_helices' in protein:
+        extents.append(max_exposed_loop(
+            protein['sequence_length'], 
+            len(protein['%s_helices' % (program)]), 
+            protein['%s_outer_loops' % (program)], 
+            params['terminal_exposed_loop_min'], 
+            params['internal_exposed_loop_min']))
+    if extents:
+      return max(extents)
+    else:
+      return 0
 
   terminal_exposed_loop_min = \
       params['terminal_exposed_loop_min']

@@ -3,7 +3,7 @@
 #
 
 import inmembrane
-import os, subprocess, sys
+import os, subprocess, sys, re
 import textwrap
 
 LOG_SILENT = False
@@ -143,6 +143,9 @@ def create_proteins_dict(fasta):
       if words:
         proteins[seqid]['seq'] += words[0]
     proteins[seqid]['sequence_length'] = len(proteins[seqid]['seq'])
+
+  proteins, id_mapping = generate_safe_seqids(proteins)
+
   return seqids, proteins
   
 
@@ -170,11 +173,30 @@ def write_proteins_fasta(
   Creates a fasta file of the sequences of a subset of the proteins.
   """
   f = open(fasta_filename, "w")
-  for seqid in seqids:
-    seq_wrap = textwrap.fill(proteins[seqid]['seq'], width)
-    f.write(">%s\n%s\n" % (proteins[seqid]['name'], seq_wrap))
+  out = proteins_to_fasta(proteins, seqids=seqids, width=width)
+  f.write(out)
   f.close()
 
+def proteins_to_fasta(proteins, seqids=[], use_safe_seqid=False, width=50):
+  """
+  Takes a proteins dictionary and returns a string containing
+  all the sequences in FASTA format. Option parameters are
+  a list of seqids to output (seqids) and the line width (width).
+  """
+  if seqids:
+    idlist = seqids
+  else:
+    idlist = proteins
+
+  fasta_out = ""
+  for seqid in idlist:
+    seq_wrap = textwrap.fill(proteins[seqid]['seq'], width)
+    if use_safe_seqid:
+      header = proteins[seqid]['safe_seqid']
+    else:
+      header = proteins[seqid]['name']
+    fasta_out += ">%s\n%s\n" % (header, seq_wrap)
+  return fasta_out
 
 def chop_nterminal_peptide(protein, i_cut):
   """
@@ -213,7 +235,25 @@ def chop_nterminal_peptide(protein, i_cut):
                 new_N_loop = protein[x][0]
                 new_N_loop[0] = 1
             del sses[i]
-            
+       
+def generate_safe_seqids(proteins):
+  """
+  Takes a 'proteins' dictionary, keyed by sequence id, and 
+  adds a 'safe' sequence id ('safe_seqid') that is less likely 
+  to be munged or break various external programs.
+
+  Returns a tuple of the updated proteins dictionary and a dictionary
+  mapping the 'safe' sequence ids to the original ids.
+  """
+  id_mapping = {}
+  count = 0
+  for seqid in proteins:
+    safe_id = re.sub(r'[^\w]', "", seqid) +'_'+ `count`
+    id_mapping[safe_id] = seqid
+    proteins[seqid]['safe_seqid'] = safe_id
+    count += 1
+
+  return (proteins, id_mapping)
 
 def clean_directory(top, excluded_files):
   """
@@ -226,3 +266,4 @@ def clean_directory(top, excluded_files):
         os.remove(os.path.join(root, name))
     for name in dirs:
       os.rmdir(os.path.join(root, name))
+

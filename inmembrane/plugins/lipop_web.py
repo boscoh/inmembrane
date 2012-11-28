@@ -101,9 +101,9 @@ def annotate(params, proteins, \
     response = client.service.pollQueue(job)
     retries = 0
     sys.stderr.write("# Waiting for LipoP results ")
-    while response.status != "FINISHED" and retries < 100:
+    while response.status != "FINISHED" and retries < 12:
       response = client.service.pollQueue(job)
-      time.sleep(10 + (retries*2))
+      time.sleep(10 + (retries**2))
       retries += 1
       sys.stderr.write(".")
       

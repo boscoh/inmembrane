@@ -16,6 +16,7 @@ from twill.commands import find, formfile, follow, fv, go, show, \
                              showforms, showlinks, submit, agent
 from BeautifulSoup import BeautifulSoup
 
+import inmembrane
 from inmembrane.helpers import log_stderr, parse_fasta_header
 
 
@@ -27,7 +28,8 @@ def annotate(params, proteins, \
   """
   # set the user-agent so web services can block us if they want ... :/
   python_version = sys.version.split()[0]
-  agent("Python-urllib/%s (twill; inmembrane)" % python_version)
+  agent("Python-urllib/%s (twill; inmembrane/%s)" % 
+          (python_version, inmembrane.__version__))
   
   bomp_out = 'bomp.out'
   log_stderr("# BOMP(web) %s > %s" % (params['fasta'], bomp_out))
