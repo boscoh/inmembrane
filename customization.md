@@ -1,4 +1,4 @@
-# Customization of _inmembrane_ 
+# Configuration of _inmembrane_ 
 
 By default, _inmembrane_ will run the gram-positive protocol using remote web services for the analysis (and HMMER locally) without requiring any additional configuration.
 
