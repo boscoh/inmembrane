@@ -25,14 +25,13 @@ default_params_str = """{
   
 #### Sequence similarity and motif prediction
   'hmmsearch3_bin': 'hmmsearch',
-  'hmm_profiles_dir': '%(hmm_profiles)s',
   'hmm_evalue_max': 0.1,
   'hmm_score_min': 10,
   
 #### Outer membrane beta-barrel predictors
   'barrel_programs': ['bomp', 'tmbetadisc-rbf'],
 # 'barrel_programs': ['bomp', 'tmbetadisc-rbf', 'tmbhunt', 'tmbeta'],
-  'bomp_clearly_cutoff': 3, # >= to this, always classify as an OM(barrel)
+  'bomp_clearly_cutoff': 3, # if >= than this, always classify as an OM(barrel)
   'bomp_maybe_cutoff': 1, # must also have a signal peptide to be OM(barrel)
   'tmbhunt_clearly_cutoff': 0.95,
   'tmbhunt_maybe_cutoff': 0.5,
@@ -57,9 +56,9 @@ def get_params():
     log_stderr("# Couldn't find inmembrane.config file")
     log_stderr("# So, will generate a default config " + config)
     abs_hmm_profiles = os.path.join(module_dir, 'hmm_profiles')
-    default_str = default_params_str % \
-        { 'hmm_profiles': abs_hmm_profiles }
-    open(config, 'w').write(default_str)
+    fh = open(config, 'w')
+    fh.write(default_params_str)
+    fh.close()
   else:
     log_stderr("# Loading existing inmembrane.config")
   params = eval(open(config).read())
