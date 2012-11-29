@@ -64,6 +64,8 @@
 
   <body>
 
+<a href="https://github.com/boscoh/inmembrane"><img style="position: absolute; top: 0; right: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_darkblue_121621.png" alt="Fork me on GitHub"></a>
+
     <div class="container-narrow">
 
       <div class="masthead">
@@ -80,7 +82,8 @@
       <div class="jumbotron">
         <h1>inmembrane</h1>
         <p class="lead">Prediction of surface-exposed proteins in bacterial cells</p>
-        <a class="btn btn-large btn-success" href="#">Download</a>
+        <a class="btn btn-large btn-success" href="http://pypi.python.org/packages/source/i/inmembrane/inmembrane-0.92.tar.gz">Download</a> <br/>
+        (stable release, v0.92)
       </div>
 
       <hr>
@@ -89,65 +92,70 @@
         <div class="span12">
 
           
-<h2>Getting it to Work</h2>
-
-<h4>What is <em>inmembrane</em>?</h4>
-<p><em>inmembrane</em> is a program to predict if a protein is likely to be surface-exposed in a bacterial cell. It is designed to be relatively easy to install, with several different options to help you run all external binaries on your system.
+<h2>What is <em>inmembrane</em>?</h2>
+<p><em>inmembrane</em> is a program to predict if a set of proteins are likely to be surface-exposed in a bacterial cell based on their predicted subcellular localization and membrane topology. It is designed to be relatively easy to install, with options for running the analysis using web services and/or locally installed sequence analysis packages.
+</p>
+<p><em>inmembrane</em> runs on Linux, OS X and other Unix-based systems. It has been tested on Ubuntu Linux (11.04+) and Mac OS X (10.6+). It hasn't been tested on Windows, and is unlikely to run without changes.
 </p>
 
-<h4>How can we help you?</h4>
+<h3>Quickstart for the bold &amp; impatient</h3>
+<pre><code>$ sudo pip install inmembrane
+$ inmembrane_scan --test
+$ inmembrane_scan my_gram_pos_proteome.fasta
+</code></pre><p><em>(Some tests may fail if you don't have various external binaries installed, but don't despair - the only external program <strong>required</strong> by is HMMER v3, everything else uses a web service in the default configuration)</em>
+</p>
+
+<h3>How can inmembrane help you?</h3>
 <p>We envisage <em>inmembrane</em> being of use in three ways:
 </p>
 <ol>
- <li><p>You want to do a quirk and dirty annotation of your proteome for cell-surface exposure in order to cross-check your experiment. Keep reading on this page.
+ <li><p>Quirk and dirty annotation of a proteome in order to cross-check your experiment (eg, gaining an overview of hits from a gram-positive bacterial cell-surface shaving experiment).
 </p>
 
  </li>
 
- <li><p>You want to play around with different ways of cell localization assignment. Check out our parameterization guide.
+ <li><p>You want to tweak your own rule-based method for subcellular localization assignment from sequence. Check out our <a href="customization.html">parameterization guide</a>.
 </p>
 
  </li>
 
- <li><p>You want to make your own bioinformatic work-flow, and would like to use <em>inmembrane</em> as a useful Python starting point. Have a look at our programming model, paper, and API guide.
+ <li><p>You want to make your own protein sequence analysis work-flow, and would like to use <em>inmembrane</em> as a useful Python starting point. Have a look at our programming model, paper, and API guide.
 </p>
 
  </li>
 </ol>
 
-<h4>Combining analyses into a workflow</h4>
-<p>The cell-surface exposure algorithm is taken from the paper (Barinove et al. 2009. Proteomics 9:61-73). It is a straightforward case of a simple work-flow defined over a number of external binaries that do:
+<h3>Combining analyses into a workflow</h3>
+<p>The cell-surface exposure algorithm used by the <em>inmembrane</em> 'gram-positive' protocol is based on the method described in <a href="http://dx.doi.org/10.1002/pmic.200800195">(Barinov et al. 2009. Proteomics 9:61-73)</a>. The workflow involves annotating the provided protein sequences using a number of external programs and/or web services providing:
 </p>
 <ul>
  <li>
-     transmembrane helix prediction,
+     transmembrane helix prediction (eg TMHMM)
  </li>
 
  <li>
-     lipoprotein prediction,
+     lipoprotein prediction (eg LipoP)
  </li>
 
  <li>
-     secretion signal prediction
+     secretion signal prediction (eg SignalP)
  </li>
 
  <li>
-     cell-wall binding motif prediction
+     cell-wall binding motif prediction (eg via HMMER)
  </li>
 </ul>
-<p>Although there exists several generic bioinformatic workflow packages, the deduction of cell-surface exposure from the results of these programs is a little more involved. Here, we have written this in a Python package, and in a manner that is extensible, and potentially repackageable for other bioinformatic analysis. 
+<p><em>inmembrane</em> simplifies collating the output and presenting an overview which allows biologists to immediately gain insight into the likely localization and surface exposure of their bacterial proteome of interest.
 </p>
 
-<h4>Ease of use</h4>
-<p>We have specifically chosen Python for the overall ease of use, and readability. Read our paper for more details. One of the most difficult aspects of installing a workflow like this is the installation of multiple external binaries. We have made a large effort to incorporate web-based modules, which in most cases, should significantly simplify the process of installation.
-</p>
+<h2>Using <em>inmembrane</em></h2>
 
-<h4>How to install?</h4>
-<p>Well, to install the program, you'll have to have install
+<h3>Installation</h3>
+<p>Installing and running <em>inmembrane</em> requires:
 </p>
 <ul>
  <li>
-     Python: it should be on most systems, but if not, go to <a href="http://www.python.org">http://www.python.org</a>
+     Python: it should be on most modern systems, but if not, go to <a href="http://www.python.org">http://www.python.org</a>
  </li>
 
  <li>
@@ -155,23 +163,30 @@
  </li>
 
  <li>
-     HMMER: this is the only bioinformatic software that definitely needs to be installed <a href="http://hmmer.janelia.org/software">http://hmmer.janelia.org/software</a>
+     HMMER: this is the only sequence analysis software that is required to be locally installed <a href="http://hmmer.janelia.org/software">http://hmmer.janelia.org/software</a>
  </li>
 </ul>
-<p>Once these are installed on your system, you should be able to do this to install <em>inmembrane</em>:
+<p>On Debian/Ubuntu systems, you can install the minimal dependencies using:
 </p>
-<pre><code>&gt;&gt;&gt; pip install inmembrane
+<pre><code>$ sudo apt-get install python-pip hmmer
+</code></pre><p>Once these are installed on your system, <em>inmembrane</em> can be installed with:
+</p>
+<pre><code>$ sudo pip install inmembrane
 </code></pre>
-<h4>Running <em>inmembrane</em></h4>
+<h3>Running <em>inmembrane</em></h3>
 <p>Let's say you have all the protein sequences you want to analyze in a FASTA text file called <code>proteome.fasta</code>.
 </p>
-<p>Inmembrane can be run from the command line, assuming you have an internet connection, and all the web-sites <em>inmembrane</em> relies on are up:
+<p><em>Inmembrane</em> is run from the command line like:
 </p>
-<pre><code>&gt;&gt;&gt; inmembrane_scan proteome.fasta
-</code></pre><p>The results will be written to proteome.csv, which can be opened by Microsoft Excel. 
+<pre><code>$ inmembrane_scan my_proteome.fasta
+</code></pre><p>Assuming the web services <em>inmembrane</em> relies on are available, the analysis should complete within seconds or minutes.
+</p>
+<p>A summary is printed to the terminal, and the results will also be written to my_proteome.csv, which can be opened by a spreadsheet application such as Microsoft Excel.
+</p>
+<p><strong>Pro-tip:</strong> <em>inmembrane</em> also creates a directory (eg named 'my_proteome') containing output files from the individual external analyses, the original configuration file and the input FASTA file. If you run <em>inmembrane</em> a second time on the same FASTA file, the results will be read from this directory rather than re-running each external analysis program. To re-run the analysis from scratch (with say, different parameters), you must remove the files in this directory. To re-run just part of the analysis you can remove individual files from the cache.
 </p>
 
-<h4>Interpreting output</h4>
+<h3>Interpreting the output</h3>
 <p>It should look something like this: 
 </p>
 <pre><code>SPy_0008  CYTOPLASM(non-PSE)  .                         SPy_0008 from AE004092
@@ -191,26 +206,26 @@ SPy_0019  SECRETED            signalp                   SPy_0019 from AE004092
  <li>
      PSE: means Potentially Surface Exposed, this can arise from<ul>
  <li>
-     transmembrane helical protein with long longs
+     transmembrane helical protein with long extracellular loops
  </li>
 
  <li>
-     lipoprotein attached to the lipid layer
+     lipoprotein attached to the membrane
  </li>
 
  <li>
-     protein with motif that attaches to the glycan cell-wall
+     protein with motif that associates with the glycan cell-wall
  </li>
 </ul>
 
  </li>
 
  <li>
-     SECRETED: contains a secretion signal
+     SECRETED: contains a secretion signal, but not the features above
  </li>
 
  <li>
-     CYTOPLASM: basically none of the above
+     CYTOPLASM: contains none of the above features
  </li>
 </ul>
 
