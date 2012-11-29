@@ -82,7 +82,9 @@
          
          
 <h1>Customization of <em>inmembrane</em></h1>
-<p>All adjustable parameters of the running of <em>inmembrane</em> have been collected in a parameters file, which is typically stored in the <code>inmembrane.config</code>. On the first use of the program, when no such <code>inmembrane.config</code> is found, a default <code>inmembrane.config</code> will be generated, otherwise existing <code>inmembrane.config</code> will be used.
+<p>By default, <em>inmembrane</em> will run the gram-positive protocol using remote web services for the analysis (and HMMER locally) without requiring any additional configuration.
+</p>
+<p>On the first use of the program, a default <code>inmembrane.config</code> configuration file will be generated, otherwise existing the existing <code>inmembrane.config</code> will be used. This file contains all the user adjustable parameters (as a Python dictionary). To run the gram-negative protocol, use locally installed copies of SignalP/LipoP/TMHMM or tweak the external loop threshold, you may want to edit the configuration file to your needs.
 </p>
 <p>The default parameters are as following, they will be explained in sections below:
 </p>
@@ -120,133 +122,136 @@
   'tmbhunt_maybe_cutoff': 0.5,
   'tmbetadisc_rbf_method': 'aadp', # aa, dp, aadp or pssm
 }
-</code></pre><p>Existing <code>inmembrane.config</code> files can be changed. The parameters will be explained below, grouped in terms of related parameters.
+</code></pre><p>Existing <code>inmembrane.config</code> files can be changed. Since this file is in fact just Python code, normal Python syntax rules apply. Everything after a hash (#) character on a line is ignored - these are used as comments, and to used indicate alternative configurations that you might want to use.
+</p>
+<p>The parameters will be explained below, grouped in terms of related parameters.
 </p>
 
 <h3>General Parameters</h3>
-<p>These are the general parameters to the program, representing the top-down organization of the work-flow. 
-</p>
-<p>A fasta program is the input, following one of currently two different protocols - one for Gram+ bacteria, and one for Gram- bacteria. The results are saved to a csv file as an output.
+<p>The input to <em>inmembrane</em> is a FASTA formatted set of protein sequences. There are currently two different protocols (or 'workflows') - one for Gram+ bacteria (the default), and one for Gram- bacteria. The results are saved to a csv file as an output.
 </p>
 <ul>
  <li>
-     'fasta': the pathname of the fasta file holding the sequences
+     <code>fasta</code>: the pathname of the FASTA file holding the protein sequences
  </li>
 
  <li>
-     'protocol': switches between different protocols for analysising the proteomes
+     <code>protocol</code>: switches between different protocols for analysising the proteomes
  </li>
 
  <li>
-     'csv': the name of the output file in CSV (Excel-compatible) format. Defaults to a file using the same filename as 'fasta'
+     <code>csv</code>: the name of the output file in CSV (Excel-compatible) format. Defaults to a file using the same filename as 'fasta'
  </li>
 </ul>
+<p>Both <code>fasta</code> and <code>csv</code> should usually be left blank by default, since the input file is usually specified directly on the commandline.
+</p>
 <p>For potential debugging, it's important that all intermediate files are saved, and they are saved in: 
 </p>
 <ul>
  <li>
-     'out_dir': the directory where all intermediate output files are located
+     <code>out_dir</code>: the directory where all intermediate output files are located. Defaults to the same filename as <code>fasta</code> (without the .fasta extension)
  </li>
 </ul>
 
-<h3>Optional - Binaries or Web-based API's</h3>
-<p>One of the problems that <em>inmembrane</em> tackles is the complexity of using and installing multiple binaries. In older programs, the only option was to install local binaires of the external programs. This raises problems involved with getting the binary for the right platform, compilation with the right tools, and installation in the correct file system. In contrast, many of these tools now provide a web-interface. In <em>inmembrane</em>, we have added facilities to use the web service, whether through a RESTful interface, or through a SOAP interface, when provided.
+<h3>Optional - Locally installed binaries or remote web services</h3>
+<p>One of the problems that <em>inmembrane</em> tackles is the complexity of using and installing multiple pieces of sequence analysis software. For older programs, the only option was to install local binaires of the external programs. This raises problems involved with getting the binary (or source) for the right platform, compilation with the right tools, and installation and configuration in the correct location. In contrast, many of these tools now provide a web-interface. In <em>inmembrane</em>, we have added facilities to use remote web services, whether through a RESTful interface, or through a SOAP interface, when provided.
 </p>
-<p>Consequently, the parameters for the binaries are needed, where <em>inmembrane</em> will attempt to run the program in the default directory, or if a full-path name is given, <em>inmembrane</em> can run the binary in the correct location. 
-   In order to turn off the local binary option, if in a *_bin parameter is given the empty string, the local binary step will be skipped and the web version will be used instead.
+<p>By default, <em>inmembrane</em> will use web services, specified by setting the <code>*_bin</code> parameter as empty string. To use a local binary binary version of a program, the appropriate <code>*_bin</code> parameter must be set to the name (or full path) of the executable.
 </p>
 <ul>
  <li>
-     'signalp4_bin', 'lipop1_bin', 'tmhmm_bin', 'memsat3_bin': the full pathname of the binaries used for the analysis. If empty, it is not run, and the web version is used instead
+     <code>signalp4_bin</code>, <code>lipop1_bin</code>, <code>tmhmm_bin</code>, <code>memsat3_bin</code>: the full pathname of the binaries used for the analysis. If empty, the web version is used instead
  </li>
 </ul>
 
-<h3>The Surface-Exposure Algorithm</h3>
-<p>The key part of the surface-exposure prediction evaluates the length of loops in the extracellular part of membrane proteins. This evaluation requires the key parameter of loop cutoff that determines the minimum length of a loop that is required to potentially pass through the glycan layer. 
+<h3>The Potentially Surface Exposed (PSE) Algorithm</h3>
+<p>The key part of the surface-exposure prediction evaluates the length of loops in the extramembrane parts of membrane proteins. This analysis makes most sense for Gram+ bacteria with a single membrane, where any membrane protein can potentially expose loops to the extracellular environment. This evaluation requires the key parameter of loop cutoff that determines the minimum length of a loop that is required to potentially pass through the glycan layer. 
 </p>
-<p>In the original <em>SurfG+</em> paper, for Gram+ bacteria, it was found that a loop lenght of ~50 amino acids is required. Therefore for internal loops, this gives a length ~100 amino acids, which allows the loop to pass through the layer and back down again.
+<p>In the original <em>SurfG+</em> paper<a href="http://dx.doi.org/10.1002/pmic.200800195">(Barinov et al. 2009. Proteomics 9:61-73)</a>, it was found that a linear polypeptide length of ~50 amino acids most closely matched the length able to traverse the cell wall and become succeptible to protease shaving in the model Gram+ bacterium studied. Therefore for internal loops between transmembrane segments, this gives an accessible length threshold of ~100 amino acids, which allows the loop to pass through the cell wall layer and back down to the membrane again.
 </p>
 <ul>
  <li>
-     'terminal_exposed_loop_min': this is the length in terms of amino acids given to define an external loop of a protein to be long enough to stick out of the bacterial cell-wall to be considered surface-epxosed
+     <code>terminal_exposed_loop_min</code>: this is the length (in amino acids) given to define an N- or C- terminal segment of a protein that is long enough to stick out of the bacterial cell-wall to be considered surface-exposed
  </li>
 
  <li>
-     'internal_exposed_loop_min': similarly to above, except is double the length as internal loops need to go up, and down again, for continuity with the rest of the protein.
+     <code>internal_exposed_loop_min</code>: the length of a loop between two membrane embedded segments able to traverse the cell wall and present as surface exposed
  </li>
 </ul>
-<p>There are several different way to identify proteins that have loops that potentially stick out of the glycan cell-wall of the bacteria. These will be discussed in the following sections.
+<p>These values should be modified based on the bacterial species (based on cell wall thickness) and type of experiment being used to determine surface exposure (protease shaving vs. epitope mapping vs. chemical crosslinking).
+</p>
+<p>There are several different ways to identify proteins with a subcellular localization that may display loops that protruding outside the glycan cell-wall of the bacteria. These will be discussed in the following sections.
 </p>
 
 <h3>Proteins attached to the Glycan Cell-wall and the Lipid bilayer</h3>
-<p>The clearest example of proteins that may stick of the glycan layer are proteins that possess known cell-wall attachment motifs. 
+<p>The clearest example of proteins that may protrude outside of the Gram+ glycan layer are proteins that possess known cell-wall attachment motifs. Motifs for domains known to bind to the glycan cell-wall are taken from PFAM as HMMER profiles, and are included in the <em>inmembrane</em> installation. For the Gram+ protocol, these are: CW_binding_1, Gram_pos_anchor, GW2, LPxTG, LysM, PG_binding_1, PG_binding_3, CW_binding_2, GW1, GW3, LPxTG_PS50847, NLPC_P60, PG_binding_2 and SLH.
 </p>
-<p>Motifs for motifs that bind to the glycan cell-wall are taken from PFAM as HMMER profiles, and stored into a directory included in the <em>inmembrane</em> package. In the default <code>inmembrane.config</code> file, the location of this directory will be put in <code>hmm_profiles_dir</code>. 
-</p>
-<p>Subsequently, <code>HMMER</code> will be used to search the profiles against the input query sequences. The cutoffs for the identification of a motif is given by <code>hmm_evalue_max</code> and <code>hmm_score_min</code>.
+<p>HMMER is used to search the profiles against the input query sequences. The cutoffs for the identification of a motif are given by <code>hmm_evalue_max</code> and <code>hmm_score_min</code>.
 </p>
 <ul>
  <li>
-     'hmmsearch3_bin': the binary for HMMER
+     <code>hmmsearch3_bin</code>: the binary for HMMER
  </li>
 
  <li>
-     'hmm_profiles_dir': the directory that holds the HMMER profiles for cell-wall signals
+     <code>hmm_evalue_max</code>: the maximum expectation value cutoff for acceptable prediction in HMMER
  </li>
 
  <li>
-     'hmm_evalue_max': the maximum expectation value cutoff for acceptable prediction in HMMER
- </li>
-
- <li>
-     'hmm_score_min': the minimum score cutoff for acceptatble prediction in HMMER
+     <code>hmm_score_min</code>: the minimum score cutoff for acceptatble prediction in HMMER
  </li>
 </ul>
-<p>Another source of proteins attached to the membrane are lipo-proteins. LipoP is used to identify motifs for the cell to attach a protein to the lipid layer of the protein. 
+<p>Another class of proteins associated with the membrane surface membrane are lipoproteins, which are posttranlationally modified to include a covalently attached N-terminal lipid moeity. LipoP is used to identify the N-terminal lipidation motif, found after a secretion signal. 
 </p>
 <ul>
  <li>
-     'lipop_bin': the location of the binary of LipoP, or if this is given as '', then it uses the web-version at http://http://www.cbs.dtu.dk/services/LipoP/.
+     <code>lipop_bin</code>: the location of the binary of LipoP. If this is given as '' (default), then <em>inmembrane</em> uses the web service at http://www.cbs.dtu.dk/services/LipoP/.
  </li>
 </ul>
 
 <h3>Transmembrane-&alpha;-helix Predictors</h3>
-<p>The other main source of proteins in Gram+ proteins with external loops are the identification of proteins with transmembrane &amp;alpha-helices. The internal loops of proteins with multiple transmembrane helices, as well as the terminal loops are all candidates to be exposed out of the glycan layer.
+<p>The other main class of protein in Gram+ proteins with extracellular loops are integral membrane proteins containing transmembrane &amp;alpha-helices. The loops between transmembrane segments, as well as N- and C- terminal non-membrane embedded regions are all candidates to be exposed outside the glycan layer.
 </p>
-<p>There is no dominant transmembrane helix predictor, and thus <em>inmembrane</em> has been written to allow pluggable options for transmembrane helix prediction. To allow for this, <em>inmembrane</em> allows the results of more than one helix predictor, and the one that give the longest loops that extends out of the extracellular region will be used. As such the parameter 'helix_programs' lists all the transmembrane helix predictors to be used. Currently, 
+<p>There is no <em>de facto</em> standard transmembrane helix predictor, and thus <em>inmembrane</em> has been written to allow pluggable options for transmembrane helix prediction. To allow for this, <em>inmembrane</em> allows the results of more than one helix predictor, and takes a greedy approach to annotating potentially surface exposed proteins - the prediction that gives the longest extracellular loops will be used. The parameter 'helix_programs' lists all the transmembrane helix predictors to be used.
 </p>
 <ul>
  <li>
-     'helix_programs': a list of transmembrane-helix predictors to be used. Currently, <em>inmembrane</em> can handle <code>tmhmm</code> and <code>memsat</code>.
+     <code>helix_programs</code>: a list of transmembrane-helix predictors to be used. Currently, <em>inmembrane</em> can handle <code>tmhmm</code> and <code>memsat3</code>.
  </li>
 </ul>
 
 <h3>&beta;-barrel predictors</h3>
+<p>These parameters only apply to the Gram- protocol, since Gram+ bacteria contain only a single membrane containing helical integral membrane proteins and not outer membrane beta barrels (OMPbb's) (although it's worth noting that things may be so simple, since some species of Mycobacterium may contain outer membranes and associated OMPs <a href="http://dx.doi.org/10.1016/j.tube.2008.02.004">http://dx.doi.org/10.1016/j.tube.2008.02.004</a> ). By default, <em>inmembrane</em> uses BOMP (http://services.cbu.uib.no/tools/bomp/) and TMBETADISC-RBF (http://rbf.bioinfo.tw/~sachen/OMPpredict/TMBETADISC-RBF.php).
+</p>
 <ul>
  <li>
-     'barrel_programs': list of programs to do &amp;beta-barel ['bomp', 'tmbetadisc-rbf'],
+     <code>barrel_programs</code>: a list of web services for outer membrane &amp;beta-barrel prediction ['bomp', 'tmbetadisc-rbf'],
  </li>
 
  <li>
-     'bomp_clearly_cutoff': 3, # &gt;= to this, always classify as an OM(barrel)
+     <code>bomp_clearly_cutoff</code>: 3, # if greater than or equal to this, always classify as an OM(barrel)
  </li>
 
  <li>
-     'bomp_maybe_cutoff': 1, # must also have a signal peptide to be OM(barrel)
+     <code>bomp_maybe_cutoff</code>: 1, # must also have a signal peptide to be OM(barrel)
  </li>
 
  <li>
-     'tmbhunt_clearly_cutoff': 0.95,
+     <code>tmbhunt_clearly_cutoff</code>: 0.95, # if greater than or equal to this, always classify as an OM(barrel)
  </li>
 
  <li>
-     'tmbhunt_maybe_cutoff': 0.5,
+     <code>tmbhunt_maybe_cutoff</code>: 0.5, # if greater than or equal to this, always classify as an OM(barrel)
  </li>
 
  <li>
-     'tmbetadisc_rbf_method': 'aadp', # aa, dp, aadp or pssm
+     <code>tmbetadisc_rbf_method</code>: 'aadp', # TMBETADISC-RBF method: aa (single amino acid composition based), dp (dipeptide composition based), aadp (both aa and dp) or pssm (position specific mutation matrix based)
  </li>
 </ul>
+<p>Plugins for TMBHUNT (<code>tmbhunt</code>) and TMBETA (<code>tmbeta</code>) are available but are disabled by default since the general prediction accuracy or web service reliability was found to be lacking during testing.
+</p>
+<p>Since topology prediction for arbitrary OMPbb sequences is still very unreliable, the Gram- protocol does not attempt to do loop length prediction but simply annotates potential OMPbb proteins as such.
+</p>
 
 
         </div>
