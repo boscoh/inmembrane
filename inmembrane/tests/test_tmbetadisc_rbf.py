@@ -49,8 +49,9 @@ class TestTmbetadisc_rbf(PluginTestBase):
       }
 
     #helpers.print_proteins(self.proteins)
-    
-    self.assertEqual(self.proteins, self.expected_output)
+    for seqid in self.proteins:
+      self.assertEqual(self.proteins[seqid]["is_tmbetadisc_rbf"], 
+                       self.expected_output[seqid]["is_tmbetadisc_rbf"])
 
 if __name__ == '__main__':
   unittest.main()

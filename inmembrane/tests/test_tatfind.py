@@ -38,8 +38,9 @@ class TestTatfind(PluginTestBase):
 
     #import helpers
     #helpers.print_proteins(self.proteins)
-    
-    self.assertEqual(self.proteins, self.expected_output)
+    for seqid in self.proteins:
+      self.assertEqual(self.proteins[seqid]["is_tatfind"], 
+                       self.expected_output[seqid]["is_tatfind"])
 
 if __name__ == '__main__':
   unittest.main()
