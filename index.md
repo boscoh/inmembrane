@@ -1,58 +1,72 @@
-## Getting it to Work
+## What is _inmembrane_?
 
-#### What is _inmembrane_?
+_inmembrane_ is a program to predict if a set of proteins are likely to be surface-exposed in a bacterial cell based on their predicted subcellular localization and membrane topology. It is designed to be relatively easy to install, with options for running the analysis using web services and/or locally installed sequence analysis packages.
 
-_inmembrane_ is a program to predict if a protein is likely to be surface-exposed in a bacterial cell. It is designed to be relatively easy to install, with several different options to help you run all external binaries on your system.
+_inmembrane_ runs on Linux, OS X and other Unix-based systems. It has been tested on Ubuntu Linux (11.04+) and Mac OS X (10.6+). It hasn't been tested on Windows, and is unlikely to run without changes.
 
-#### How can we help you?
+### Quickstart for the bold & impatient
+
+    $ sudo pip install inmembrane
+    $ inmembrane_scan --test
+    $ inmembrane_scan my_gram_pos_proteome.fasta
+
+<em>(Some tests may fail if you don't have various external binaries installed, but don't despair - the only external program **required** by is HMMER v3, everything else uses a web service in the default configuration)</em>
+
+### How can inmembrane help you?
 
 We envisage _inmembrane_ being of use in three ways:
 
-1. You want to do a quirk and dirty annotation of your proteome for cell-surface exposure in order to cross-check your experiment. Keep reading on this page.
+1. Quirk and dirty annotation of a proteome in order to cross-check your experiment (eg, gaining an overview of hits from a gram-positive bacterial cell-surface shaving experiment).
 
-2. You want to play around with different ways of cell localization assignment. Check out our parameterization guide.
+2. You want to tweak your own rule-based method for subcellular localization assignment from sequence. Check out our <a href="customization.html">parameterization guide</a>.
 
-3. You want to make your own bioinformatic work-flow, and would like to use _inmembrane_ as a useful Python starting point. Have a look at our programming model, paper, and API guide.
+3. You want to make your own protein sequence analysis work-flow, and would like to use _inmembrane_ as a useful Python starting point. Have a look at our programming model, paper, and API guide.
 
 
-#### Combining analyses into a workflow
+### Combining analyses into a workflow
 
-The cell-surface exposure algorithm is taken from the paper (Barinove et al. 2009. Proteomics 9:61-73). It is a straightforward case of a simple work-flow defined over a number of external binaries that do:
+The cell-surface exposure algorithm used by the _inmembrane_ 'gram-positive' protocol is based on the method described in <a href="http://dx.doi.org/10.1002/pmic.200800195">(Barinov et al. 2009. Proteomics 9:61-73)</a>. The workflow involves annotating the provided protein sequences using a number of external programs and/or web services providing:
 
-- transmembrane helix prediction,
-- lipoprotein prediction,
-- secretion signal prediction
-- cell-wall binding motif prediction
+- transmembrane helix prediction (eg TMHMM)
+- lipoprotein prediction (eg LipoP)
+- secretion signal prediction (eg SignalP)
+- cell-wall binding motif prediction (eg via HMMER)
 
-Although there exists several generic bioinformatic workflow packages, the deduction of cell-surface exposure from the results of these programs is a little more involved. Here, we have written this in a Python package, and in a manner that is extensible, and potentially repackageable for other bioinformatic analysis. 
+_inmembrane_ simplifies collating the output and presenting an overview which allows biologists to immediately gain insight into the likely localization and surface exposure of their bacterial proteome of interest.
 
-#### Ease of use
+## Using _inmembrane_
 
-We have specifically chosen Python for the overall ease of use, and readability. Read our paper for more details. One of the most difficult aspects of installing a workflow like this is the installation of multiple external binaries. We have made a large effort to incorporate web-based modules, which in most cases, should significantly simplify the process of installation.
+### Installation
 
-#### How to install?
+Installing and running _inmembrane_ requires:
 
-Well, to install the program, you'll have to have install
-
- - Python: it should be on most systems, but if not, go to <http://www.python.org>
+ - Python: it should be on most modern systems, but if not, go to <http://www.python.org>
  - pip: <http://pypi.python.org/pypi/pip>
- - HMMER: this is the only bioinformatic software that definitely needs to be installed <http://hmmer.janelia.org/software>
+ - HMMER: this is the only sequence analysis software that is required to be locally installed <http://hmmer.janelia.org/software>
 
-Once these are installed on your system, you should be able to do this to install _inmembrane_:
+On Debian/Ubuntu systems, you can install the minimal dependencies using:
 
-    >>> pip install inmembrane
+    $ sudo apt-get install python-pip hmmer
 
-#### Running _inmembrane_
+Once these are installed on your system, _inmembrane_ can be installed with:
+
+    $ sudo pip install inmembrane
+
+### Running _inmembrane_
 
 Let's say you have all the protein sequences you want to analyze in a FASTA text file called `proteome.fasta`.
 
-Inmembrane can be run from the command line, assuming you have an internet connection, and all the web-sites _inmembrane_ relies on are up:
+_Inmembrane_ is run from the command line like:
 
-    >>> inmembrane_scan proteome.fasta
+    $ inmembrane_scan my_proteome.fasta
 
-The results will be written to proteome.csv, which can be opened by Microsoft Excel. 
+Assuming the web services _inmembrane_ relies on are available, the analysis should complete within seconds or minutes.
 
-#### Interpreting output
+A summary is printed to the terminal, and the results will also be written to my_proteome.csv, which can be opened by a spreadsheet application such as Microsoft Excel.
+
+**Pro-tip:** _inmembrane_ also creates a directory (eg named 'my_proteome') containing output files from the individual external analyses, the original configuration file and the input FASTA file. If you run _inmembrane_ a second time on the same FASTA file, the results will be read from this directory rather than re-running each external analysis program. To re-run the analysis from scratch (with say, different parameters), you must remove the files in this directory. To re-run just part of the analysis you can remove individual files from the cache.
+
+### Interpreting the output
 
 It should look something like this: 
 
@@ -67,11 +81,11 @@ There are 4 columns to the result:
 1. The sequence identifier (seqid) is the first word in the id line of the FASTA file
 2. The cell-localization category:
     - PSE: means Potentially Surface Exposed, this can arise from
-        - transmembrane helical protein with long longs
-        - lipoprotein attached to the lipid layer
-        - protein with motif that attaches to the glycan cell-wall
-    - SECRETED: contains a secretion signal
-    - CYTOPLASM: basically none of the above
+        - transmembrane helical protein with long extracellular loops
+        - lipoprotein attached to the membrane
+        - protein with motif that associates with the glycan cell-wall
+    - SECRETED: contains a secretion signal, but not the features above
+    - CYTOPLASM: contains none of the above features
 3. Summary of the results from the external bioinformatic programs. In this case, we have hits from `tmhmm`, `hmm`, and `signalp`
 4. The description of the protein taken from the FASTA file.
 
