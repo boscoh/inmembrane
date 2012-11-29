@@ -9,6 +9,11 @@ from inmembrane.plugins import memsat3
 
 from inmembrane.tests.PluginTestBase import PluginTestBase
 
+# NOTE: since memsat3 is dependent on using a particular BLAST sequence
+#       database, if your local version of this database differs to the
+#       one used to generate the expected results below, this test will
+#       fail. There is no straightforward way to solve this, without
+#       packaging a potentially large BLAST database with inmembrane.
 class TestMemsat3(PluginTestBase):
   _plugin_name = "memsat3"
   

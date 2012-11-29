@@ -7,7 +7,7 @@ citation = {'ref': u"Anders Krogh, Björn Larsson, Gunnar von Heijne and Erik "
             'name': "TMHMM 2.0"
            }
           
-__DEBUG__ = False
+__DEBUG__ = True
 
 import sys, os, time
 from StringIO import StringIO
@@ -44,13 +44,7 @@ def annotate(params, proteins, \
     fh = open(outfile, 'r')
     resultpage = fh.read()
     fh.close()
-    resultpage = "\n".join(resultpage.split('\n')[10:-3])
-    resultpage = resultpage.replace("<hr>", '\n')
-    resultpage = resultpage.replace("<P>", '')
-    resultpage = resultpage.replace("<pre>", '')
-    resultpage = resultpage.replace("</pre>", '')
-    soup = BeautifulSoup(resultpage)
-    proteins = parse_tmhmm(soup('pre')[0].text, proteins, id_mapping=id_mapping)
+    proteins = parse_result_page(proteins, resultpage, id_mapping)
     return proteins
 
   # get sequences in fasta format with munged ids (workaround for potential
@@ -103,7 +97,7 @@ def annotate(params, proteins, \
   time.sleep(len(proteins)/500)
   resultpage = requests.post(resultlink).text
   retries = 0
-  while ("Webservices : Job queue" in resultpage) and retries < 5:
+  while ("Webservices : Job queue" in resultpage) and retries < 10:
     sys.stderr.write(".")
     time.sleep(len(proteins)/100 + retries**2)
     resultpage = requests.post(resultlink).text
@@ -114,6 +108,16 @@ def annotate(params, proteins, \
   if __DEBUG__:
     print resultpage
 
+  proteins = parse_result_page(proteins, resultpage, id_mapping)
+
+  # we store the downloaded page
+  fh = open(outfile, 'w')
+  fh.write(resultpage)
+  fh.close()
+
+  return proteins
+
+def parse_result_page(proteins, resultpage, id_mapping):
   # trim some HTML to make the output parsable by the existing 
   # standalone tmhmm parser.
   resultpage = "\n".join(resultpage.split('\n')[10:-3])
@@ -125,10 +129,4 @@ def annotate(params, proteins, \
   soup = BeautifulSoup(resultpage)
   proteins = parse_tmhmm(soup.text, proteins, id_mapping=id_mapping)
 
-  # we store the downloaded page
-  fh = open(outfile, 'w')
-  fh.write(resultpage)
-  fh.close()
-
   return proteins
-
