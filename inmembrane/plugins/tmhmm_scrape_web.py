@@ -70,7 +70,7 @@ def annotate(params, proteins, \
              (requests.__version__, inmembrane.__version__) }
   r = requests.post(url, data=payload, files=files, headers=headers)
   if __DEBUG__:
-    print r.text
+    log_stderr(r.text)
     # Example:
     #
     # <HTML>
@@ -90,7 +90,7 @@ def annotate(params, proteins, \
     
   resultlink = soup.findAll('a')[0]['href']
   if __DEBUG__:
-    print resultlink
+    log_stderr(resultlink)
 
   # brief pause, then grab the results at the result url
   sys.stderr.write("# Waiting for TMHMM results")
@@ -106,7 +106,7 @@ def annotate(params, proteins, \
   sys.stderr.write(" .. done !\n")
 
   if __DEBUG__:
-    print resultpage
+    log_stderr(resultpage)
 
   proteins = parse_result_page(proteins, resultpage, id_mapping)
 
