@@ -62,9 +62,9 @@ _Inmembrane_ is run from the command line like:
 
 Assuming the web services _inmembrane_ relies on are available, the analysis should complete within seconds or minutes.
 
-A summary is printed to the terminal, and the results will also be written to my_proteome.csv, which can be opened by a spreadsheet application such as Microsoft Excel.
+A summary is printed to the terminal, and the results will also be written to `my_proteome.csv`, which can be opened by a spreadsheet application such as Microsoft Excel. Citations for all external programs and services are written to `my_proteome/citations.txt` - this is very handy and important when it comes to writing up a publication using the results of _inmembrane_ and the software it orchestrates.
 
-**Pro-tip:** _inmembrane_ also creates a directory (eg named 'my_proteome') containing output files from the individual external analyses, the original configuration file and the input FASTA file. If you run _inmembrane_ a second time on the same FASTA file, the results will be read from this directory rather than re-running each external analysis program. To re-run the analysis from scratch (with say, different parameters), you must remove the files in this directory. To re-run just part of the analysis you can remove individual files from the cache.
+**Pro-tip:** The directory created by _inmembrane_ (eg named `my_proteome`), as well as containing the `citations.txt` list, also contains cached output files from the individual external analyses, the original configuration file and the input FASTA file. If you run _inmembrane_ a second time on the same FASTA file, the results will be read from this directory rather than re-running each external analysis program. To re-run the analysis from scratch (with say, different parameters), you must remove (or rename) this directory. To re-run just part of the analysis you can remove individual files from this directory.
 
 ### Interpreting the output
 

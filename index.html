@@ -64,7 +64,7 @@
 
   <body>
 
-<a href="https://github.com/boscoh/inmembrane"><img style="position: absolute; top: 0; right: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_darkblue_121621.png" alt="Fork me on GitHub"></a>
+    <a href="https://github.com/boscoh/inmembrane"><img style="position: absolute; top: 0; right: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_darkblue_121621.png" alt="Fork me on GitHub"></a>
 
     <div class="container-narrow">
 
@@ -181,9 +181,9 @@ $ inmembrane_scan my_gram_pos_proteome.fasta
 <pre><code>$ inmembrane_scan my_proteome.fasta
 </code></pre><p>Assuming the web services <em>inmembrane</em> relies on are available, the analysis should complete within seconds or minutes.
 </p>
-<p>A summary is printed to the terminal, and the results will also be written to my_proteome.csv, which can be opened by a spreadsheet application such as Microsoft Excel.
+<p>A summary is printed to the terminal, and the results will also be written to <code>my_proteome.csv</code>, which can be opened by a spreadsheet application such as Microsoft Excel. Citations for all external programs and services are written to <code>my_proteome/citations.txt</code> - this is very handy and important when it comes to writing up a publication using the results of <em>inmembrane</em> and the software it orchestrates.
 </p>
-<p><strong>Pro-tip:</strong> <em>inmembrane</em> also creates a directory (eg named 'my_proteome') containing output files from the individual external analyses, the original configuration file and the input FASTA file. If you run <em>inmembrane</em> a second time on the same FASTA file, the results will be read from this directory rather than re-running each external analysis program. To re-run the analysis from scratch (with say, different parameters), you must remove the files in this directory. To re-run just part of the analysis you can remove individual files from the cache.
+<p><strong>Pro-tip:</strong> The directory created by <em>inmembrane</em> (eg named <code>my_proteome</code>), as well as containing the <code>citations.txt</code> list, also contains cached output files from the individual external analyses, the original configuration file and the input FASTA file. If you run <em>inmembrane</em> a second time on the same FASTA file, the results will be read from this directory rather than re-running each external analysis program. To re-run the analysis from scratch (with say, different parameters), you must remove (or rename) this directory. To re-run just part of the analysis you can remove individual files from this directory.
 </p>
 
 <h3>Interpreting the output</h3>
