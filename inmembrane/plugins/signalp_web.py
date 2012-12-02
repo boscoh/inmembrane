@@ -76,7 +76,7 @@ def annotate(params, proteins, \
     job.jobid = response.jobid
     response = client.service.pollQueue(job)
     retries = 0
-    sys.stderr.write("# Waiting for SignalP results ")
+    sys.stderr.write("# Waiting for SignalP(web) results ")
     while response.status != "FINISHED" and retries < 100:
       response = client.service.pollQueue(job)
       time.sleep(10 + (retries*2))
