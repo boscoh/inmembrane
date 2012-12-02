@@ -101,7 +101,7 @@ def annotate(params, proteins, \
     resultlink = baseurl + soup.findAll('a')[0]['href']
 
     # brief pause (LipoP is quick), then grab the results at the result url
-    sys.stderr.write("# Waiting briefly for LipoP results")
+    sys.stderr.write("# Waiting briefly for LipoP(scrape_web) results")
     time.sleep(len(proteins)/500)
     resultpage = requests.post(resultlink).text
     sys.stderr.write(" .. done !\n")

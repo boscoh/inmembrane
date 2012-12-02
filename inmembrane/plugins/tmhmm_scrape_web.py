@@ -102,7 +102,7 @@ def annotate(params, proteins, \
       log_stderr(resultlink)
 
     # brief pause, then grab the results at the result url
-    sys.stderr.write("# Waiting for TMHMM results")
+    sys.stderr.write("# Waiting for TMHMM(scrape_web) results")
     time.sleep(len(proteins)/500)
     resultpage = requests.post(resultlink).text
     retries = 0
