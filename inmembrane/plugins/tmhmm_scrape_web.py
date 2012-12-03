@@ -122,7 +122,7 @@ def annotate(params, proteins, \
   
   # we store the cleaned up result pages concatenated together
   fh = open(outfile, 'a+')
-  fh.write(resultpage)
+  fh.write(allresultpages)
   fh.close()
 
   proteins = parse_tmhmm(allresultpages, proteins, id_mapping=id_mapping)
