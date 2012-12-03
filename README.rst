@@ -261,7 +261,7 @@ Python libraries
 *inmembrane* depends on the following Python libraries (
 `Beautiful Soup <http://www.crummy.com/software/BeautifulSoup/>`_,
 `mechanize <http://wwwsearch.sourceforge.net/mechanize>`_ and
-`twill <http://twill.idyll.org/>`_), 
+`twill <http://twill.idyll.org/>`_, 
 `Suds <https://fedorahosted.org/suds/>`_ and 
 `Requests <http://python-requests.org>`_).
 
