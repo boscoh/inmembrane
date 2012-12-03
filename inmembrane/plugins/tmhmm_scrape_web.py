@@ -45,8 +45,8 @@ def annotate(params, proteins, \
     fh = open(outfile, 'r')
     resultpage = fh.read()
     fh.close()
-    soup = BeautifulSoup(resultpage)
-    proteins = parse_tmhmm(soup.text, proteins, id_mapping=id_mapping)
+    #soup = BeautifulSoup(resultpage)
+    proteins = parse_tmhmm(resultpage, proteins, id_mapping=id_mapping)
     return proteins
 
   proteins, id_mapping = generate_safe_seqids(proteins)
@@ -118,8 +118,11 @@ def annotate(params, proteins, \
       log_stderr(resultpage)
 
     resultpage = clean_result_page(resultpage)
-    soup = BeautifulSoup(resultpage)
-    proteins = parse_tmhmm(soup.text, proteins, id_mapping=id_mapping)
+    if __DEBUG__:
+      log_stderr(resultpage)
+
+    #soup = BeautifulSoup(resultpage)
+    proteins = parse_tmhmm(resultpage, proteins, id_mapping=id_mapping)
 
     # we store the cleaned up result pages concatenated together
     fh = open(outfile, 'a+')
