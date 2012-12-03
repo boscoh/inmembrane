@@ -124,9 +124,6 @@ def annotate(params, proteins, \
 
     allresultpages += clean_result_page(resultpage)
 
-    if __DEBUG__:
-      log_stderr(resultpage)
-
   # we store the cleaned up result pages concatenated together
   fh = open(outfile, 'a+')
   fh.write(allresultpages)

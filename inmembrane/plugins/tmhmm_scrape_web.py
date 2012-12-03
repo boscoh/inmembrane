@@ -52,6 +52,7 @@ def annotate(params, proteins, \
   proteins, id_mapping = generate_safe_seqids(proteins)
 
   seqids = proteins.keys()
+  allresultpages = ""
   while seqids:
     seqid_batch = seqids[0:batchsize]
     del seqids[0:batchsize]
@@ -117,18 +118,14 @@ def annotate(params, proteins, \
     if __DEBUG__:
       log_stderr(resultpage)
 
-    resultpage = clean_result_page(resultpage)
-    if __DEBUG__:
-      log_stderr(resultpage)
+    allresultpages += clean_result_page(resultpage)
+  
+  # we store the cleaned up result pages concatenated together
+  fh = open(outfile, 'a+')
+  fh.write(resultpage)
+  fh.close()
 
-    #soup = BeautifulSoup(resultpage)
-    proteins = parse_tmhmm(resultpage, proteins, id_mapping=id_mapping)
-
-    # we store the cleaned up result pages concatenated together
-    fh = open(outfile, 'a+')
-    fh.write(resultpage)
-    fh.close()
-
+  proteins = parse_tmhmm(allresultpages, proteins, id_mapping=id_mapping)
   return proteins
 
 def clean_result_page(resultpage):
