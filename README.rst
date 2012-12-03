@@ -161,11 +161,10 @@ OMP beta-barrel predictors, for large scale analyses (5000 sequences+)
 it is suggested that locally installed versions are used in the interest
 of speed, at to be polite to publically available web services.
 
-As it is the nature of bioinformatic programs that they are changed
-and updated severely with different versions, stable APIs with
-consistent output formats are the exception rather than the norm.
-It is very important that you have the exact version that *inmembrane*
-is written to interoperate with.
+With each dependency, it is important that you have the exact version 
+that *inmembrane* is written to interoperate with, otherwise *inmembrane* 
+is likely to be unable to interpret the output of the downstream 
+analysis program.
 
 Required dependencies, and their versions:
 
@@ -175,7 +174,7 @@ Required dependencies, and their versions:
 -  LipoP 1.0
 
 These instructions have been tailored for Debian-based systems, in
-particular Ubuntu 11.10. Each of these dependencies are licensed
+particular Ubuntu 11.10+. Each of these dependencies are licensed
 free to academic users.
 
 HMMER 3.0
@@ -262,9 +261,11 @@ Python libraries
 *inmembrane* depends on the following Python libraries (
 `Beautiful Soup <http://www.crummy.com/software/BeautifulSoup/>`_,
 `mechanize <http://wwwsearch.sourceforge.net/mechanize>`_ and
-`twill <http://twill.idyll.org/>`_) and
-`Suds <https://fedorahosted.org/suds/>`_ ). Pip should handle
-installing these for you automatically.
+`twill <http://twill.idyll.org/>`_), 
+`Suds <https://fedorahosted.org/suds/>`_ and 
+`Requests <http://python-requests.org>`_).
+
+Pip should handle installing these for you automatically.
 
 Modification guide
 ==================
@@ -285,11 +286,12 @@ code as concise as possible. Specifically, by using the native
 Python dictionary, which allows an enormous amout of flexibility,
 we can collate the results of various analyses with very little code.
 
+A more comprehensive overview can be found at http://boscoh.github.com/inmembrane/api.html.
+
 inmembrane development style guide:
 -----------------------------------
 
-Here are some guidelines for understanding and extending the code.
-
+Here are some guidelines for understanding and extending the code. 
 
 -  *Confidence:* Plugins that wrap an external program should have
    at least one high level test which is executed by run\_tests.py.
