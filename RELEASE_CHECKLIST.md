@@ -6,7 +6,12 @@
 * Make sure CHANGELOG is updated with major changes since the last 
   release (look through the commit history)
 
-* Update version in inmembrane/__init__.py
+* Update version in inmembrane/__init__.py ,
+  commit changes (git commit).
+
+* Create a new tag for the release:
+  git tag inmembrane-0.xx
+  git push --tags
 
 * Run:
   * python setup.py sdist
