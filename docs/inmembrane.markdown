@@ -12,6 +12,7 @@ _(2) Monash eResearch Centre, Monash University, Melbourne, Australia_
 
 _inmembrane_ is a tool to predict the surface-exposed membrane proteins in sets of bacterial protein sequences. We have re-implemented a protocol for Gram-positive bacterial proteomes, and developed a new protocol for Gram-negative bacteria, where the protocols interface multiple predictors of subcellular localization and membrane protein topology. Through the use of a modern scripting language, _inmembrane_ provides an accessible code-base and extensible architecture that is amenable to modification for related sequence annotation tasks. Our protocol easily integrates predictions from both local binaries and web-based queries. The program is hosted on the Github repository http://github.com/boscoh/inmembrane.
 
+_Keywords:_ bioinformatics, proteomics, membrane protein, Python, bacterial
 
 # Background
 
