@@ -280,7 +280,7 @@ Veretnik S, Fink JL, Bourne PE: Computational biology resources lack persistence
 
 Waligora, A. J., Hennequin, C., Mullany, P., Bourlioux, P. et al., Characterization of a cell surface protein of Clostridium difficile with adhesive properties. __Infect. Immun.__ 2001, 69, 2144–2153. <http://dx.doi.org/10.1128/​IAI.69.4.2144-2153.2001>
 
-Yu CS, Chen YC, Lu CH, Hwang JK. (2006) Prediction of protein subcellular localization. __Proteins: Structure, Function and Bioinformatics__ 64:643-651.
+Yu CS, Chen YC, Lu CH, Hwang JK. (2006) Prediction of protein subcellular localization. __Proteins: Structure, Function and Bioinformatics__ 64:643-651. <http://dx.doi.org/10.1002/prot.21018>
 
 Yu NY, Wagner JR, Laird MR, Melli G, Rey S, Lo R, Dao P, Sahinalp SC, Ester M, Foster LJ, Brinkman FSL (2010) PSORTb 3.0: Improved protein subcellular localization prediction with refined localization subcategories and predictive capabilities for all prokaryotes, __Bioinformatics__ 26(13):1608-1615 <http://dx.doi.org/10.1093/bioinformatics/btq249>
 
