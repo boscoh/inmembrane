@@ -7,6 +7,11 @@ AUTHOR = "Andrew Perry & Bosco Ho"
 AUTHOR_EMAIL = "ajperry@pansapiens.com"
 URL = "http://github.com/boscoh/inmembrane"
 VERSION = __import__(PACKAGE).__version__
+try:
+  extra_requires = []
+  from collections import OrderedDict
+except:
+  extra_requires.append("ordereddict")
 
 setup(
     name=PACKAGE,
@@ -30,7 +35,7 @@ setup(
         "BeautifulSoup >= 3.2.1",
         "twill >= 0.9",
         "requests >= 0.14.2",
-    ],
+        ] + extra_requires,
     classifiers=[
         "Development Status :: 5 - Production/Stable",
         "Environment :: Console",

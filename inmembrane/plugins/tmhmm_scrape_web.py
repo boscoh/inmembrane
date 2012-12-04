@@ -13,7 +13,12 @@ import sys, os, time
 from StringIO import StringIO
 from BeautifulSoup import BeautifulSoup
 import requests
-from collections import OrderedDict
+
+try:
+  from collections import OrderedDict
+except:
+  from ordereddict import OrderedDict
+
 import inmembrane
 from inmembrane.plugins.tmhmm import parse_tmhmm
 from inmembrane.helpers import log_stderr

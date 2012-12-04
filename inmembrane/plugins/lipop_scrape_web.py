@@ -14,7 +14,12 @@ import sys, os, time
 from StringIO import StringIO
 from BeautifulSoup import BeautifulSoup
 import requests
-from collections import OrderedDict
+
+try:
+  from collections import OrderedDict
+except:
+  from ordereddict import OrderedDict
+
 import inmembrane
 from inmembrane.plugins.lipop1 import parse_lipop
 from inmembrane.helpers import log_stderr
