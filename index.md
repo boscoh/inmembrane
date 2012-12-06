@@ -20,7 +20,7 @@ We envisage _inmembrane_ being of use in three ways:
 
 2. You want to tweak your own rule-based method for subcellular localization assignment from sequence. Check out our <a href="customization.html">parameterization guide</a>.
 
-3. You want to make your own protein sequence analysis work-flow, and would like to use _inmembrane_ as a useful Python starting point. Have a look at our programming model, paper, and API guide.
+3. You want to make your own protein sequence analysis work-flow, and would like to use _inmembrane_ as a useful Python starting point. Have a look at our [programming model and API guide](api.html).
 
 
 ### Combining analyses into a workflow
@@ -54,7 +54,7 @@ Once these are installed on your system, _inmembrane_ can be installed with:
 
 ### Running _inmembrane_
 
-Let's say you have all the protein sequences you want to analyze in a FASTA text file called `proteome.fasta`.
+Let's say you have all the protein sequences you want to analyze in a FASTA text file called `my_proteome.fasta`.
 
 _Inmembrane_ is run from the command line like:
 
@@ -78,7 +78,7 @@ It should look something like this:
 
 There are 4 columns to the result: 
 
-1. The sequence identifier (seqid) is the first word in the id line of the FASTA file
+1. The sequence identifier (SeqID) is the first word in the id line of the FASTA file
 2. The cell-localization category:
     - PSE: means Potentially Surface Exposed, this can arise from
         - transmembrane helical protein with long extracellular loops

@@ -1,10 +1,10 @@
 # Configuration of _inmembrane_ 
 
-By default, _inmembrane_ will run the gram-positive protocol using remote web services for the analysis (and HMMER locally) without requiring any additional configuration.
+By default, _inmembrane_ will run the Gram+ protocol using remote web services for the analysis (and HMMER locally) without requiring any additional configuration.
 
-On the first use of the program, a default `inmembrane.config` configuration file will be generated, otherwise existing the existing `inmembrane.config` will be used. This file contains all the user adjustable parameters (as a Python dictionary). To run the gram-negative protocol, use locally installed copies of SignalP/LipoP/TMHMM or tweak the external loop threshold, you may want to edit the configuration file to your needs.
+On the first use of the program, a default `inmembrane.config` configuration file will be generated. Once created, you can edit this `inmembrane.config`. Subsequent use of the program will reference the existing `inmembrane.config`. This file contains all the user adjustable parameters (as a Python dictionary). To run the Gram- protocol, use locally installed copies of SignalP/LipoP/TMHMM or tweak the external loop threshold, you may want to edit the configuration file to your needs.
 
-The default parameters are as following, they will be explained in sections below:
+The default parameters are as following, and they will be explained in sections below:
 
     {
       'fasta': '',
@@ -47,11 +47,11 @@ The parameters will be explained below, grouped in terms of related parameters.
 
 ### General Parameters
 
-The input to _inmembrane_ is a FASTA formatted set of protein sequences. There are currently two different protocols (or 'workflows') - one for Gram+ bacteria (the default), and one for Gram- bacteria. The results are saved to a csv file as an output.
+The input to _inmembrane_ is a FASTA formatted set of protein sequences. There are currently two different protocols (or 'workflows') - one for Gram+ bacteria (the default), and one for Gram- bacteria. The results are saved to a CSV file as an output.
 
 - `fasta`: the pathname of the FASTA file holding the protein sequences
-- `protocol`: switches between different protocols for analysising the proteomes
-- `csv`: the name of the output file in CSV (Excel-compatible) format. Defaults to a file using the same filename as 'fasta'
+- `protocol`: switches between different protocols for analysing the proteomes, currently you can choose between `gram_pos` and `gram_neg`.
+- `csv`: the name of the output file in CSV (Excel-compatible) format. Defaults to a file using the same base filename as 'fasta'
 
 Both `fasta` and `csv` should usually be left blank by default, since the input file is usually specified directly on the commandline.
 
@@ -61,17 +61,17 @@ For potential debugging, it's important that all intermediate files are saved, a
 
 ### Optional - Locally installed binaries or remote web services
 
-One of the problems that _inmembrane_ tackles is the complexity of using and installing multiple pieces of sequence analysis software. For older programs, the only option was to install local binaires of the external programs. This raises problems involved with getting the binary (or source) for the right platform, compilation with the right tools, and installation and configuration in the correct location. In contrast, many of these tools now provide a web-interface. In _inmembrane_, we have added facilities to use remote web services, whether through a RESTful interface, or through a SOAP interface, when provided.
+One of the problems that _inmembrane_ tackles is the complexity of using and installing multiple pieces of sequence analysis software. For older programs, the only option was to install the local binaires of all the external programs. This raises problems involved with getting the binary (or source) for the right platform, compilation with the right tools, and installation and configuration in the correct location. In contrast, many of these tools now provide a web-interface. In _inmembrane_, we have added facilities to use remote web services, when provided, whether through a RESTful interface, or through a SOAP interface.
 
 By default, _inmembrane_ will use web services, specified by setting the `*_bin` parameter as empty string. To use a local binary binary version of a program, the appropriate `*_bin` parameter must be set to the name (or full path) of the executable.
 
-- `signalp4_bin`, `lipop1_bin`, `tmhmm_bin`, `memsat3_bin`: the full pathname of the binaries used for the analysis. If empty, the web version is used instead
+- `signalp4_bin`, `lipop1_bin`, `tmhmm_bin`, `memsat3_bin`: the full pathname of the binaries used for the analysis. If empty, the web version is used instead.
 
 ### The Potentially Surface Exposed (PSE) Algorithm
 
 The key part of the surface-exposure prediction evaluates the length of loops in the extramembrane parts of membrane proteins. This analysis makes most sense for Gram+ bacteria with a single membrane, where any membrane protein can potentially expose loops to the extracellular environment. This evaluation requires the key parameter of loop cutoff that determines the minimum length of a loop that is required to potentially pass through the glycan layer. 
 
-In the original _SurfG+_ paper<a href="http://dx.doi.org/10.1002/pmic.200800195">(Barinov et al. 2009. Proteomics 9:61-73)</a>, it was found that a linear polypeptide length of ~50 amino acids most closely matched the length able to traverse the cell wall and become succeptible to protease shaving in the model Gram+ bacterium studied. Therefore for internal loops between transmembrane segments, this gives an accessible length threshold of ~100 amino acids, which allows the loop to pass through the cell wall layer and back down to the membrane again.
+In the original _SurfG+_ paper [(Barinov et al. 2009. Proteomics 9:61-73)](http://dx.doi.org/10.1002/pmic.200800195), it was found that a linear polypeptide length of ~50 amino acids most closely matched the length able to traverse the cell wall and become succeptible to protease shaving in the model Gram+ bacterium studied. Therefore for internal loops between transmembrane segments, this gives an accessible length threshold of ~100 amino acids, which allows the loop to pass through the cell-wall layer and back down to the membrane again.
 
 - `terminal_exposed_loop_min`: this is the length (in amino acids) given to define an N- or C- terminal segment of a protein that is long enough to stick out of the bacterial cell-wall to be considered surface-exposed
 - `internal_exposed_loop_min`: the length of a loop between two membrane embedded segments able to traverse the cell wall and present as surface exposed
@@ -92,11 +92,11 @@ HMMER is used to search the profiles against the input query sequences. The cuto
 
 Another class of proteins associated with the membrane surface membrane are lipoproteins, which are posttranlationally modified to include a covalently attached N-terminal lipid moeity. LipoP is used to identify the N-terminal lipidation motif, found after a secretion signal. 
 
-- `lipop_bin`: the location of the binary of LipoP. If this is given as '' (default), then _inmembrane_ uses the web service at http://www.cbs.dtu.dk/services/LipoP/.
+- `lipop_bin`: the location of the binary of LipoP. If this is given as '' (default), then _inmembrane_ uses the web service at <http://www.cbs.dtu.dk/services/LipoP/>.
 
 ### Transmembrane-&alpha;-helix Predictors
 
-The other main class of protein in Gram+ proteins with extracellular loops are integral membrane proteins containing transmembrane &alpha-helices. The loops between transmembrane segments, as well as N- and C- terminal non-membrane embedded regions are all candidates to be exposed outside the glycan layer.
+The other main class of protein in Gram+ proteins with extracellular loops are integral membrane proteins containing transmembrane &alpha;-helices. The loops between transmembrane segments, as well as N-terminal and C-terminal non-membrane embedded regions are all candidates to be exposed outside the glycan layer.
 
 There is no _de facto_ standard transmembrane helix predictor, and thus _inmembrane_ has been written to allow pluggable options for transmembrane helix prediction. To allow for this, _inmembrane_ allows the results of more than one helix predictor, and takes a greedy approach to annotating potentially surface exposed proteins - the prediction that gives the longest extracellular loops will be used. The parameter 'helix_programs' lists all the transmembrane helix predictors to be used.
 
