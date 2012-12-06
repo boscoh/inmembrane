@@ -8,7 +8,7 @@
 
 * Update version in inmembrane/__init__.py.
 
-* git commit
+* git commit -a
 
 * Create a new tag for the release:
   git tag inmembrane-0.xx
