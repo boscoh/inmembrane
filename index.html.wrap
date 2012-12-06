@@ -82,8 +82,8 @@
       <div class="jumbotron">
         <h1>inmembrane</h1>
         <p class="lead">Prediction of surface-exposed proteins in bacterial cells</p>
-        <a class="btn btn-large btn-success" href="http://pypi.python.org/packages/source/i/inmembrane/inmembrane-0.93.tar.gz">Download</a> <br/>
-        (stable release, v0.93)
+        <a class="btn btn-large btn-success" href="http://pypi.python.org/packages/source/i/inmembrane/inmembrane-0.93.2.tar.gz">Download</a> <br/>
+        (stable release, v0.93.2)
       </div>
 
       <hr>
