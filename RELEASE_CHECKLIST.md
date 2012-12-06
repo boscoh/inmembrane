@@ -6,12 +6,14 @@
 * Make sure CHANGELOG is updated with major changes since the last 
   release (look through the commit history)
 
-* Update version in inmembrane/__init__.py ,
-  commit changes (git commit).
+* Update version in inmembrane/__init__.py.
+
+* git commit
 
 * Create a new tag for the release:
   git tag inmembrane-0.xx
   git push --tags
+  git push
 
 * Run:
   * python setup.py sdist
@@ -25,3 +27,6 @@
 
 * Switch to the the gh-pages branch (git checkout gh-pages), update the pypi download link in index.md, commit and push the changes.
 
+* Switch to the the gh-pages branch (git checkout gh-pages), update the pypi download link in index.md, commit and push the changes.
+
+* Commit and push.

@@ -1,5 +1,9 @@
 # inmembrane changelog
 
+## v0.93.2 (03-Dec-2012)
+* Bugfixes to tmhmm_scrape_web and lipop_scrape_web plugins
+* Handle Python 2.6 when OrderedDict is absent.
+
 ## v0.93 (03-Dec-2012)
 
 * Added --version flag
