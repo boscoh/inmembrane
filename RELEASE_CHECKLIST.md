@@ -25,8 +25,10 @@
 * Push a new version to PyPi:
   * python setup.py sdist upload
 
-* Switch to the the gh-pages branch (git checkout gh-pages), update the pypi download link in index.md, commit and push the changes.
+* Switch to the the gh-pages branch:
+  git checkout gh-pages
 
-* Switch to the the gh-pages branch (git checkout gh-pages), update the pypi download link in index.md, commit and push the changes.
+* Update the pypi download link in index.html.wrap, commit and push the changes.
+  git commit -a; git push
 
 * Commit and push.
