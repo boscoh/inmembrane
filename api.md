@@ -28,7 +28,7 @@ Here is an example of a `proteins` dictionary for two sequences with _seqid_'s S
 
 ### Result output
 
-The output of the program is printed to STDOUT in tab delimited format. Additionaly, the output is always written as a Comma Separated Values (CSV) file that can be easily imported into spreadsheet packages such as Microsoft Excel. As most users ultimately working with the output of _inmembrane_ are likely to be biologists familiar with using spreadsheets (for better or worse) for further analysis, CSV was chosen since it can be integrated into many users common workflow.
+The output of the program is printed to STDOUT in tab delimited format. Additionaly, the output is always written as a Comma Separated Values (CSV) file that can be easily imported into spreadsheet packages such as Microsoft Excel. As most users ultimately working with the output of _inmembrane_ are likely to be biologists familiar with using spreadsheets (for better or worse) for further analysis, CSV was chosen since it can be integrated into many users' common workflow.
 
 For those familiar with Python, it is relatively straightforward to modify the text output by changing `protocol.protein_output_line`, `protocol.summary_table` and `protocol.protein_csv_line` (where _protocol_ is one of the protocols in `inmembrane/protocols/*.py`).
 
@@ -36,9 +36,13 @@ For those familiar with Python, it is relatively straightforward to modify the t
 
 One of the abstractions made in _inmembrane_ is to separate the main loop and the plugins so that _inmembrane_ can accommodate multiple workflows or 'protocols' (currently two protocols are implemented, one for Gram+ bacteria `gram_pos` and one for Gram- bacteria `gram_neg`). The choice of protocol is taken from the parameters file `inmembrane.config`. The relevant protocol is stored in a python module with the same name as the protocol in the `protocols` sub-directory.
 
+The protocol reads the `params` dictionary to figure out what plugins need to be executed, and then delegates to the plugin, which stores new properties in the `proteins` dictionary.
+
+Once all plugins have been successfully run, the protocol analyses the newly-annotated `proteins` dictionary and generates the final sub-cellular analysis.
+
 The protocol **must** implement five functions (these are called from within `inmembrane/__init__.py`):
 
-`get_annotations(params)` -- takes the params dictionary as input, returns a list of strings being the names of plugins to be run for this analysis (in hindsight, this function is poorly named and may be changed in the future to something like **plugins_to_run** ).
+`get_annotations(params)` -- takes the `params` dictionary as input, returns a list of strings being the names of plugins to be run for this analysis (in hindsight, this function is poorly named and may be changed in the future to something like `plugins_to_run`).
 
 `post_process_proteins(params, proteins)` -- takes the params dictionary and the `proteins` data structure and applies any additional business logic to label sequences based on the key-value pairs already added by the plugins (eg, if is_lipop: category = "LIPOPROTEIN(non-PSE)" ).
 
@@ -46,11 +50,8 @@ The protocol **must** implement five functions (these are called from within `in
 
 `protein_csv_line(seqid, proteins)` -- equivalent to `protein_output_line` above, but for the csv file that is written.
 
-`summary_table(params, proteins)` -- outputs a summary table to stdout with some aggregate statistics for the entire proteome given as input.
+`summary_table(params, proteins)` -- outputs a summary table to STDOUT with some aggregate statistics for the entire proteome given as input.
 
-is to add any plugins required (not all are needed, as there are many different possibilities) and send the fasta sequences, as stored in the `proteins` dictionary, into the plugin to get the desire property from that plugin.
-
-Once all plugins have been successfully run, the plugin analyses the results of the external programs, and generates the final sub-cellular localisation and then, the 
 
 ### Parameters - load from file/and or input default
 
@@ -62,7 +63,7 @@ The interface with external sequence analysis programs or web services are encap
 
 Each plugin **must** implement one function and contain one variable:
 
-`annotate(params, proteins)` -- this takes the params dictionary and the `proteins` data structure and adds key value pairs to reflect that results of the analysis. (TODO: For convenience all plugins should return the `proteins` data structure upon successful execution, however not all plugins currently follow this rule).
+`annotate(params, proteins)` -- this takes the `params` dictionary and the `proteins` data structure and adds key value pairs to reflect that results of the analysis. (TODO: For convenience all plugins should return the `proteins` data structure upon successful execution, however not all plugins currently follow this rule).
 
 `annotate` may also take other optional keyword arguments (particularly for plugins that interface with web services, it is convenient to include optional _url_ and _batchsize_ parameters, and a _force_ boolean arguments that allows cached output file to be ignored). 
 
@@ -76,7 +77,7 @@ As _inmembrane_ is a glue program that builds on the work of many excellent anal
 
 ### Logging, temporary output and debugging
 
-STDERR is used to output status messages as the program executed (eg the currently running plugin, a pseudo-progress bar if we are looping and polling a web service). These status updates should be prefixed by a # character. Most plugins etc also contain a module level variable `__DEBUG__` which prints additional information useful for debugging to STDERR. The final tab-delimited results and summary table are sent to STDOUT, so standard Unix redirection can be used to capture the two streams seperately if desired (eg `inmembrane_scan myseqs.fasta >results.out 2>results.err` )
+STDERR is used to output status messages as the program executed (eg the currently running plugin, a pseudo-progress bar if we are looping and polling a web service). These status updates should be prefixed by a # character, which allows easy filtering further down the track. Most plugins etc also contain a module level variable `__DEBUG__` which prints additional information useful for debugging to STDERR. The final tab-delimited results and summary table are sent to STDOUT, so standard Unix redirection can be used to capture the two streams seperately if desired (eg `inmembrane_scan myseqs.fasta >results.out 2>results.err` )
 
 `inmembrane` always creates a directory caching the output of external analysis packages, named based on the name of the input FASTA file without an extension. The input FASTA file is copied into this directory (as `input.fasta`), along with `citation.txt`. Output from each external package is named in the form 'plugin_name.out'.
 
