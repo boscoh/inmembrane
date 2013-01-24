@@ -37,11 +37,6 @@ def annotate(params, proteins, \
   baseurl = "http://www.cbs.dtu.dk"
   url = baseurl + "/cgi-bin/nph-webface"
 
-  if len(proteins) > 4000:
-    log_stderr("# ERROR: The TMHMM web inteface does not accept > \
-                4000 sequences at one time.")
-    return
-
   # grab the cached results if present
   outfile = "tmhmm_scrape_web.out"
   if not force and os.path.isfile(outfile):

@@ -9,7 +9,7 @@ citation = {'ref': u"Petersen TN, Brunak S, von Heijne G, Nielsen H. "
             'name': "SignalP 4.0"
            }
           
-__DEBUG__ = False
+__DEBUG__ = True
 
 import sys, os, time, json
 from suds.client import Client

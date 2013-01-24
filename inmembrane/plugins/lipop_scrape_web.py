@@ -38,11 +38,6 @@ def annotate(params, proteins, \
   baseurl = "http://www.cbs.dtu.dk"
   url = baseurl + "/cgi-bin/webface2.fcgi"
 
-  if len(proteins) > 4000:
-    log_stderr("# ERROR: The LipoP web inteface does not accept > \
-                4000 sequences at one time.")
-    return
-
   # grab the cached results if present
   outfile = "lipop_scrape_web.out"
   if not force and os.path.isfile(outfile):
