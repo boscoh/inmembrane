@@ -77,7 +77,7 @@ def annotate(params, proteins, \
     log_stderr("# LipoP(scrape_web), %s > %s" % (params['fasta'], outfile))
 
     headers = {"User-Agent": 
-               "python-requests/%s (inmembrane/%s)" % 
+               "python-requests/%s (inmembrane/%s)" %
                (requests.__version__, inmembrane.__version__) }
     r = requests.post(url, data=payload, files=files, headers=headers)
     if __DEBUG__:
@@ -97,13 +97,25 @@ def annotate(params, proteins, \
     if "Job rejected" in r.text:
       sys.stderr.write(r.text)
       sys.exit()
-    soup = BeautifulSoup(r.text)
-    resultlink = baseurl + soup.findAll('a')[0]['href']
 
+    r = r.text.replace("<noscript>","").replace("</noscript","")
+    soup = BeautifulSoup(r)
+    resultlink = soup.findAll('a')[0]['href']
+    sys.stderr.write("# Fetching from: " + resultlink + "\n");
     # brief pause (LipoP is quick), then grab the results at the result url
-    sys.stderr.write("# Waiting briefly for LipoP(scrape_web) results")
-    time.sleep(len(proteins)/500)
-    resultpage = requests.post(resultlink).text
+    sys.stderr.write("# Waiting for LipoP(scrape_web) results ")
+    waittime = 1
+    time.sleep(waittime) #(len(proteins)/500)
+    resultpage = requests.get(resultlink).text
+    retries = 0
+    while (("<title>Job status of" in resultpage) and (retries < 15)):
+        sys.stderr.write(".")
+        time.sleep(waittime) #(len(proteins)/500)
+        resultpage = requests.get(resultlink).text
+        waittime += 1;
+        retries += 1
+        waittime = min(waitttime, 20)
+
     sys.stderr.write(" .. done !\n")
 
     if __DEBUG__:

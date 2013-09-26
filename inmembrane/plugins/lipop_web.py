@@ -13,7 +13,7 @@ citation = {'ref': u"Agnieszka S. Juncker, Hanni Willenbrock, "
           
 __DEBUG__ = False
 
-import sys, os, time, json, re
+import sys, os, time, json, re, urllib2
 from suds.client import Client
 from suds.bindings import binding 
 import logging
@@ -23,6 +23,7 @@ def annotate(params, proteins, \
              #url = 'http://www.cbs.dtu.dk/ws/LipoP/LipoP_1_0_ws0.wsdl', \
              # we host our own fixed version of the WSDL for the moment
              url = "http://raw.github.com/boscoh/inmembrane/master/inmembrane/plugins/extra/LipoP_1_0_ws0.wsdl", \
+             #url = "http://www.cbs.dtu.dk/ws/LipoP/LipoP_1_0_ws0.wsdl",
              batchsize = 2000, \
              force=False):
   if __DEBUG__:
@@ -90,8 +91,11 @@ def annotate(params, proteins, \
     
       request.sequencedata.sequence.append(seq)
       sys.stderr.write(".")
-        
-    response = client.service.runService(request)
+    try:
+      response = client.service.runService(request)
+    except urllib2.URLError as e:
+      sys.stderr.write("\n# ERROR: " + `e.reason` + "\n")
+      sys.exit()
 
     sys.stderr.write("\n")
     
