@@ -22,8 +22,9 @@ def get_annotations(params):
   
   if 'bomp' in dict_get(params, 'barrel_programs'):
     annotations.append('bomp_web')
-  if 'tmbhunt' in dict_get(params, 'barrel_programs'):
-    annotations.append('tmbhunt_web')
+  # DEPRECATED: TMB-HUNT server is permanently offline
+  #if 'tmbhunt' in dict_get(params, 'barrel_programs'):
+  #  annotations.append('tmbhunt_web')
   if 'tmbetadisc-rbf' in dict_get(params, 'barrel_programs'):
     annotations.append('tmbetadisc_rbf_web')
     
@@ -105,12 +106,13 @@ def post_process_protein(params, protein):
     
     details += ['bomp(%i)' % (bomp_score)]
     has_barrel = True
-    
-  tmbhunt_prob = dict_get(protein, 'tmbhunt_prob')
-  if (tmbhunt_prob >= params['tmbhunt_clearly_cutoff']) or \
-     (has_signal_pept and tmbhunt_prob >= params['tmbhunt_maybe_cutoff']):
-    details += ['tmbhunt(%.2f)' % (tmbhunt_prob)]
-    has_barrel = True
+
+  # DEPRECATED: TMB-HUNT server is permanently offline
+  #tmbhunt_prob = dict_get(protein, 'tmbhunt_prob')
+  #if (tmbhunt_prob >= params['tmbhunt_clearly_cutoff']) or \
+  #   (has_signal_pept and tmbhunt_prob >= params['tmbhunt_maybe_cutoff']):
+  #  details += ['tmbhunt(%.2f)' % (tmbhunt_prob)]
+  #  has_barrel = True
     
   if has_signal_pept and dict_get(protein, 'is_tmbetadisc_rbf'):
     details += ['tmbetadisc-rbf']

@@ -15,13 +15,15 @@ import sys, os, time, StringIO
 import twill
 from twill.commands import find, formfile, follow, fv, go, show, \
                              showforms, showlinks, submit, agent
-                             
+
 from inmembrane.helpers import log_stderr, parse_fasta_header
 
 
 def annotate(params, proteins, \
              force=False):
   """
+  DEPRECATED: The TMB-HUNT server appears to be permanently offline.
+
   Uses the TMB-HUNT web service 
   (http://bmbpcu36.leeds.ac.uk/~andy/betaBarrel/AACompPred/aaTMB_Hunt.cgi) to
   predict if proteins are outer membrane beta-barrels.
@@ -35,21 +37,21 @@ def annotate(params, proteins, \
   if len(proteins) >= 10000:
     log_stderr("# ERROR: TMB-HUNT(web): can't take more than 10,000 sequences.")
     return
-  
+
   # set the user-agent so web services can block us if they want ... :/
   python_version = sys.version.split()[0]
   agent("Python-urllib/%s (twill; inmembrane)" % python_version)
-  
+
   out = 'tmbhunt.out'
   log_stderr("# TMB-HUNT(web) %s > %s" % (params['fasta'], out))
-  
+
   if not force and os.path.isfile(out):
     log_stderr("# -> skipped: %s already exists" % out)
     return parse_tmbhunt(proteins, out)
-  
+
   # dump extraneous output into this blackhole so we don't see it
   if not __DEBUG__: twill.set_output(StringIO.StringIO())
-  
+
   go("http://bmbpcu36.leeds.ac.uk/~andy/betaBarrel/AACompPred/aaTMB_Hunt.cgi")
   if __DEBUG__: showforms()
 
@@ -57,7 +59,7 @@ def annotate(params, proteins, \
   fh = open(params['fasta'], 'r')
   fasta_seqs = fh.read()
   fh.close()
-  
+
   # fill out the form
   fv("1", "sequences", fasta_seqs)
 
@@ -79,7 +81,7 @@ def annotate(params, proteins, \
   # TMB-HUNT the link on the results page from large jobs is wrong
   if not job_id: job_id = follow("Full results").split('/')[-1:][0].split('.')[0]
   log_stderr("# TMB-HUNT(web) job_id is: %s <http://www.bioinformatics.leeds.ac.uk/~andy/betaBarrel/AACompPred/tmp/tmp_output%s.html>" % (job_id, job_id))
-  
+
   # polling until TMB-HUNT finishes
   # TMB-HUNT advises that 4000 sequences take ~10 mins
   # we poll a little faster than that
@@ -92,18 +94,18 @@ def annotate(params, proteins, \
       break
     except:
       polltime = polltime * 2
-      
+
     if polltime >= 7200: # 2 hours
       log_stderr("# TMB-HUNT error: Taking too long.")
       return
-    
+
   txt_out = show()
-  
+
   # write raw TMB-HUNT results
   fh = open(out, 'w')
   fh.write(txt_out)
   fh.close()
-  
+
   return parse_tmbhunt(proteins, out)
 
 
@@ -125,7 +127,7 @@ def parse_tmbhunt(proteins, out):
         if seqid.upper() == i.upper():
           seqid = i
           desc = proteins[i]['name']
-        
+
       probability = None
       classication = None
       tmbhunt_classes[seqid] = {}
@@ -137,16 +139,16 @@ def parse_tmbhunt(proteins, out):
       if classication == "BBMP":
         tmbhunt_classes[seqid]['tmbhunt'] = True
         tmbhunt_classes[seqid]['tmbhunt_prob'] = probability
-        
+
         proteins[seqid]['tmbhunt'] = True
         proteins[seqid]['tmbhunt_prob'] = probability
-        
+
       elif classication == "Non BBMP":
         tmbhunt_classes[seqid]['tmbhunt'] = False
         tmbhunt_classes[seqid]['tmbhunt_prob'] = probability
-        
+
         proteins[seqid]['tmbhunt'] = False
         proteins[seqid]['tmbhunt_prob'] = probability
-  
+
   #inmembrane.log_stderr(str(tmbhunt_classes))
   return tmbhunt_classes

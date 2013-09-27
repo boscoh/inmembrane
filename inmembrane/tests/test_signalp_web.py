@@ -14,7 +14,7 @@ class TestSignalp(PluginTestBase):
 
   def test_signalp_web(self):
     self.params['signalp4_organism'] = 'gram+'
-    signalp_web.annotate(self.params, self.proteins)
+    signalp_web.annotate(self.params, self.proteins, result_poll_retries=3)
 
     self.expected_output = {
         u'SPy_0252': True, 

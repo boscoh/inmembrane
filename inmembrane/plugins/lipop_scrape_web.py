@@ -102,9 +102,9 @@ def annotate(params, proteins, \
     soup = BeautifulSoup(r)
     resultlink = soup.findAll('a')[0]['href']
     sys.stderr.write("# Fetching from: " + resultlink + "\n");
-    # brief pause (LipoP is quick), then grab the results at the result url
+    # try grabbing the result, then keep polling until they are ready
     sys.stderr.write("# Waiting for LipoP(scrape_web) results ")
-    waittime = 1
+    waittime = 1.0
     time.sleep(waittime) #(len(proteins)/500)
     resultpage = requests.get(resultlink).text
     retries = 0
@@ -114,7 +114,7 @@ def annotate(params, proteins, \
         resultpage = requests.get(resultlink).text
         waittime += 1;
         retries += 1
-        waittime = min(waitttime, 20)
+        waittime = min(waittime, 20)
 
     sys.stderr.write(" .. done !\n")
 

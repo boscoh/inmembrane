@@ -7,7 +7,7 @@ citation = {'ref': u"Anders Krogh, Björn Larsson, Gunnar von Heijne and Erik "
             'name': "TMHMM 2.0"
            }
           
-__DEBUG__ = False
+__DEBUG__ = True
 
 import sys, os, time
 from StringIO import StringIO
@@ -78,7 +78,13 @@ def annotate(params, proteins, \
     headers = {"User-Agent": 
                "python-requests/%s (inmembrane/%s)" % 
                (requests.__version__, inmembrane.__version__) }
-    r = requests.post(url, data=payload, files=files, headers=headers)
+    r_post = requests.post(url, data=payload, files=files, headers=headers)
+
+    # HACK: the initial POST throws us a 302 redirect and we grab the redirect url from the text
+    #       (... not sure why requests allow_redirect=True option doesn't handle this transparently)
+    pollingurl = r_post.url + r_post.text.split("Location: ")[1]
+    r = requests.get(pollingurl)
+
     if __DEBUG__:
       log_stderr(r.text)
       # Example:
@@ -96,22 +102,27 @@ def annotate(params, proteins, \
     if "Job rejected" in r.text:
       sys.stderr.write(r.text)
       sys.exit()
-    soup = BeautifulSoup(r.text)
-      
-    resultlink = soup.findAll('a')[0]['href']
-    if __DEBUG__:
-      log_stderr(resultlink)
 
-    # brief pause, then grab the results at the result url
-    sys.stderr.write("# Waiting for TMHMM(scrape_web) results")
-    time.sleep(len(proteins)/500)
-    resultpage = requests.post(resultlink).text
-    retries = 0
-    while ("Webservices : Job queue" in resultpage) and retries < 10:
-      sys.stderr.write(".")
-      time.sleep(len(proteins)/100 + retries**2)
-      resultpage = requests.post(resultlink).text
-      retries += 1
+    # sometimes we get a polling page, other times the result page is sent immediately.
+    if ("<title>Job status of" in r.text):
+      r = r.text.replace("<noscript>","").replace("</noscript","")
+      soup = BeautifulSoup(r)
+      resultlink = soup.findAll('a')[0]['href']
+      if __DEBUG__:
+        log_stderr(resultlink)
+
+      # try grabbing the result, then keep polling until they are ready
+      sys.stderr.write("# Waiting for TMHMM(scrape_web) results")
+      time.sleep(len(proteins)/500)
+      resultpage = requests.get(resultlink).text
+      retries = 0
+      while ("<title>Job status of" in resultpage) and retries < 10:
+        sys.stderr.write(".")
+        time.sleep(len(proteins)/100 + retries**2)
+        resultpage = requests.get(resultlink).text
+        retries += 1
+    else:
+      resultpage = r.text
 
     sys.stderr.write(" .. done !\n")
 
@@ -135,7 +146,7 @@ def clean_result_page(resultpage):
 
   Returns the cleaned up result page.
   """
-  resultpage = "\n".join(resultpage.split('\n')[10:-3])
+  resultpage = "\n".join(resultpage.split('\n')[12:-3])
   resultpage = resultpage.replace("<hr>", '\n')
   resultpage = resultpage.replace("<P>", '')
   resultpage = resultpage.replace("<pre>", '')

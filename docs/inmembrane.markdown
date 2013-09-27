@@ -119,7 +119,7 @@ Potential signal sequences of the general (Sec) secretory pathway are predicted 
 
 The topology of integral inner membrane proteins is analysed using the same 'potentially surface exposed' loops algorithm as the Gram-positive protocol, however in this case sequences are classified as `IM`, `IM(cyto)`, `IM(peri)` and `IM(cyto+peri)` to indicate proteins with long cytoplasmic and/or periplasmic loops or domains. Experimentally, large periplasmic domains may be accessible to protease shaving when the outer membrane has been disrupted, such as in spheroplasts generated using outer membrane permeabilization agents. Unlike the Gram-positive plasma membrane, the Gram-negative inner membrane is not decorated with LPS and as such periplasmic loops and domains of intergral membrane proteins are expected to be more easily accessed by protease once the outer membrane is permeabilized. We have chosen a length of 30 residues as a conservative threshold (the `internal_exposed_loop_min` setting) for annotating cytoplasmic (`+cyto`) and periplasmic (`+peri`) loops or domains. This should be modified as required to suit the purpose of the user.
 
-Outer membrane ß-barrel proteins are predicted using the BOMP (Berven et al, 2004), TMB-HUNT (Garrow et al, 2005) and TMBETADISC-RBF (Ou et al, 2008) web services. By default, high scoring sequences that are more likely to be true-positives are annotated as `OM(barrel)` and are not strictly required to have a predicted signal sequence (BOMP score >= 3 and TMBHUNT probability >= 0.95). Lower scoring sequences (1 < BOMP score >= 2 and 0.5 < TMBHUNT probability >= 0.94, and all TMBETADISC-RBF positive predictions) must contain a predicted signal sequence to be annotated as an outer membrane barrel. We have also implemented an interface to TMBETA-NET (Gromiha et al, 2004) which can be used to annotate the predicted number (and location) of membrane spanning strands for outer membrane ß-barrels, however this method is disabled by default since it is prone to false positives for multidomain proteins where both a membrane ß-barrel and an additional soluble domain are present (Bagos et al 2005).
+Outer membrane ß-barrel proteins are predicted using the BOMP (Berven et al, 2004), <del>TMB-HUNT (Garrow et al, 2005)</del> and TMBETADISC-RBF (Ou et al, 2008) web services. By default, high scoring sequences that are more likely to be true-positives are annotated as `OM(barrel)` and are not strictly required to have a predicted signal sequence (BOMP score >= 3 and TMBHUNT probability >= 0.95). Lower scoring sequences (1 < BOMP score >= 2 and 0.5 < TMBHUNT probability >= 0.94, and all TMBETADISC-RBF positive predictions) must contain a predicted signal sequence to be annotated as an outer membrane barrel. We have also implemented an interface to TMBETA-NET (Gromiha et al, 2004) which can be used to annotate the predicted number (and location) of membrane spanning strands for outer membrane ß-barrels, however this method is disabled by default since it is prone to false positives for multidomain proteins where both a membrane ß-barrel and an additional soluble domain are present (Bagos et al 2005).
 
 Proteins containing a predicted N-terminal Sec or Tat signal sequence without internal transmembrane segments or a ß-barrel classification are annotated as `PERIPLASMIC/SECRETED`. If no membrane localization or signal sequence is detected, the protein is annotated at `CYTOPLASMIC`. Currently, the protocol does not explicitly detect localization for some secrected proteins without a signal sequence, such as those that contain Type 3 secretion signals or flagellar and pilus components.
 
@@ -216,7 +216,7 @@ __Operating systems:__ Linux
 
 __Programming language:__ Python
 
-__Other requirements:__ HMMER, SignalP, LipoP, TMHMM or MEMSAT3. An Internet connection is required for web services such as BOMP, TMB-HUNT and TMBETADISC-RBF.
+__Other requirements:__ HMMER, SignalP, LipoP, TMHMM or MEMSAT3. An Internet connection is required for web services such as BOMP, <del>TMB-HUNT</del> and TMBETADISC-RBF.
 
 __Licence:__ BSD Licence (2-clause)
 
@@ -250,7 +250,7 @@ Eddy SR. (2009) A new generation of homology search tools based on probabilistic
 
 Foster, S. J., (1991) Cloning, expression, sequence analysis and biochemical characterization of an autolytic amidase of Bacillus subtilis 168 trpC2. __J. Gen. Microbiol.__ 137:1987–1998. <http://dx.doi.org/10.1099/00221287-137-8-1987>
 
-Garrow, A.G., Agnew, A. and Westhead, D.R. (2005) TMB-Hunt: An amino acid composition based method to screen proteomes for beta-barrel transmembrane proteins. BMC Bioinformatics, 6: 56 <http://dx.doi.org/10.1186/1471-2105-6-56>
+<del>Garrow, A.G., Agnew, A. and Westhead, D.R. (2005) TMB-Hunt: An amino acid composition based method to screen proteomes for beta-barrel transmembrane proteins. BMC Bioinformatics, 6: 56 <http://dx.doi.org/10.1186/1471-2105-6-56></del>
 
 Gromiha MM, Ahmad S, Suwa M. (2004) Neural network-based prediction of transmembrane beta-strand segments in outer membrane proteins. __Journal of computational chemistry__ 25(5):762-7. <http://dx.doi.org/10.1002/jcc.10386>
 

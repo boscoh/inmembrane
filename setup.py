@@ -34,7 +34,7 @@ setup(
         "suds >= 0.4",
         "BeautifulSoup >= 3.2.1",
         "twill >= 0.9",
-        "requests >= 0.14.2",
+        "requests >= 2.0.0",
         ] + extra_requires,
     classifiers=[
         "Development Status :: 5 - Production/Stable",

@@ -94,8 +94,8 @@ def annotate(params, proteins, \
     try:
       response = client.service.runService(request)
     except urllib2.URLError as e:
-      sys.stderr.write("\n# ERROR: " + `e.reason` + "\n")
-      sys.exit()
+      log_stderr("ERROR LipoP(web) failed: '%s'" % `e.reason`)
+      return proteins
 
     sys.stderr.write("\n")
     

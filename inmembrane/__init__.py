@@ -1,4 +1,4 @@
-__version__ = "0.93.2"
+__version__ = "0.94"
 import helpers
 
 import os, shutil
@@ -11,11 +11,13 @@ default_params_str = """{
   'protocol': 'gram_pos', # 'gram_neg'
   
 #### Signal peptide and transmembrane helix prediction
-  'signalp4_bin': '',
+  'signalp4_bin': 'signalp_web',
 # 'signalp4_bin': 'signalp',
-  'lipop1_bin': '',
+  'lipop1_bin': 'lipop_web',
+# 'lipop1_bin': 'lipop_scrape_web',
 # 'lipop1_bin': 'LipoP',
-  'tmhmm_bin': '',
+  'tmhmm_bin': 'tmhmm_web',
+# 'tmhmm_bin': 'tmhmm_scrape_web',
 #  'tmhmm_bin': 'tmhmm',
   'memsat3_bin': 'runmemsat',
   'helix_programs': ['tmhmm'],
@@ -30,11 +32,9 @@ default_params_str = """{
   
 #### Outer membrane beta-barrel predictors
   'barrel_programs': ['bomp', 'tmbetadisc-rbf'],
-# 'barrel_programs': ['bomp', 'tmbetadisc-rbf', 'tmbhunt', 'tmbeta'],
+# 'barrel_programs': ['bomp', 'tmbetadisc-rbf', 'tmbeta'],
   'bomp_clearly_cutoff': 3, # if >= than this, always classify as an OM(barrel)
   'bomp_maybe_cutoff': 1, # must also have a signal peptide to be OM(barrel)
-  'tmbhunt_clearly_cutoff': 0.95,
-  'tmbhunt_maybe_cutoff': 0.5,
   'tmbetadisc_rbf_method': 'aadp', # aa, dp, aadp or pssm
 }
 """

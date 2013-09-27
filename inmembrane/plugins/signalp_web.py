@@ -9,7 +9,7 @@ citation = {'ref': u"Petersen TN, Brunak S, von Heijne G, Nielsen H. "
             'name': "SignalP 4.0"
            }
           
-__DEBUG__ = True
+__DEBUG__ = False
 
 import sys, os, time, json
 from suds.client import Client
@@ -21,6 +21,7 @@ def annotate(params, proteins, \
              url = 'http://www.cbs.dtu.dk/ws/SignalP4/SignalP4_4_0_ws0.wsdl', \
              #url = 'http://www.cbs.dtu.dk/ws/SignalP/SignalP_3_1_ws0.wsdl', \
              batchsize = 500, \
+             result_poll_retries = 100, \
              force=False):
   if __DEBUG__:
     logging.basicConfig(level=logging.INFO)
@@ -77,7 +78,7 @@ def annotate(params, proteins, \
     response = client.service.pollQueue(job)
     retries = 0
     sys.stderr.write("# Waiting for SignalP(web) results ")
-    while response.status != "FINISHED" and retries < 100:
+    while response.status != "FINISHED" and retries < result_poll_retries:
       response = client.service.pollQueue(job)
       time.sleep(10 + (retries*2))
       retries += 1
@@ -89,9 +90,13 @@ def annotate(params, proteins, \
          response.status == "UNKNOWN JOBID" or \
          response.status == "QUEUE DOWN" or \
          response.status == "FAILED":
-        log_stderr("SignalP(web) failed: '%s'" % (response.status))
+        log_stderr("\nSignalP(web) failed: '%s'" % (response.status))
         return proteins
-        
+
+    if retries >= result_poll_retries:
+      log_stderr("\nSignalP(web) failed: result_poll_retries limit exceeded (%i)" % (result_poll_retries))
+      return proteins
+
     sys.stderr.write(" done !\n")
       
     #fetchResults

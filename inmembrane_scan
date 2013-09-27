@@ -44,7 +44,7 @@ a FASTA file, then carries out sequential analysis of
 each sequence with a bunch of third-party programs, and 
 collates the results.
 
-(c) 2011 Bosco Ho and Andrew Perry
+(c) 2011-2013 Bosco Ho and Andrew Perry
 """ % (inmembrane.__version__)
 
 if __name__ == "__main__":
@@ -59,14 +59,14 @@ if __name__ == "__main__":
                           used.")
   parser.add_option("-n", "--tests-no-network",
                      action="store_true", dest="no_network", default=False,
-                     help="don't run tests that require a network connection")                   
+                     help="don't run tests that require a network connection")
   (options, args) = parser.parse_args()
-  
+
   if not options.run_tests:
     ##
     ## Setup params and run the analysis
     ## The high level plugin loop is in inmembrane/__init__.py
-    ##  
+    ##
     log_stderr("inmembrane %s (https://github.com/boscoh/inmembrane)"
               % (inmembrane.__version__))
     params = inmembrane.get_params()
@@ -77,7 +77,7 @@ if __name__ == "__main__":
     if 'fasta' not in params or not params['fasta']:
       params['fasta'] = args[0]
     inmembrane.process(params)
-    
+
   else:
     ##
     ## Run unit tests instead of 'normal' analysis
@@ -86,17 +86,17 @@ if __name__ == "__main__":
       print description
       parser.print_help()
       sys.exit(1)
-    # unusual hack to remove our custom flags, since 
+    # unusual hack to remove our custom flags, since
     # unittest expects it's own set
     if "-t" in sys.argv:
       sys.argv.remove("-t")
     if "--test" in sys.argv:
-      sys.argv.remove("--test")   
+      sys.argv.remove("--test")
     if "-n" in sys.argv:
       sys.argv.remove("-n")
     if "--tests-no-network" in sys.argv:
       sys.argv.remove("--tests-no-network")
-      
+
     file_tag = os.path.join(inmembrane.module_dir, 'tests', 'test*.py')
     test_names = [ \
         os.path.basename(f)[:-3] for f in glob.glob(file_tag)]
