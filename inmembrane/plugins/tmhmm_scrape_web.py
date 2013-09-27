@@ -146,7 +146,16 @@ def clean_result_page(resultpage):
 
   Returns the cleaned up result page.
   """
-  resultpage = "\n".join(resultpage.split('\n')[12:-3])
+  resultlines = resultpage.split('\n')
+  firstpreindex = 0
+  # find first pre-tag
+  for i in range(len(resultlines)):
+    if "<pre>" in resultlines[i]:
+      firstpreindex = i
+      break
+
+  resultpage = "\n".join(resultlines[firstpreindex:-3])
+
   resultpage = resultpage.replace("<hr>", '\n')
   resultpage = resultpage.replace("<P>", '')
   resultpage = resultpage.replace("<pre>", '')
