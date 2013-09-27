@@ -117,11 +117,9 @@
 
 #### Outer membrane beta-barrel predictors
   'barrel_programs': ['bomp', 'tmbetadisc-rbf'],
-# 'barrel_programs': ['bomp', 'tmbetadisc-rbf', 'tmbhunt', 'tmbeta'],
+# 'barrel_programs': ['bomp', 'tmbetadisc-rbf', 'tmbeta'],
   'bomp_clearly_cutoff': 3, # &gt;= to this, always classify as an OM(barrel)
   'bomp_maybe_cutoff': 1, # must also have a signal peptide to be OM(barrel)
-  'tmbhunt_clearly_cutoff': 0.95,
-  'tmbhunt_maybe_cutoff': 0.5,
   'tmbetadisc_rbf_method': 'aadp', # aa, dp, aadp or pssm
 }
 </code></pre><p>Existing <code>inmembrane.config</code> files can be changed. Since this file is in fact just Python code, normal Python syntax rules apply. Everything after a hash (#) character on a line is ignored - these are used as comments, and to used indicate alternative configurations that you might want to use.
@@ -239,18 +237,10 @@
  </li>
 
  <li>
-     <code>tmbhunt_clearly_cutoff</code>: 0.95, # if greater than or equal to this, always classify as an OM(barrel)
- </li>
-
- <li>
-     <code>tmbhunt_maybe_cutoff</code>: 0.5, # if greater than or equal to this, always classify as an OM(barrel)
- </li>
-
- <li>
      <code>tmbetadisc_rbf_method</code>: 'aadp', # TMBETADISC-RBF method: aa (single amino acid composition based), dp (dipeptide composition based), aadp (both aa and dp) or pssm (position specific mutation matrix based)
  </li>
 </ul>
-<p>Plugins for TMBHUNT (<code>tmbhunt</code>) and TMBETA (<code>tmbeta</code>) are available but are disabled by default since the general prediction accuracy or web service reliability was found to be lacking during testing.
+<p>A plugins for TMBETA (<code>tmbeta</code>) is available but disabled by default since the general prediction accuracy or web service reliability was found to be lacking during testing. Previously, <em>inmembrane</em> also provided a plugin for TMBHUNT (<code>tmbhunt</code>), however this has been removed since the web service is no longer active.
 </p>
 <p>Since topology prediction for arbitrary OMPbb sequences is still very unreliable, the Gram- protocol does not attempt to do loop length prediction but simply annotates potential OMPbb proteins as such.
 </p>

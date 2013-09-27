@@ -33,11 +33,9 @@ The default parameters are as following, and they will be explained in sections 
       
     #### Outer membrane beta-barrel predictors
       'barrel_programs': ['bomp', 'tmbetadisc-rbf'],
-    # 'barrel_programs': ['bomp', 'tmbetadisc-rbf', 'tmbhunt', 'tmbeta'],
+    # 'barrel_programs': ['bomp', 'tmbetadisc-rbf', 'tmbeta'],
       'bomp_clearly_cutoff': 3, # >= to this, always classify as an OM(barrel)
       'bomp_maybe_cutoff': 1, # must also have a signal peptide to be OM(barrel)
-      'tmbhunt_clearly_cutoff': 0.95,
-      'tmbhunt_maybe_cutoff': 0.5,
       'tmbetadisc_rbf_method': 'aadp', # aa, dp, aadp or pssm
     }
 
@@ -108,10 +106,8 @@ These parameters only apply to the Gram- protocol, since Gram+ bacteria contain 
 - `barrel_programs`: a list of web services for outer membrane &beta-barrel prediction ['bomp', 'tmbetadisc-rbf'],
 - `bomp_clearly_cutoff`: 3, # if greater than or equal to this, always classify as an OM(barrel)
 - `bomp_maybe_cutoff`: 1, # must also have a signal peptide to be OM(barrel)
-- `tmbhunt_clearly_cutoff`: 0.95, # if greater than or equal to this, always classify as an OM(barrel)
-- `tmbhunt_maybe_cutoff`: 0.5, # if greater than or equal to this, always classify as an OM(barrel)
 - `tmbetadisc_rbf_method`: 'aadp', # TMBETADISC-RBF method: aa (single amino acid composition based), dp (dipeptide composition based), aadp (both aa and dp) or pssm (position specific mutation matrix based)
 
-Plugins for TMBHUNT (`tmbhunt`) and TMBETA (`tmbeta`) are available but are disabled by default since the general prediction accuracy or web service reliability was found to be lacking during testing.
+A plugins for TMBETA (`tmbeta`) is available but disabled by default since the general prediction accuracy or web service reliability was found to be lacking during testing. Previously, _inmembrane_ also provided a plugin for TMBHUNT (`tmbhunt`), however this has been removed since the web service is no longer active.
 
 Since topology prediction for arbitrary OMPbb sequences is still very unreliable, the Gram- protocol does not attempt to do loop length prediction but simply annotates potential OMPbb proteins as such.
