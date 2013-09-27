@@ -11,15 +11,15 @@ default_params_str = """{
   'protocol': 'gram_pos', # 'gram_neg'
   
 #### Signal peptide and transmembrane helix prediction
-  'signalp4_bin': 'signalp_web',
-# 'signalp4_bin': 'signalp',
-  'lipop1_bin': 'lipop_web',
-# 'lipop1_bin': 'lipop_scrape_web',
-# 'lipop1_bin': 'LipoP',
-  'tmhmm_bin': 'tmhmm_web',
-# 'tmhmm_bin': 'tmhmm_scrape_web',
-#  'tmhmm_bin': 'tmhmm',
-  'memsat3_bin': 'runmemsat',
+   'signalp4_bin': 'signalp_web',
+#  'signalp4_bin': 'signalp',
+   'lipop1_bin': 'LipoP',
+#  'lipop1_bin': 'lipop_web',
+#  'lipop1_bin': 'lipop_scrape_web',
+   'tmhmm_bin': 'tmhmm',
+#  'tmhmm_bin': 'tmhmm_web',
+#  'tmhmm_bin': 'tmhmm_scrape_web',
+   'memsat3_bin': 'runmemsat',
   'helix_programs': ['tmhmm'],
 # 'helix_programs': ['tmhmm', 'memsat3'],
   'terminal_exposed_loop_min': 50, # unused in gram_neg protocol
