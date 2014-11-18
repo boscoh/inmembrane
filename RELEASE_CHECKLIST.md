@@ -28,7 +28,9 @@
 * Switch to the the gh-pages branch:
   git checkout gh-pages
 
-* Update the pypi download link in index.html.wrap, commit and push the changes.
+* Update the pypi download link in index.html.wrap. 
+  Regenerate HTML docs with:
+  python wrap.py *html.wrap
+  
+* Commit and push the changes.
   git commit -a; git push
-
-* Commit and push.
