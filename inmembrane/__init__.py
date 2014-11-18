@@ -1,4 +1,4 @@
-__version__ = "0.94"
+__version__ = "0.94.1"
 import helpers
 
 import os, shutil
