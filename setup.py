@@ -33,7 +33,7 @@ setup(
     install_requires=[
         "suds >= 0.4",
         "BeautifulSoup >= 3.2.1",
-        "twill >= 0.9",
+        "twill == 0.9.1",
         "requests >= 2.0.0",
         ] + extra_requires,
     classifiers=[
