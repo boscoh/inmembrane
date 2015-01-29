@@ -75,7 +75,11 @@ def annotate(params, proteins, \
                       % (seqid, proteins[seqid]['name']))
     out = show()
     time.sleep(1)
-    
+
+    if ("Some query is already running. Please try again." in out):
+      log_stderr("# TMBETA-NET(web) error: %s" % (out))
+      return {}
+
     # parse the web page returned, extract strand boundaries
     proteins[seqid]['tmbeta_strands'] = []
     for l in out.split('\n'):
