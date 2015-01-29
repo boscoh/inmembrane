@@ -67,13 +67,15 @@ if __name__ == "__main__":
                          "test_tmhmm_web,test_lipop_web")
   (options, args) = parser.parse_args()
 
+  log_stderr("inmembrane %s (https://github.com/boscoh/inmembrane)"
+             % (inmembrane.__version__))
+
   if not options.run_tests:
     ##
     ## Setup params and run the analysis
     ## The high level plugin loop is in inmembrane/__init__.py
     ##
-    log_stderr("inmembrane %s (https://github.com/boscoh/inmembrane)"
-              % (inmembrane.__version__))
+
     params = inmembrane.get_params()
     if ('fasta' not in params or not params['fasta']) and not args:
       print description
@@ -108,18 +110,24 @@ if __name__ == "__main__":
 
     log_stderr("Will run: " + ", ".join(tests_to_run))
 
+    log_stderr("\n")
     log_stderr("Note that it isn't unusual for some tests to "
                "fail - only be concerned with the particular analysis tools "
                "you will run, as defined in inmembrane.config. "
                "Errors can occur due to a missing locally installed "
                "program or a web service being temporarily or permanently "
-               "offline.")
+               "offline.\n")
+    log_stderr("\n")
     if ("test_memsat3" in test_names):
       log_stderr("Note that MEMSAT3 tests will likely fail even when "
                  "MEMSAT3 is functioning correctly since the results are "
                  "dependant on a BLAST search and the locally installed BLAST "
                  "database is unlikely to match the one used to derive the "
-                 "test results. If the numbers are similar it should be okay.")
+                 "test results. If the numbers are similar it should be "
+                 "okay.\n")
+      log_stderr("\n")
+
+
 
     # by passing in argv we override unittests own commandline option
     # detection
