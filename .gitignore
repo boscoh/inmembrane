@@ -1,3 +1,4 @@
 *.pyc
 tests/*/*out
 examples/*/*out
+.project
