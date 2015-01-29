@@ -202,6 +202,8 @@ compare transmembrane segment predictions can install both.
 
 -  Download and install TMHMM 2.0 from
    http://www.cbs.dtu.dk/cgi-bin/nph-sw_request?tmhmm.
+-  In the *bin/tmhmm* script, edit the *$opt_basedir* variable to point to
+   the full path of where TMHMM is installed.
 
 SignalP 4.0
 -----------
