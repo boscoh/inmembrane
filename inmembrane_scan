@@ -35,6 +35,7 @@ import inmembrane
 from inmembrane.helpers import *
 # will load all plugins in the plugins/ directory
 from inmembrane.plugins import *
+import unittest
 
 description = """
 inmembrane %s (https://github.com/boscoh/inmembrane)
@@ -60,6 +61,10 @@ if __name__ == "__main__":
   parser.add_option("-n", "--tests-no-network",
                      action="store_true", dest="no_network", default=False,
                      help="don't run tests that require a network connection")
+  parser.add_option("--skip-tests",
+                    action="store", type="string", dest="skip_tests",
+                    help="a comma separated list of tests to skip eg: "
+                         "test_tmhmm_web,test_lipop_web")
   (options, args) = parser.parse_args()
 
   if not options.run_tests:
@@ -82,32 +87,40 @@ if __name__ == "__main__":
     ##
     ## Run unit tests instead of 'normal' analysis
     ##
-    if len(args) > 0:
-      print description
-      parser.print_help()
-      sys.exit(1)
-    # unusual hack to remove our custom flags, since
-    # unittest expects it's own set
-    if "-t" in sys.argv:
-      sys.argv.remove("-t")
-    if "--test" in sys.argv:
-      sys.argv.remove("--test")
-    if "-n" in sys.argv:
-      sys.argv.remove("-n")
-    if "--tests-no-network" in sys.argv:
-      sys.argv.remove("--tests-no-network")
+
+    log_stderr("Running tests")
+
+    skip_list = []
+    if "--skip-tests" in sys.argv:
+      skip_list = [tn.strip() for tn in options.skip_tests.split(',')]
+      log_stderr("Will skip: " + ", ".join(skip_list))
+      #sys.argv.remove("--skip-tests")
 
     file_tag = os.path.join(inmembrane.module_dir, 'tests', 'test*.py')
-    test_names = [ \
-        os.path.basename(f)[:-3] for f in glob.glob(file_tag)]
+    test_names = [os.path.basename(f)[:-3] for f in glob.glob(file_tag)]
 
     tests_to_run = []
     for test_name in test_names:
       if not (options.no_network and (test_name[-4:] == "_web")):
-        exec('from inmembrane.tests.%s import *' % test_name)
-        tests_to_run.append(test_name)
+        if (test_name not in skip_list):
+          exec('from inmembrane.tests.%s import *' % test_name)
+          tests_to_run.append(test_name)
 
     log_stderr("Will run: " + ", ".join(tests_to_run))
 
-    unittest.main()
+    log_stderr("Note that it isn't unusual for some tests to "
+               "fail - only be concerned with the particular analysis tools "
+               "you will run, as defined in inmembrane.config. "
+               "Errors can occur due to a missing locally installed "
+               "program or a web service being temporarily or permanently "
+               "offline.")
+    if ("test_memsat3" in test_names):
+      log_stderr("Note that MEMSAT3 tests will likely fail even when "
+                 "MEMSAT3 is functioning correctly since the results are "
+                 "dependant on a BLAST search and the locally installed BLAST "
+                 "database is unlikely to match the one used to derive the "
+                 "test results. If the numbers are similar it should be okay.")
 
+    # by passing in argv we override unittests own commandline option
+    # detection
+    unittest.main(argv=[os.path.basename(sys.argv[0])])
