@@ -55,7 +55,7 @@ if __name__ == "__main__":
                         version="%prog "+inmembrane.__version__+"\n",)
   parser.add_option("-t", "--test",
                      action="store_true", dest="run_tests", default=False,
-                    help="Run tests checking the each plugin works as expected.\
+                    help="Run tests to check that each plugin works as expected.\
                           No sequence file should be specified if this flag is\
                           used.")
   parser.add_option("-n", "--tests-no-network",
