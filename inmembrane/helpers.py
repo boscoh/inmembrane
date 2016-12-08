@@ -90,16 +90,16 @@ def parse_fasta_header(header):
   """
   Parses a FASTA format header (with our without the initial '>') and returns a
   tuple of sequence id and sequence name/description.
-  
+
   If NCBI SeqID format (gi|gi-number|gb|accession etc, is detected
   the first id in the list is used as the canonical id (see see
   http://www.ncbi.nlm.nih.gov/books/NBK21097/#A631 ).
   """
-  # check to see if we have an NCBI-style header
   if header[0] == '>':
     header = header[1:]
-  if header.find("|") != -1:
-    tokens = header.split('|')
+  tokens = header.split('|')
+  # check to see if we have an NCBI-style header
+  if header.find("|") != -1 and len(tokens[0]) <= 3:
     # "gi|ginumber|gb|accession bla bla" becomes "gi|ginumber"
     seqid = "%s|%s" % (tokens[0], tokens[1].split()[0])
     name = tokens[-1:][0].strip()
@@ -108,7 +108,7 @@ def parse_fasta_header(header):
     tokens = header.split()
     seqid = tokens[0]
     name = header[0:-1].strip()
-  
+
   return seqid, name
   
 
