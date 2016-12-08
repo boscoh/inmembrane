@@ -4,6 +4,7 @@
 
 import inmembrane
 import os, subprocess, sys, re
+from collections import OrderedDict
 import textwrap
 
 LOG_SILENT = False
@@ -128,7 +129,7 @@ def create_proteins_dict(fasta):
   """
   seqids = []
   seqid = None
-  proteins = {}
+  proteins = OrderedDict()
   for l in open(fasta):
     if l.startswith(">"):
       seqid, name = parse_fasta_header(l)
@@ -136,6 +137,7 @@ def create_proteins_dict(fasta):
       proteins[seqid] = {
         'seq':"",
         'name':name,
+        'original_header': l[1:].rstrip('\n').rstrip('\r'),
       }
       continue
     if seqid is not None:
