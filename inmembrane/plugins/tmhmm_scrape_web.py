@@ -35,7 +35,8 @@ def annotate(params, proteins, \
   """
 
   baseurl = "http://www.cbs.dtu.dk"
-  url = baseurl + "/cgi-bin/nph-webface"
+  # url = baseurl + "/cgi-bin/nph-webface"
+  url = baseurl + '/cgi-bin/webface2.fcgi'
 
   # grab the cached results if present
   outfile = "tmhmm_scrape_web.out"
@@ -82,7 +83,22 @@ def annotate(params, proteins, \
 
     # HACK: the initial POST throws us a 302 redirect and we grab the redirect url from the text
     #       (... not sure why requests allow_redirect=True option doesn't handle this transparently)
-    pollingurl = r_post.url + r_post.text.split("Location: ")[1]
+    
+    if __DEBUG__:
+        log_stderr(r_post.text)
+
+    # pollingurl = r_post.url + r_post.text.split("Location: ")[1]
+   
+    # TODO: This is a crappy way to grab the job ID.
+    #       There is a form on this page with jobid as a value. Use BeautifulSoup
+    for l in r_post.text.splitlines():
+        if '<!-- jobid:' in l:
+            jobid = l.split()[2]
+            pollingurl = url + "?jobid=%s" % jobid
+
+    if __DEBUG__:
+        log_stderr("tmhmm_scrape_web polling URL: %s" % pollingurl)
+    
     r = requests.get(pollingurl)
 
     if __DEBUG__:

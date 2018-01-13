@@ -11,12 +11,10 @@ citation = {'ref': "Ou Y-YY, Gromiha MMM, Chen S-AA, Suwa M (2008) "
 __DEBUG__ = False
 
 import sys, os, time, StringIO
-
-import twill
-from twill.commands import find, formfile, follow, fv, go, show, \
-                             showforms, showlinks, submit, agent
+import requests
 from BeautifulSoup import BeautifulSoup                             
 from inmembrane.helpers import log_stderr, parse_fasta_header, dict_get
+
 
 def parse_tmbetadisc_output(output, proteins):
   """
@@ -44,12 +42,13 @@ def parse_tmbetadisc_output(output, proteins):
         
   return proteins
 
+
 def annotate(params, proteins, \
              url="http://rbf.bioinfo.tw/"+
                  "~sachen/OMPpredict/"+
                  "TMBETADISC-RBF-Content.html", force=False):
   """
-  Interfaces with the TatFind web service at 
+  Interfaces with the TMBETADISC-RBF web service at 
   (http://rbf.bioinfo.tw/~sachen/OMPpredict/TMBETADISC-RBF.php) 
   to predict if protein sequence is likely to be an outer membrane beta-barrel.
   
@@ -65,7 +64,8 @@ def annotate(params, proteins, \
   
   # set the user-agent so web services can block us if they want ... :/
   python_version = sys.version.split()[0]
-  agent("Python-urllib/%s (twill; inmembrane)" % python_version)
+  # TODO: Set User-Agent header for requests
+  # agent("Python-urllib/%s (requests; inmembrane)" % python_version)
   
   outfn = 'tmbetadisc-rbf.out'
   log_stderr("# TMBETADISC-RBF(web) %s > %s" % (params['fasta'], outfn))
@@ -77,14 +77,6 @@ def annotate(params, proteins, \
     fh.close()
     return proteins
   
-  # dump extraneous output into this blackhole so we don't see it
-  if not __DEBUG__: twill.set_output(StringIO.StringIO())
-  
-  go(url)
-  if __DEBUG__: showforms()
-  formfile("1", "userfile", params["fasta"])
-  fv("1", "format", "file")
-
   # set the user defined method
   method_map = {"aa":"Amino Acid Composition",
                 "dp":"Depipetide Composition",
@@ -98,30 +90,28 @@ def annotate(params, proteins, \
                     Must be set to aa, dp, aadp or pssm.")
       sys.exit()
 
-  #fv("1", "select", "Amino Acid Composition")
-  #fv("1", "select", "Depipetide Composition")
-  #fv("1", "select", "Amino Acid & Depipetide Composition")
-  #fv("1", "select", "PSSM")
-  fv("1", "select", method)
-  
-  submit()
-  
-  waiting_page = show()
+  # files = {'userfile': open(params["fasta"], 'rb')}
+  with open(params["fasta"], 'r') as ff:
+    data = {'format':'fasta', 'select':method, 'seq': ff.read()}
+  response = requests.post('https://rbf.bioinfo.tw/~sachen/OMPpredict/TMBETADISC-RBF.php', data=data) #, files=files)
+
+  waiting_page = response.content
   if __DEBUG__: log_stderr(waiting_page)
 
   for l in waiting_page.split('\n'):
-    if l.find("TMBETADISC-RBF-action.php?UniqueName=") != -1:
+    if 'TMBETADISC-RBF-action.php?UniqueName=' in l:
       result_url = l.split("'")[1]
 
   time.sleep(5)
   
-  go(result_url)
+  output = requests.get(result_url).content
   
-  output = show()
   if __DEBUG__: log_stderr(output)
   
   # write raw output to a file
   fh = open(outfn, 'w')
+  # fh.write(waiting_page)
+  # fh.write("<!-- ----------------------------------------------------------------------------------- -->")
   fh.write(output)
   fh.close()
   
