@@ -25,9 +25,8 @@ from inmembrane.plugins.lipop1 import parse_lipop
 from inmembrane.helpers import log_stderr
 from inmembrane.helpers import generate_safe_seqids, proteins_to_fasta
 
-def annotate(params, proteins, \
-             batchsize=2000, \
-             force=False):
+
+def annotate(params, proteins, batchsize=2000, force=False):
   """
   This plugin inferfaces with the LipoP web interface (for humans) and
   scrapes the results. This is a silly way to do it, since there is
@@ -72,16 +71,17 @@ def annotate(params, proteins, \
                           ("outform","-noplot")])
 
     #files = {'seqfile': open(params['fasta'], 'rb')}
-    files = {'seqfile': StringIO(safe_fasta)}
+    files = {'SEQSUB': StringIO(safe_fasta)}
 
     log_stderr("# LipoP(scrape_web), %s > %s" % (params['fasta'], outfile))
 
     headers = {"User-Agent": 
                "python-requests/%s (inmembrane/%s)" %
                (requests.__version__, inmembrane.__version__) }
-    r = requests.post(url, data=payload, files=files, headers=headers)
+    r_post = requests.post(url, data=payload, files=files, headers=headers)
+
     if __DEBUG__:
-      log_stderr(r.text)
+      log_stderr(r_post.text)
       # Example:
       #
       # <HTML>
@@ -94,27 +94,27 @@ def annotate(params, proteins, \
       # </HTML>
 
     # extract the result URL (or die if job is rejected ...)
-    if "Job rejected" in r.text:
-      sys.stderr.write(r.text)
+    if "Job rejected" in r_post.text:
+      log_stderr(r_post.text)
       sys.exit()
 
-    r = r.text.replace("<noscript>","").replace("</noscript","")
-    soup = BeautifulSoup(r)
-    resultlink = soup.findAll('a')[0]['href']
-    sys.stderr.write("# Fetching from: " + resultlink + "\n");
+    r_post_clean = r_post.text.replace("<noscript>","").replace("</noscript","")
+    soup = BeautifulSoup(r_post_clean)
+    pollingurl = soup.findAll('a')[0]['href']
+    sys.stderr.write("# Fetching from: " + pollingurl + "\n");
     # try grabbing the result, then keep polling until they are ready
     sys.stderr.write("# Waiting for LipoP(scrape_web) results ")
     waittime = 1.0
     time.sleep(waittime) #(len(proteins)/500)
-    resultpage = requests.get(resultlink).text
+    resultpage = requests.get(pollingurl).text
     retries = 0
     while (("<title>Job status of" in resultpage) and (retries < 15)):
-        sys.stderr.write(".")
-        time.sleep(waittime) #(len(proteins)/500)
-        resultpage = requests.get(resultlink).text
-        waittime += 1;
-        retries += 1
-        waittime = min(waittime, 20)
+      sys.stderr.write(".")
+      time.sleep(waittime) #(len(proteins)/500)
+      resultpage = requests.get(pollingurl).text
+      waittime += 1;
+      retries += 1
+      waittime = min(waittime, 20)
 
     sys.stderr.write(" .. done !\n")
 
@@ -144,9 +144,10 @@ def annotate(params, proteins, \
   proteins = parse_lipop(allresultpages, proteins, id_mapping=id_mapping)
   return proteins
 
+
 def clean_result_page(resultpage):
     """
-    Takes the HTML output from the LipoP result page and replaces some 
+    Takes the HTML output from the LipoP result page and replaces some
     tags make the output parsable by the existing standalone lipop1 parser.
     """
     resultpage = "\n".join(resultpage.split('\n')[14:])

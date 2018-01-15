@@ -35,7 +35,6 @@ def annotate(params, proteins, \
   """
 
   baseurl = "http://www.cbs.dtu.dk"
-  # url = baseurl + "/cgi-bin/nph-webface"
   url = baseurl + '/cgi-bin/webface2.fcgi'
 
   # grab the cached results if present
@@ -81,28 +80,8 @@ def annotate(params, proteins, \
                (requests.__version__, inmembrane.__version__) }
     r_post = requests.post(url, data=payload, files=files, headers=headers)
 
-    # HACK: the initial POST throws us a 302 redirect and we grab the redirect url from the text
-    #       (... not sure why requests allow_redirect=True option doesn't handle this transparently)
-    
     if __DEBUG__:
-        log_stderr(r_post.text)
-
-    # pollingurl = r_post.url + r_post.text.split("Location: ")[1]
-   
-    # TODO: This is a crappy way to grab the job ID.
-    #       There is a form on this page with jobid as a value. Use BeautifulSoup
-    for l in r_post.text.splitlines():
-        if '<!-- jobid:' in l:
-            jobid = l.split()[2]
-            pollingurl = url + "?jobid=%s" % jobid
-
-    if __DEBUG__:
-        log_stderr("tmhmm_scrape_web polling URL: %s" % pollingurl)
-    
-    r = requests.get(pollingurl)
-
-    if __DEBUG__:
-      log_stderr(r.text)
+      log_stderr(r_post.text)
       # Example:
       #
       # <HTML>
@@ -115,14 +94,14 @@ def annotate(params, proteins, \
       # </HTML>
 
     # extract the result URL (or die if job is rejected ...)
-    if "Job rejected" in r.text:
-      sys.stderr.write(r.text)
+    if "Job rejected" in r_post.text:
+      sys.stderr.write(r_post.text)
       sys.exit()
 
     # sometimes we get a polling page, other times the result page is sent immediately.
-    if ("<title>Job status of" in r.text):
-      r = r.text.replace("<noscript>","").replace("</noscript","")
-      soup = BeautifulSoup(r)
+    if ("<title>Job status of" in r_post.text):
+      r_clean = r_post.text.replace("<noscript>","").replace("</noscript","")
+      soup = BeautifulSoup(r_clean)
       resultlink = soup.findAll('a')[0]['href']
       if __DEBUG__:
         log_stderr(resultlink)
