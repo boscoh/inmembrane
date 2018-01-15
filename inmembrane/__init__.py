@@ -12,12 +12,9 @@ default_params_str = """{
   
 #### Signal peptide and transmembrane helix prediction
    'signalp4_bin': 'signalp',
-#  'signalp4_bin': 'signalp_web',
    'lipop1_bin': 'LipoP',
-#  'lipop1_bin': 'lipop_web',
 #  'lipop1_bin': 'lipop_scrape_web',
    'tmhmm_bin': 'tmhmm',
-#  'tmhmm_bin': 'tmhmm_web',
 #  'tmhmm_bin': 'tmhmm_scrape_web',
    'memsat3_bin': 'runmemsat',
   'helix_programs': ['tmhmm'],
@@ -32,7 +29,7 @@ default_params_str = """{
   
 #### Outer membrane beta-barrel predictors
   'barrel_programs': ['tmbetadisc-rbf'],
-# 'barrel_programs': ['bomp', 'tmbetadisc-rbf', 'tmbeta'],
+# 'barrel_programs': ['bomp', 'tmbetadisc-rbf'],
   'bomp_clearly_cutoff': 3, # if >= than this, always classify as an OM(barrel)
   'bomp_maybe_cutoff': 1, # must also have a signal peptide to be OM(barrel)
   'tmbetadisc_rbf_method': 'aadp', # aa, dp, aadp or pssm

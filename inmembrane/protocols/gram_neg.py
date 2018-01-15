@@ -6,15 +6,10 @@ def get_annotations(params):
   annotations = []
   params['signalp4_organism'] = 'gram-'
   
-  if not params['signalp4_bin'] or params['signalp4_bin'] == 'signalp_web':
-    annotations += ['signalp_web']
-  else:
-    annotations += ['signalp4']
+  annotations += ['signalp4']
   
   if not params['lipop1_bin'] or params['lipop1_bin'] == 'lipop_scrape_web':
     annotations += ['lipop_scrape_web']
-  elif params['lipop1_bin'] == 'lipop_web':
-    annotations += ['lipop_web']
   elif params['lipop1_bin'] == 'lipop1':
     annotations += ['lipop1']
   
@@ -27,18 +22,11 @@ def get_annotations(params):
   #  annotations.append('tmbhunt_web')
   if 'tmbetadisc-rbf' in dict_get(params, 'barrel_programs'):
     annotations.append('tmbetadisc_rbf_web')
-    
-  # TMBETA-NET knows to only run on predicted barrels
-  # with the category 'OM(barrel)'
-  if 'tmbeta' in dict_get(params, 'barrel_programs'):
-    annotations.append('tmbeta_net_web')
 
   if dict_get(params, 'helix_programs'):
     if 'tmhmm' in params['helix_programs']:
       if not params['tmhmm_bin'] or params['tmhmm_bin'] == 'tmhmm_scrape_web':
         annotations.append('tmhmm_scrape_web')
-      elif params['tmhmm_bin'] == 'tmhmm_web':
-        annotations.append('tmhmm_web')
       else:
         annotations.append('tmhmm')
     if 'memsat3' in params['helix_programs']:

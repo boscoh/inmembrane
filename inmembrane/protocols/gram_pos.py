@@ -16,15 +16,10 @@ def get_annotations(params):
   
   params['signalp4_organism'] = 'gram+'
   
-  if not params['signalp4_bin'] or params['signalp4_bin'] == 'signalp_web':
-    annotations += ['signalp_web']
-  else:
-    annotations += ['signalp4']
+  annotations += ['signalp4']
   
   if not params['lipop1_bin'] or params['lipop1_bin'] == 'lipop_scrape_web':
     annotations += ['lipop_scrape_web']
-  elif params['lipop1_bin'] == 'lipop_web':
-    annotations += ['lipop_web']
   else:
     annotations += ['lipop1']
     
@@ -34,8 +29,6 @@ def get_annotations(params):
     if 'tmhmm' in params['helix_programs']:
       if not params['tmhmm_bin'] or params['tmhmm_bin'] == 'tmhmm_scrape_web':
         annotations.append('tmhmm_scrape_web')
-      elif params['tmhmm_bin'] == 'tmhmm_web':
-        annotations.append('tmhmm_web')
       else:
         annotations.append('tmhmm')
     if 'memsat3' in params['helix_programs']:
