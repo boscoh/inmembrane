@@ -7,7 +7,7 @@ citation = {'ref': u"Anders Krogh, Björn Larsson, Gunnar von Heijne and Erik "
             'name': "TMHMM 2.0"
            }
           
-__DEBUG__ = True
+__DEBUG__ = False
 
 import sys, os, time
 from StringIO import StringIO
