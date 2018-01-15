@@ -50,6 +50,30 @@ This can be useful for determining which binary dependences
 are correctly installed, or exposing any broken / offline web services
 required for a particular analysis.
 
+Running under Docker
+====================
+
+Docker containers provide a convenient way to run the software in a more
+reproducible environment.
+
+To create a Docker container and run tests::
+
+    $ docker build -t inmembrane:latest .
+    $ docker run -it inmembrane -t --skip-tests test_tmhmm,test_signalp4,test_lipop1,test_memsat3
+
+A `Dockerfile-memsat3` is also included that creates a container with MEMSAT3
+and the required Swissprot BLAST database, however you must accept the MEMSAT3
+license before using this (ie, no commercial use).
+
+To run an analysis using the container::
+
+    # Run once to get a template inmembrane.config in the current working directory
+    $ docker run -it -v $(pwd):/data inmembrane
+    # Edit inmembrane.config as required. Use signap_scrape_web, tmhmm_scrape_web and lipop_scrape_web
+    # as the binary versions won't exist in the default container
+    # Then, assuming my_proteome.fasta exists in the current working directory, run:
+    $ docker run -it -v $(pwd):/data inmembrane my_proteome.fasta
+
 Installation and Configuration
 ==============================
 
@@ -229,8 +253,7 @@ MEMSAT3
 
 
 -  Download MEMSAT3 from
-   http://bioinfadmin.cs.ucl.ac.uk/downloads/memsat/memsat3/ (only
-   memsat3\_academic.tar is required).
+   http://bioinfadmin.cs.ucl.ac.uk/downloads/memsat/memsat3/memsat3.0.tar.gz
 -  MEMSAT3 requires NCBI BLAST ("legacy" BLAST, not BLAST+) using
    the SwissProt (swissprot) database.
 -  Legacy BLAST can be downloaded at

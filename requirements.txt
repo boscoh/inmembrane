@@ -1,0 +1,6 @@
+BeautifulSoup>=3.2.1
+cssselect
+lxml
+requests>=2.0.0
+suds>=0.4
+twill==0.9.1
