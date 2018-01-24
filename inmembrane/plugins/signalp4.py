@@ -7,26 +7,49 @@ citation = {'ref': u"Petersen TN, Brunak S, von Heijne G, Nielsen H. "
                    u"Jan;8(10):785-6. \n"
                    u"<http://dx.doi.org/10.1038/nmeth.1701>",
             'name': "SignalP 4.0"
-           }
+            }
+
+
+def parse_signalp(signalp4_lines, proteins, id_mapping=None):
+
+    if id_mapping is None:
+        id_mapping = []
+
+    past_preamble = False
+    for line in signalp4_lines:
+        if line.startswith("#"):
+            past_preamble = True
+            continue
+        if not past_preamble and line.strip() == '':  # skip empty lines
+            continue
+        if past_preamble:
+            if line.strip() == '':
+                # in the case of web output of concatenated signalp output
+                # files, an empty line after preamble means we have finished all
+                # 'result' lines for that section
+                past_preamble = False
+                continue
+            words = line.split()
+            seqid = parse_fasta_header(words[0])[0]
+            if id_mapping:
+                seqid = id_mapping[seqid]
+            proteins[seqid]['signalp_cleave_position'] = int(words[4])
+            proteins[seqid]['is_signalp'] = (words[9] == 'Y')
+
+    return proteins
+
 
 def annotate(params, proteins):
-  for seqid in proteins:
-    proteins[seqid]['is_signalp'] = False
-    proteins[seqid]['signalp_cleave_position'] = None
+    for seqid in proteins:
+        proteins[seqid]['is_signalp'] = False
+        proteins[seqid]['signalp_cleave_position'] = None
 
-  signalp4_out = 'signalp.out'
-  cmd = '%(signalp4_bin)s -t %(signalp4_organism)s  %(fasta)s' % \
-             params
-  run(cmd, signalp4_out)
+    signalp4_out = 'signalp.out'
+    cmd = '%(signalp4_bin)s -t %(signalp4_organism)s  %(fasta)s' % \
+          params
+    run(cmd, signalp4_out)
 
-  for line in open(signalp4_out):
-    if line.startswith("#"):
-      continue
-    words = line.split()
-    seqid = parse_fasta_header(words[0])[0]
-    proteins[seqid]['signalp_cleave_position'] = int(words[4])
-    if (words[9] == "Y"):
-      proteins[seqid]['is_signalp'] = True
+    with open(signalp4_out) as signalp4_text:
+        proteins = parse_signalp(signalp4_text, proteins)
 
-  return proteins
-    
+    return proteins

@@ -6,7 +6,9 @@ to predict if a protein is exposed on the surface of a bacteria."
 AUTHOR = "Andrew Perry & Bosco Ho"
 AUTHOR_EMAIL = "ajperry@pansapiens.com"
 URL = "http://github.com/boscoh/inmembrane"
-VERSION = __import__(PACKAGE).__version__
+# Must be a semantic version number. Also update inmembrane/__init__.py
+VERSION = "0.95.0"  # __import__(PACKAGE).__version__
+
 try:
   extra_requires = []
   from collections import OrderedDict

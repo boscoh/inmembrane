@@ -1,4 +1,4 @@
-__version__ = "0.94.2"
+__version__ = "0.95.0"  # Must be a semantic version number
 import helpers
 
 import os, shutil
@@ -11,11 +11,12 @@ default_params_str = """{
   'protocol': 'gram_pos', # 'gram_neg'
   
 #### Signal peptide and transmembrane helix prediction
-   'signalp4_bin': 'signalp',
-   'lipop1_bin': 'LipoP',
-#  'lipop1_bin': 'lipop_scrape_web',
-   'tmhmm_bin': 'tmhmm',
-#  'tmhmm_bin': 'tmhmm_scrape_web',
+#   'signalp4_bin': 'signalp',
+  'signalp4_bin': 'signalp_scrape_web',
+#   'lipop1_bin': 'LipoP',
+  'lipop1_bin': 'lipop_scrape_web',
+#   'tmhmm_bin': 'tmhmm',
+  'tmhmm_bin': 'tmhmm_scrape_web',
    'memsat3_bin': 'runmemsat',
   'helix_programs': ['tmhmm'],
 # 'helix_programs': ['tmhmm', 'memsat3'],

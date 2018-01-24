@@ -1,11 +1,10 @@
 # -*- coding: utf-8 -*-
-citation = {'ref': u"Agnieszka S. Juncker, Hanni Willenbrock, "
-                   u"Gunnar Von Heijne, Søren Brunak, Henrik Nielsen, "
-                   u"And Anders Krogh. (2003) Prediction of lipoprotein "
-                   u"signal peptides in Gram-negative bacteria. Protein "
-                   u"Science 12:1652–1662. \n"
-                   u"<http://dx.doi.org/10.1110/ps.0303703>",
-            'name': "LipoP 1.0 (web interface)"
+citation = {'ref': u"Petersen TN, Brunak S, von Heijne G, Nielsen H. "
+                   u"SignalP 4.0: discriminating signal peptides from "
+                   u"transmembrane regions. Nature methods 2011 "
+                   u"Jan;8(10):785-6. \n"
+                   u"<http://dx.doi.org/10.1038/nmeth.1701>",
+            'name': "SignalP 4.1"
             }
 
 __DEBUG__ = False
@@ -21,14 +20,16 @@ except:
     from ordereddict import OrderedDict
 
 import inmembrane
-from inmembrane.plugins.lipop1 import parse_lipop
+from inmembrane.plugins.signalp4 import parse_signalp
 from inmembrane.helpers import log_stderr
-from inmembrane.helpers import generate_safe_seqids, proteins_to_fasta
+from inmembrane.helpers import (generate_safe_seqids,
+                                proteins_to_fasta,
+                                html2text)
 
 
 def annotate(params, proteins, batchsize=2000, force=False):
     """
-    This plugin interfaces with the LipoP web interface (for humans) and
+    This plugin interfaces with the SignalP web interface (for humans) and
     scrapes the results. There once was a SOAP service but it was discontinued,
     so now we use this.
     """
@@ -37,7 +38,7 @@ def annotate(params, proteins, batchsize=2000, force=False):
     url = baseurl + "/cgi-bin/webface2.fcgi"
 
     # grab the cached results if present
-    outfile = "lipop_scrape_web.out"
+    outfile = "signalp_scrape_web.out"
     if not force and os.path.isfile(outfile):
         log_stderr("# -> skipped: %s already exists" % outfile)
         proteins, id_mapping = generate_safe_seqids(proteins)
@@ -45,7 +46,8 @@ def annotate(params, proteins, batchsize=2000, force=False):
         resultpage = fh.read()
         fh.close()
         # soup = BeautifulSoup(resultpage)
-        proteins = parse_lipop(resultpage, proteins, id_mapping=id_mapping)
+        proteins = parse_signalp(resultpage.splitlines(),
+                                 proteins, id_mapping=id_mapping)
         return proteins
 
     proteins, id_mapping = generate_safe_seqids(proteins)
@@ -56,8 +58,6 @@ def annotate(params, proteins, batchsize=2000, force=False):
         seqid_batch = seqids[0:batchsize]
         del seqids[0:batchsize]
 
-        # get batch of sequences in fasta format with munged ids
-        # (workaround for lipop sequence id munging)
         safe_fasta = proteins_to_fasta(proteins,
                                        seqids=seqid_batch,
                                        use_safe_seqid=True)
@@ -65,15 +65,22 @@ def annotate(params, proteins, batchsize=2000, force=False):
         # we use an OrderedDict rather than a normal dictionary to work around
         # some quirks in the CBS CGI (the server expects parameters in a certain
         # order in the HTTP headers).
-        payload = OrderedDict([('configfile',
-                                "/usr/opt/www/pub/CBS/services/LipoP-1.0/LipoP.cf"),
-                               ("SEQ", ""),
-                               ("outform", "-noplot")])
+        payload = OrderedDict([
+            ('configfile',
+             "/usr/opt/www/pub/CBS/services/SignalP-4.1/SignalP.cf"),
+            ("SEQPASTE", ""),
+            ("orgtype", params['signalp4_organism']),  # gram+, gram-, euk
+            ("Dcut-type", "default"),
+            ("method", "best"),  # best, notm
+            ("minlen", ""),
+            ("trunc", ""),
+            ("format", "short")])  # summary, short, long, all
 
         # files = {'seqfile': open(params['fasta'], 'rb')}
         files = {'SEQSUB': StringIO(safe_fasta)}
 
-        log_stderr("# LipoP(scrape_web), %s > %s" % (params['fasta'], outfile))
+        log_stderr(
+            "# SignalP(scrape_web), %s > %s" % (params['fasta'], outfile))
 
         headers = {"User-Agent":
                        "python-requests/%s (inmembrane/%s)" %
@@ -104,7 +111,7 @@ def annotate(params, proteins, batchsize=2000, force=False):
         pollingurl = soup.findAll('a')[0]['href']
         sys.stderr.write("# Fetching from: " + pollingurl + "\n");
         # try grabbing the result, then keep polling until they are ready
-        sys.stderr.write("# Waiting for LipoP(scrape_web) results ")
+        sys.stderr.write("# Waiting for SignalP(scrape_web) results ")
         waittime = 1.0
         time.sleep(waittime)  # (len(proteins)/500)
         resultpage = requests.get(pollingurl).text
@@ -135,26 +142,13 @@ def annotate(params, proteins, batchsize=2000, force=False):
             # <P>
             # <hr>
 
-        allresultpages += clean_result_page(resultpage)
+        allresultpages += html2text(resultpage)  # += clean_result_page(resultpage)
 
     # we store the cleaned up result pages concatenated together
     fh = open(outfile, 'a+')
     fh.write(allresultpages)
     fh.close()
 
-    proteins = parse_lipop(allresultpages, proteins, id_mapping=id_mapping)
+    proteins = parse_signalp(allresultpages.splitlines(), proteins, id_mapping=id_mapping)
     return proteins
 
-
-# TODO: Consider using helpers.html2text instead
-def clean_result_page(resultpage):
-    """
-    Takes the HTML output from the LipoP result page and replaces some
-    tags make the output parsable by the existing standalone lipop1 parser.
-    """
-    resultpage = "\n".join(resultpage.split('\n')[14:])
-    resultpage = resultpage.replace("<hr>", '\n')
-    resultpage = resultpage.replace("<P>", '')
-    resultpage = resultpage.replace("<pre>", '')
-    resultpage = resultpage.replace("</pre>", '')
-    return resultpage

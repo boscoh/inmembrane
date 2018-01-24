@@ -1,6 +1,8 @@
 BeautifulSoup>=3.2.1
+bs4
 cssselect
 lxml
 requests>=2.0.0
 suds>=0.4
+semantic_version
 twill==0.9.1

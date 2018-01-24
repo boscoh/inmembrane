@@ -6,11 +6,14 @@ def get_annotations(params):
   annotations = []
   params['signalp4_organism'] = 'gram-'
   
-  annotations += ['signalp4']
+  if not params['signalp4_bin'] or params['signalp4_bin'] == 'signalp_scrape_web':
+    annotations += ['signalp_scrape_web']
+  else:
+    annotations += ['signalp4']
   
   if not params['lipop1_bin'] or params['lipop1_bin'] == 'lipop_scrape_web':
     annotations += ['lipop_scrape_web']
-  elif params['lipop1_bin'] == 'lipop1':
+  else:
     annotations += ['lipop1']
   
   annotations += ['tatfind_web']

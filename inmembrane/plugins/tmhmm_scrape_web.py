@@ -28,10 +28,9 @@ def annotate(params, proteins, \
              batchsize=500, \
              force=False):
   """
-  This plugin inferfaces with the TMHMM web interface (for humans) and
-  scrapes the results. This is a silly way to do it, since there is
-  a SOAP service ... however when the SOAP service goes down, as it does
-  from time to time, this plugin can be used as a stopgap.
+  This plugin interfaces with the TMHMM web interface (for humans) and
+  scrapes the results. There once was a SOAP service but it was discontinued,
+  so now we use this.
   """
 
   baseurl = "http://www.cbs.dtu.dk"

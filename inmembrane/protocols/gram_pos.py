@@ -1,6 +1,7 @@
 import os
 from inmembrane.helpers import dict_get, chop_nterminal_peptide
 
+
 def get_annotations(params):
   """
   Creates a list of annotation functions required
@@ -16,7 +17,10 @@ def get_annotations(params):
   
   params['signalp4_organism'] = 'gram+'
   
-  annotations += ['signalp4']
+  if not params['signalp4_bin'] or params['signalp4_bin'] == 'signalp_scrape_web':
+    annotations += ['signalp_scrape_web']
+  else:
+    annotations += ['signalp4']
   
   if not params['lipop1_bin'] or params['lipop1_bin'] == 'lipop_scrape_web':
     annotations += ['lipop_scrape_web']
