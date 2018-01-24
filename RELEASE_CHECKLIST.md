@@ -50,3 +50,19 @@ password=<my_password>
   
 * Commit and push the changes.
   git commit -a; git push
+
+# Dockerhub release
+
+```bash
+# Always use a fresh clone
+git clone https://github.com/boscoh/inmembrane
+cd inmembrane
+export DOCKERHUB_USERNAME=pansapiens
+export VERSION=$(./inmembrane_scan --version | cut -d " " -f 2)
+docker build -t inmembrane:latest -t inmembrane:$VERSION .
+docker run -it inmembrane:$VERSION -t --skip-tests test_tmhmm,test_signalp4,test_lipop1,test_memsat3
+docker tag inmembrane:$VERSION $DOCKERHUB_USERNAME/inmembrane:$VERSION
+docker tag inmembrane:latest $DOCKERHUB_USERNAME/inmembrane:latest
+docker login --username=$DOCKERHUB_USERNAME --email=youremail@company.com
+docker push $DOCKERHUB_USERNAME/inmembrane
+```
