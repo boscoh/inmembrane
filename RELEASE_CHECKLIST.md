@@ -16,14 +16,30 @@
   git push
 
 * Run:
+  * virtualenv /tmp/inmembrane_venv
+  * source /tmp/inmembrane_venv/bin/activate
   * python setup.py sdist
-  * sudo pip uninstall inmembrane
-    sudo pip install dist/inmembrane-<version>.tar.gz
-  * Test the installed version: inmembrane_scan --test
-  * python setup.py register
+  * pip uninstall inmembrane
+    pip install dist/inmembrane-<version>.tar.gz
+  * Test the installed version: 
+    inmembrane_scan --test
+
+As per https://packaging.python.org/tutorials/distributing-packages/#upload-your-distributions
+
+* Create a `~/.pypirc` file like:
+
+```
+[pypi]
+username=<my_username>
+password=<my_password>
+~                           
+```
+
+* chmod 600 ~/.pypirc
 
 * Push a new version to PyPi:
-  * python setup.py sdist upload
+  * pip install twine
+  * twine upload dist/*
 
 * Switch to the the gh-pages branch:
   git checkout gh-pages
