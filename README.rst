@@ -69,6 +69,7 @@ To run an analysis using the container::
 
     # Run once to get a template inmembrane.config in the current working directory
     $ docker run -it -v $(pwd):/data inmembrane
+
     # Edit inmembrane.config as required. Use signap_scrape_web, tmhmm_scrape_web and lipop_scrape_web
     # as the binary versions won't exist in the default container
     # Then, assuming my_proteome.fasta exists in the current working directory, run:
@@ -183,10 +184,10 @@ While *inmembrane* only requires a local installation of HMMER 3.0
 and can used web services for TMHMM, SignalP, LipoP and various
 OMP beta-barrel predictors, for large scale analyses (5000 sequences+)
 it is suggested that locally installed versions are used in the interest
-of speed, at to be polite to publically available web services.
+of speed, at to be polite to publicly available web services.
 
 With each dependency, it is important that you have the exact version 
-that *inmembrane* is written to interoperate with, otherwise *inmembrane* 
+that *inmembrane* is written to inter-operate with, otherwise *inmembrane*
 is likely to be unable to interpret the output of the downstream 
 analysis program.
 
@@ -194,7 +195,7 @@ Required dependencies, and their versions:
 
 -  HMMER 3.0
 -  TMHMM 2.0 *or* MEMSAT3
--  SignalP 4.0
+-  SignalP 4.1
 -  LipoP 1.0
 
 These instructions have been tailored for Debian-based systems, in
@@ -229,16 +230,16 @@ compare transmembrane segment predictions can install both.
 -  In the *bin/tmhmm* script, edit the *$opt_basedir* variable to point to
    the full path of where TMHMM is installed.
 
-SignalP 4.0
+SignalP 4.1
 -----------
 
 
--  Download SignalP 4.0
+-  Download SignalP 4.1
    http://www.cbs.dtu.dk/cgi-bin/nph-sw_request?signalp. You will need
    to fill out the form with an institutional email address and accept
    the academic license. The software will be emailed to you.
 -  Follow the installation instructions at
-   http://www.cbs.dtu.dk/services/doc/signalp-4.0.readme.
+   http://www.cbs.dtu.dk/services/doc/signalp-4.1.readme.
 
 LipoP 1.0
 ---------
@@ -290,13 +291,13 @@ Python libraries
 `Suds <https://fedorahosted.org/suds/>`_ and 
 `Requests <http://python-requests.org>`_).
 
-Pip should handle installing these for you automatically.
+``pip`` should handle installing these for you automatically.
 
 Modification guide
 ==================
 
 It is a fact of life for bioinformatics that new versions of basic
-tools changes output formats and API. We believe that it is an
+tools change output formats and APIs. We believe that it is an
 essential skill to rewrite parsers to handle the subtle but
 significant changes in different versions. We have written
 *inmembrane* to be easily modifiable and extensible. *Protocols*
@@ -308,7 +309,7 @@ been wrapped into a single python *plugin* module, and placed in
 the ``inmembrane/plugins`` directory. This contains the code to both run the
 program and to parse the output. We have tried to make the parsing
 code as concise as possible. Specifically, by using the native
-Python dictionary, which allows an enormous amout of flexibility,
+Python dictionary, which allows an enormous amount of flexibility,
 we can collate the results of various analyses with very little code.
 
 A more comprehensive overview can be found at http://boscoh.github.com/inmembrane/api.html.
@@ -335,6 +336,8 @@ Here are some guidelines for understanding and extending the code.
    describing what it does, what parameters it requires in the
    ``params`` dictionary and what it adds to the ``proteins`` data
    structure. See the code for examples.
+-  *Anal:* Code should follow PEP-8 (4 space indentation) unless there is a
+   really really good reason.
 -  *Anal:* Unique sequence ID strings (eg ``gi|1234567``) are
    called 'seqid'. 'name' is ambiguous. 'prot\_id' is reasonable,
    however conceptually a 'protein' is not the same thing as a string

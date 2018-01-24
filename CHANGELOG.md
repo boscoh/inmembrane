@@ -1,5 +1,12 @@
 # inmembrane changelog
 
+## v0.95.0 (24-Jan-2018)
+* Resurrected after a period of neglect.
+* Removed deprecated CBS-DTU SOAP and TMBETA-NET plugins.
+* Fixed lipop_scrape_web, tmhmm_scrape_web, added new signalp_scrape_web plugins (now used as defaults).
+* Added Dockerfile(s).
+* Enforce semantic versioning.
+
 ## v0.94 (27-Sep-2013)
 * Fixed LipoP and TMHMM web scrapers due to server side changes.
 * TMB-HUNT plugin deprecated - server appears to be permanently offline
