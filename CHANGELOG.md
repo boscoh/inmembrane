@@ -3,6 +3,7 @@
 ## v0.95.0 (24-Jan-2018)
 * Resurrected after a period of neglect.
 * Removed deprecated CBS-DTU SOAP and TMBETA-NET plugins.
+* Fixed TMBETADISC-RBF plugin (pinned twill version).
 * Fixed lipop_scrape_web, tmhmm_scrape_web, added new signalp_scrape_web plugins (now used as defaults).
 * Added Dockerfile(s).
 * Enforce semantic versioning.
