@@ -142,13 +142,14 @@ def annotate(params, proteins, batchsize=2000, force=False):
             # <P>
             # <hr>
 
-        allresultpages += html2text(resultpage)  # += clean_result_page(resultpage)
+        allresultpages += html2text(
+            resultpage)  # += clean_result_page(resultpage)
 
     # we store the cleaned up result pages concatenated together
     fh = open(outfile, 'a+')
     fh.write(allresultpages)
     fh.close()
 
-    proteins = parse_signalp(allresultpages.splitlines(), proteins, id_mapping=id_mapping)
+    proteins = parse_signalp(allresultpages.splitlines(), proteins,
+                             id_mapping=id_mapping)
     return proteins
-

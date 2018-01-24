@@ -10,10 +10,10 @@ URL = "http://github.com/boscoh/inmembrane"
 VERSION = "0.95.0"  # __import__(PACKAGE).__version__
 
 try:
-  extra_requires = []
-  from collections import OrderedDict
+    extra_requires = []
+    from collections import OrderedDict
 except:
-  extra_requires.append("ordereddict")
+    extra_requires.append("ordereddict")
 
 setup(
     name=PACKAGE,
@@ -22,22 +22,22 @@ setup(
     author_email=AUTHOR_EMAIL,
     url=URL,
     description=DESCRIPTION,
-    packages=['inmembrane','inmembrane.plugins',
-              'inmembrane.protocols','inmembrane.tests'],
+    packages=['inmembrane', 'inmembrane.plugins',
+              'inmembrane.protocols', 'inmembrane.tests'],
     # NOTE: some packaging filters are also in MANIFEST.in
-    package_data={'inmembrane': ['protocols/*/*', 
-                                 'tests/*/*', 
+    package_data={'inmembrane': ['protocols/*/*',
+                                 'tests/*/*',
                                  'plugins/*/*'], },
     scripts=['inmembrane_scan'],
     # README, examples & docs are included via MANIFEST.in
     license='BSD',
     long_description=open('README.rst', 'rt').read(),
     install_requires=[
-        "suds >= 0.4",
-        "BeautifulSoup >= 3.2.1",
-        "twill == 0.9.1",
-        "requests >= 2.0.0",
-        ] + extra_requires,
+                         "suds >= 0.4",
+                         "BeautifulSoup >= 3.2.1",
+                         "twill == 0.9.1",
+                         "requests >= 2.0.0",
+                     ] + extra_requires,
     classifiers=[
         "Development Status :: 5 - Production/Stable",
         "Environment :: Console",

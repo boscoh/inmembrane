@@ -11,7 +11,6 @@ citation = {'ref': u"Petersen TN, Brunak S, von Heijne G, Nielsen H. "
 
 
 def parse_signalp(signalp4_lines, proteins, id_mapping=None):
-
     if id_mapping is None:
         id_mapping = []
 

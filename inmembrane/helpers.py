@@ -67,7 +67,7 @@ def silence_log(b):
     LOG_SILENT = b
 
 
-def log_stderr(s):
+def log_stderr(s, width=76, comment=True):
     """
     Wrapper for all stderr out. Allows future customization.
     """
@@ -80,9 +80,9 @@ def log_stderr(s):
     sys.stderr.write(s)
 
 
-def log_stdout(s):
+def log_stdout(s, width=76):
     """
-    Wrapper for all stderr out. Allows future customization.
+    Wrapper for all stdout output. Allows future customization.
     """
     if LOG_SILENT:
         return
