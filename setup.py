@@ -32,12 +32,15 @@ setup(
     # README, examples & docs are included via MANIFEST.in
     license='BSD',
     long_description=open('README.rst', 'rt').read(),
-    install_requires=[
-                         "suds >= 0.4",
-                         "BeautifulSoup >= 3.2.1",
-                         "twill == 0.9.1",
-                         "requests >= 2.0.0",
-                     ] + extra_requires,
+    install_requires=["BeautifulSoup >= 3.2.1",
+                      "bs4",
+                      "cssselect",
+                      "lxml",
+                      "requests >= 2.0.0",
+                      "semantic_version",
+                      "suds >= 0.4",
+                      "twill == 0.9.1",
+                      ] + extra_requires,
     classifiers=[
         "Development Status :: 5 - Production/Stable",
         "Environment :: Console",
