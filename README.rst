@@ -1,3 +1,6 @@
+NOTE: *inmembrane* is no longer maintained, hasn't been updated for Python 3 and most of the webservices it used have gone offline or made breaking changes. Maybe one day it will be ressurected, however I'd suggest most users should not attempt to use it in it's current state.
+
+----
 ==========
 inmembrane
 ==========
